@@ -23,7 +23,12 @@ module.exports = (sequelize, DataTypes) => {
       days_awarded: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 7,
+        defaultValue: 30,
+      },
+      traffic_awarded: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        defaultValue: 107374182400, // 100 GB
       },
     },
     {

@@ -31,7 +31,12 @@ module.exports = {
       days_awarded: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 7,
+        defaultValue: 30,
+      },
+      traffic_awarded: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        defaultValue: 107374182400, // 100 GB
       },
       createdAt: {
         allowNull: false,
