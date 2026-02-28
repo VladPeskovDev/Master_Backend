@@ -4,6 +4,13 @@ const { t, detectLang } = require('../locales');
 const { addUserToAllNodes } = require('../services/nodeService');
 const { showMainMenu } = require('./menu');
 
+// Регион определяется раз при /start, навсегда
+const detectRegion = (languageCode) => {
+  const regionMap = { ru: 'ru', tr: 'tr', uz: 'uz', ar: 'uae', hi: 'uae' };
+  const short = (languageCode || '').toLowerCase().slice(0, 2);
+  return regionMap[short] || 'uae';
+};
+
 const setupStartCommand = (bot) => {
   bot.onText(/\/start(.*)/, async (msg, match) => {
     try {
@@ -11,7 +18,6 @@ const setupStartCommand = (bot) => {
       const telegramId = msg.from.id;
       const referralParam = match[1]?.trim();
 
-      // Проверяем существующего юзера
       let user = await User.findOne({ where: { telegram_id: telegramId } });
 
       if (user) {
@@ -23,15 +29,13 @@ const setupStartCommand = (bot) => {
         return showMainMenu(bot, chatId, lang);
       }
 
-      // Определяем язык
       const lang = detectLang(msg.from.language_code);
+      const region = detectRegion(msg.from.language_code);
 
-      // Генерируем уникальные токены
       const uuid = crypto.randomUUID();
       const subToken = crypto.randomBytes(16).toString('hex');
       const referralCode = crypto.randomBytes(4).toString('hex');
 
-      // Определяем реферера
       let referredBy = null;
       if (referralParam && referralParam.startsWith(' ref_')) {
         const refCode = referralParam.replace(' ref_', '');
@@ -39,7 +43,6 @@ const setupStartCommand = (bot) => {
         if (referrer) referredBy = referrer.id;
       }
 
-      // Создаём юзера
       user = await User.create({
         telegram_id: telegramId,
         username: msg.from.username || null,
@@ -48,11 +51,11 @@ const setupStartCommand = (bot) => {
         uuid,
         sub_token: subToken,
         lang,
+        region,
         referral_code: referralCode,
         referred_by: referredBy,
       });
 
-      // Активируем триал
       const trialPlan = await Plan.findOne({ where: { is_trial: true, active: true } });
 
       if (trialPlan) {
@@ -67,11 +70,9 @@ const setupStartCommand = (bot) => {
           active: true,
         });
 
-        // Добавляем юзера на все ноды
         await addUserToAllNodes(uuid, Number(trialPlan.traffic_limit_bytes));
       }
 
-      // Отправляем приветствие
       let welcomeText = t(lang, 'welcome');
       if (referredBy) {
         welcomeText += '\n\n' + t(lang, 'referral_registered');

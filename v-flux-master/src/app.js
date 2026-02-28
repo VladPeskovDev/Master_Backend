@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bot = require('./bot');
 const nodeSyncRouter = require('./routes/nodeSyncRouter');
+const subRouter = require('./routes/subRouter');
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/nodes', nodeSyncRouter);
+app.use('/sub', subRouter);
 
 
 

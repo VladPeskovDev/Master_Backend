@@ -36,7 +36,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'en',
       },
-      region: DataTypes.STRING(5),
+      region: { 
+        type: DataTypes.STRING(5),
+        allowNull: true, 
+      },
       referral_code: {
         type: DataTypes.STRING(10),
         allowNull: false,

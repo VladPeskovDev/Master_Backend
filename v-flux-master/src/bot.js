@@ -3,7 +3,12 @@ require('dotenv').config();
 
 const setupStartCommand = require('./commands/start');
 const setupLanguageHandler = require('./commands/language');
-const setupStubs = require('./commands/stubs');
+const setupConnectHandler = require('./commands/connect');
+const setupAccountHandler = require('./commands/account');
+const setupReferralHandler = require('./commands/referral');
+const setupSubscribeHandler = require('./commands/subscribe');
+const setupHelpHandler = require('./commands/help');
+const setupInstructionHandler = require('./commands/instruction');
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { webHook: true });
 
@@ -16,11 +21,17 @@ bot.setWebHook(WEBHOOK_URL)
 // Команды в меню Telegram
 bot.setMyCommands([
   { command: '/start', description: '🚀 Start / Перезапуск' },
+  { command: '/help', description: '❓ Help / Помощь' },
 ]);
 
 // Подключаем команды
 setupStartCommand(bot);
 setupLanguageHandler(bot);
-setupStubs(bot);
+setupConnectHandler(bot);
+setupAccountHandler(bot);
+setupReferralHandler(bot);
+setupSubscribeHandler(bot);
+setupHelpHandler(bot);
+setupInstructionHandler(bot);
 
 module.exports = bot;
