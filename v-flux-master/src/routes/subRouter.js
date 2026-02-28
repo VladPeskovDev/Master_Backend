@@ -1,16 +1,16 @@
 const express = require('express');
-const { User, Subscription, Node } = require('../../db/models');
+const { User, Subscription, Plan, Node } = require('../../db/models');
 
 const router = express.Router();
 
 /*
- * GET /sub/:token
- *
- * Зачем: VPN-клиент (V2Box, v2rayNG) дёргает каждый час.
- * Отдаём VLESS-конфиг с наименее загруженной нодой.
- * Если подписка истекла — пустой ответ, клиент не подключится.
- *
- * curl http://localhost:3000/sub/TOKEN_ИЗ_БД
+ GET /sub/:token
+ 
+ Зачем: VPN-клиент (V2Box, v2rayNG) дёргает каждый час.
+ Отдаём VLESS-конфиг с наименее загруженной нодой.
+ Если подписка истекла — пустой ответ, клиент не подключится.
+
+ для теста curl http://localhost:3000/sub/TOKEN
  */
 router.get('/:token', async (req, res) => {
   try {
@@ -22,6 +22,7 @@ router.get('/:token', async (req, res) => {
 
     const sub = await Subscription.findOne({
       where: { user_id: user.id, active: true },
+      include: [{ model: Plan }],
     });
 
     // Нет активной подписки — пустой ответ
@@ -55,7 +56,14 @@ router.get('/:token', async (req, res) => {
     const base64 = Buffer.from(vlessLink).toString('base64');
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.setHeader('Subscription-Userinfo', `upload=0; download=${sub.traffic_used}; total=${sub.traffic_limit}; expire=${Math.floor(new Date(sub.expires_at).getTime() / 1000)}`);
+
+    // Триал — показываем лимит трафика, платная — только дату окончания
+    if (sub.Plan.is_trial) {
+      res.setHeader('Subscription-Userinfo', `upload=0; download=${sub.traffic_used}; total=${sub.traffic_limit}; expire=${Math.floor(new Date(sub.expires_at).getTime() / 1000)}`);
+    } else {
+      res.setHeader('Subscription-Userinfo', `expire=${Math.floor(new Date(sub.expires_at).getTime() / 1000)}`);
+    }
+
     res.send(base64);
   } catch (err) {
     console.error('❌ Ошибка в /sub/:token:', err);
