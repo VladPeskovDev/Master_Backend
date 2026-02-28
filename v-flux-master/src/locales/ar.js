@@ -1,0 +1,16 @@
+module.exports = {
+  welcome: '👋 !V-Flux VPN مرحبًا بك في\n\nVPN سريع وآمن لخصوصيتك.\n\n🎁 !لديك 3 أيام وصول مجاني',
+  welcome_back: '!{name} 👋 مرحبًا بعودتك',
+  main_menu: ':📱 القائمة الرئيسية',
+  btn_connect: '🔑 اتصل بـ VPN',
+  btn_account: '📊 حسابي',
+  btn_subscribe: '💳 الاشتراك',
+  btn_referral: '👥 ادعُ صديقًا',
+  btn_language: '🌐 اللغة',
+  btn_help: '❓ مساعدة',
+  select_language: ':🌐 اختر لغتك',
+  language_set: '✅ تم تغيير اللغة إلى العربية',
+  referral_registered: '!👤 لقد سجلت عبر دعوة صديق',
+  stub: '🚧 قريبًا',
+  btn_back: '◀️ رجوع',
+};

@@ -1,0 +1,16 @@
+module.exports = {
+  welcome: '👋 V-Flux VPN\'e hoş geldiniz!\n\nGizliliğiniz için hızlı ve güvenli VPN.\n\n🎁 3 gün ücretsiz erişim!',
+  welcome_back: '👋 Tekrar hoş geldiniz, {name}!',
+  main_menu: '📱 Ana menü:',
+  btn_connect: '🔑 VPN Bağlan',
+  btn_account: '📊 Hesabım',
+  btn_subscribe: '💳 Abonelik',
+  btn_referral: '👥 Arkadaşını Davet Et',
+  btn_language: '🌐 Dil',
+  btn_help: '❓ Yardım',
+  select_language: '🌐 Dilinizi seçin:',
+  language_set: '✅ Dil Türkçe olarak değiştirildi',
+  referral_registered: '👤 Arkadaş davetiyle kaydoldunuz!',
+  stub: '🚧 Yakında',
+  btn_back: '◀️ Geri',
+};
