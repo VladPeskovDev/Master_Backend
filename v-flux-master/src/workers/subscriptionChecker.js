@@ -38,13 +38,15 @@ const runSubscriptionCheck = async () => {
   }
 };
 
-/* const startSubscriptionChecker = () => {
+ const startSubscriptionChecker = () => {
   cron.schedule('0 * * * *', runSubscriptionCheck);
   console.log('⏰ Subscription checker запущен (каждый час)');
-}; */
-const startSubscriptionChecker = () => {
-  cron.schedule('*/2 * * * *', runSubscriptionCheck);
-  console.log('⏰ Subscription checker запущен (каждые 2 мин)');
-};
+}; 
+
+// const startSubscriptionChecker = () => {
+ // cron.schedule('*/2 * * * *', runSubscriptionCheck);
+ // console.log('⏰ Subscription checker запущен (каждые 2 мин)');
+//}; 
+
 
 module.exports = { startSubscriptionChecker, runSubscriptionCheck };

@@ -19,6 +19,45 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/admin/nodes/online — кто сейчас онлайн на каждой ноде
+router.get('/online', async (req, res) => {
+  try {
+    const nodes = await Node.findAll({ where: { active: true } });
+
+    const results = await Promise.allSettled(
+      nodes.map(async (node) => {
+        const api = createNodeApi(node.host, node.port, node.token);
+        const stats = await api.get('/stats');
+        
+        const onlineUsers = (stats.data.users || [])
+          .filter((u) => u.active_connections > 0)
+          .map((u) => ({
+            uuid: u.uuid,
+            connections: u.active_connections,
+            throttled: u.throttled,
+          }));
+
+        return {
+          node: node.name,
+          location: node.location,
+          total_online: onlineUsers.length,
+          total_connections: onlineUsers.reduce((sum, u) => sum + u.connections, 0),
+          users: onlineUsers,
+        };
+      }),
+    );
+
+    const online = results
+      .filter((r) => r.status === 'fulfilled')
+      .map((r) => r.value);
+
+    res.json({ online });
+  } catch (err) {
+    console.error('❌ Admin online:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // GET /api/admin/nodes/stats — статистика всех нод (health + stats)
 router.get('/stats', async (req, res) => {
   try {
@@ -37,9 +76,9 @@ router.get('/stats', async (req, res) => {
         location: node.location,
         active_connections: c.active_connections,
         user_count: c.user_count,
-        traffic_rx: formatTraffic(c.network_rx_bytes),
-        traffic_tx: formatTraffic(c.network_tx_bytes),
-        traffic_total: formatTraffic(c.network_rx_bytes + c.network_tx_bytes),
+        //traffic_rx: formatTraffic(c.network_rx_bytes),
+        //traffic_tx: formatTraffic(c.network_tx_bytes),
+        //traffic_total: formatTraffic(c.network_rx_bytes + c.network_tx_bytes),
         current_speed_rx: formatSpeed(c.speed_rx),
         current_speed_tx: formatSpeed(c.speed_tx),
         uptime: formatUptime(c.uptime_secs),

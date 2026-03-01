@@ -37,6 +37,7 @@ const setupConnectHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
+            [{ text: '📋 Скопировать ссылку', copy_text: { text: link } }],
             [{ text: t(lang, 'btn_ios'), callback_data: 'instruction_ios' }],
             [{ text: t(lang, 'btn_android'), callback_data: 'instruction_android' }],
             [{ text: t(lang, 'btn_desktop'), callback_data: 'instruction_desktop' }],
