@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const bot = require('./bot');
 const nodeSyncRouter = require('./routes/nodeSyncRouter');
 const subRouter = require('./routes/subRouter');
+const adminNodesRouter = require('./routes/adminNodesRouter');
+const adminUsersRouter = require('./routes/adminUsersRouter');
 
 const app = express();
 
@@ -13,7 +15,8 @@ app.use(express.json());
 // Routes
 app.use('/api/nodes', nodeSyncRouter);
 app.use('/sub', subRouter);
-
+app.use('/api/admin/nodes', adminNodesRouter);
+app.use('/api/admin/users', adminUsersRouter);
 
 
 // Telegram Webhook

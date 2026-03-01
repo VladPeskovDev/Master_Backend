@@ -1,17 +1,17 @@
 const express = require('express');
 const { User, Subscription, Plan, Node } = require('../../db/models');
+const { getHealthCache } = require('../workers/healthChecker');
 
 const router = express.Router();
 
 /*
  GET /sub/:token
- 
  Зачем: VPN-клиент (V2Box, v2rayNG) дёргает каждый час.
  Отдаём VLESS-конфиг с наименее загруженной нодой.
  Если подписка истекла — пустой ответ, клиент не подключится.
-
  для теста curl http://localhost:3000/sub/TOKEN
  */
+
 router.get('/:token', async (req, res) => {
   try {
     const user = await User.findOne({ where: { sub_token: req.params.token } });
@@ -37,10 +37,19 @@ router.get('/:token', async (req, res) => {
       return res.status(503).send('');
     }
 
-    // Выбираем наименее загруженную ноду
-    // TODO: когда будет health cache — сортировать по active_connections
-    // Пока random
-    const node = nodes[Math.floor(Math.random() * nodes.length)];
+    // Выбираем наименее загруженную ноду по health cache
+    const cache = getHealthCache();
+    let node;
+
+    if (Object.keys(cache).length > 0) {
+      node = nodes.sort((a, b) => {
+        const connA = cache[a.id]?.active_connections || 0;
+        const connB = cache[b.id]?.active_connections || 0;
+        return connA - connB;
+      })[0];
+    } else {
+      node = nodes[Math.floor(Math.random() * nodes.length)];
+    }
 
     // Генерируем VLESS ссылку
     const vlessLink = [
