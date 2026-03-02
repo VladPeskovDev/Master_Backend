@@ -1,5 +1,5 @@
 const express = require('express');
-const { Node } = require('../../db/models');
+const { Node, User, Subscription } = require('../../db/models');
 const adminAuth = require('../middleware/adminAuth');
 const createNodeApi = require('../utils/nodeApi');
 const { getHealthCache } = require('../workers/healthChecker');
@@ -19,16 +19,21 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/admin/nodes/online — кто сейчас онлайн на каждой ноде
-router.get('/online', async (req, res) => {
+
+// GET /api/admin/nodes/stats — полная статистика нод
+router.get('/stats', async (req, res) => {
   try {
     const nodes = await Node.findAll({ where: { active: true } });
+    const cache = getHealthCache();
 
     const results = await Promise.allSettled(
       nodes.map(async (node) => {
+        const c = cache[node.id];
+
+        // Live запрос для онлайна
         const api = createNodeApi(node.host, node.port, node.token);
         const stats = await api.get('/stats');
-        
+
         const onlineUsers = (stats.data.users || [])
           .filter((u) => u.active_connections > 0)
           .map((u) => ({
@@ -38,52 +43,30 @@ router.get('/online', async (req, res) => {
           }));
 
         return {
-          node: node.name,
+          id: node.id,
+          name: node.name,
           location: node.location,
-          total_online: onlineUsers.length,
+          users_on_node: stats.data.total_users,
+          users_online: onlineUsers.length,
           total_connections: onlineUsers.reduce((sum, u) => sum + u.connections, 0),
-          users: onlineUsers,
+          current_speed_rx: c ? formatSpeed(c.speed_rx) : '0 bps',
+          current_speed_tx: c ? formatSpeed(c.speed_tx) : '0 bps',
+          uptime: c ? formatUptime(c.uptime_secs) : 'unknown',
+          online_details: onlineUsers,
         };
       }),
     );
 
-    const online = results
+    // Логируем ошибки нод
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') {
+        console.error(`❌ Stats нода ${nodes[i].name}: ${r.reason.message}`);
+      }
+    });
+
+    const nodeStats = results
       .filter((r) => r.status === 'fulfilled')
       .map((r) => r.value);
-
-    res.json({ online });
-  } catch (err) {
-    console.error('❌ Admin online:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// GET /api/admin/nodes/stats — статистика всех нод (health + stats)
-router.get('/stats', async (req, res) => {
-  try {
-    const { Subscription, User, Plan } = require('../../db/models');
-
-    const nodes = await Node.findAll({ where: { active: true } });
-    const cache = getHealthCache();
-
-    const nodeStats = nodes.map((node) => {
-      const c = cache[node.id];
-      if (!c) return { id: node.id, name: node.name, status: 'no data' };
-
-      return {
-        id: node.id,
-        name: node.name,
-        location: node.location,
-        active_connections: c.active_connections,
-        user_count: c.user_count,
-        //traffic_rx: formatTraffic(c.network_rx_bytes),
-        //traffic_tx: formatTraffic(c.network_tx_bytes),
-        //traffic_total: formatTraffic(c.network_rx_bytes + c.network_tx_bytes),
-        current_speed_rx: formatSpeed(c.speed_rx),
-        current_speed_tx: formatSpeed(c.speed_tx),
-        uptime: formatUptime(c.uptime_secs),
-      };
-    });
 
     const totalUsers = await User.count();
     const activeSubs = await Subscription.count({ where: { active: true } });
@@ -98,7 +81,7 @@ router.get('/stats', async (req, res) => {
       },
     });
   } catch (err) {
-    console.error('❌ Admin nodes stats:', err);
+    console.error('❌ Admin stats:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
