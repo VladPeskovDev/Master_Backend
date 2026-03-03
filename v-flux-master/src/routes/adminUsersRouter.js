@@ -1,6 +1,6 @@
 const express = require('express');
 const { User, Subscription, Plan, Payment } = require('../../db/models');
-const { removeUserFromAllNodes, addUserToAllNodes } = require('../services/nodeService');
+const { removeUserFromAllNodes, syncUserOnAllNodes } = require('../services/nodeService');
 const adminAuth = require('../middleware/adminAuth');
 
 const router = express.Router();
@@ -124,7 +124,9 @@ router.post('/:id/subscription', async (req, res) => {
     });
 
     // Добавляем на ноды
-    await addUserToAllNodes(user.uuid, Number(plan.traffic_limit_bytes));
+    // Если юзер уже на нодах — обновляем лимит, если нет — добавляем
+    await syncUserOnAllNodes(user.uuid, Number(plan.traffic_limit_bytes));
+
 
     res.status(201).json({ subscription: sub });
   } catch (err) {

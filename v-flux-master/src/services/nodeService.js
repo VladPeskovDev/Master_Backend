@@ -141,6 +141,27 @@ const getHealthFromAllNodes = async () => {
   }));
 };
 
+// Добавить или обновить юзера на всех нодах
+const syncUserOnAllNodes = async (uuid, trafficLimit) => {
+  const nodes = await getActiveNodes();
+  const results = await Promise.allSettled(
+    nodes.map(async (node) => {
+      const api = createNodeApi(node.host, node.port, node.token);
+      try {
+        await api.patch(`/users/${uuid}`, { traffic_limit: trafficLimit });
+      } catch {
+        await api.post('/users', { uuid, traffic_limit: trafficLimit });
+      }
+    }),
+  );
+
+  results.forEach((result, i) => {
+    if (result.status === 'rejected') {
+      console.error(`❌ Ошибка sync на ноде ${nodes[i].name}: ${result.reason.message}`);
+    }
+  });
+};
+
 module.exports = {
   getActiveNodes,
   getActiveUsers,
@@ -149,6 +170,7 @@ module.exports = {
   throttleOnAllNodes,
   unthrottleOnAllNodes,
   resetTrafficOnAllNodes,
+  syncUserOnAllNodes,
   getStatsFromAllNodes,
   getHealthFromAllNodes,
 };
