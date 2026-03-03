@@ -9,6 +9,7 @@ const setupReferralHandler = require('./commands/referral');
 const setupSubscribeHandler = require('./commands/subscribe');
 const setupHelpHandler = require('./commands/help');
 const setupInstructionHandler = require('./commands/instruction');
+const setupTermsHandler = require('./commands/terms');
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { webHook: true });
 
@@ -21,7 +22,11 @@ bot.setWebHook(WEBHOOK_URL)
 // Команды в меню Telegram
 bot.setMyCommands([
   { command: '/start', description: '🚀 Start / Перезапуск' },
+  { command: '/language', description: '🌐 Language / Язык' },
+  { command: '/subscribe', description: '💳 Subscribe / Подписка' },
+  { command: '/referral', description: '👥 Invite / Пригласить друга' },
   { command: '/help', description: '❓ Help / Помощь' },
+  { command: '/terms', description: '📄 Terms / Правила' },
 ]);
 
 // Подключаем команды
@@ -33,5 +38,6 @@ setupReferralHandler(bot);
 setupSubscribeHandler(bot);
 setupHelpHandler(bot);
 setupInstructionHandler(bot);
+setupTermsHandler(bot);
 
 module.exports = bot;

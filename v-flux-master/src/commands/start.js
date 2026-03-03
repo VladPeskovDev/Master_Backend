@@ -1,10 +1,8 @@
 const crypto = require('crypto');
-const { User, Plan, Subscription } = require('../../db/models');
+const { User } = require('../../db/models');
 const { t, detectLang } = require('../locales');
-const { addUserToAllNodes } = require('../services/nodeService');
 const { showMainMenu } = require('./menu');
 
-// Регион определяется раз при /start, навсегда
 const detectRegion = (languageCode) => {
   const regionMap = { ru: 'ru', tr: 'tr', uz: 'uz', ar: 'uae', hi: 'uae' };
   const short = (languageCode || '').toLowerCase().slice(0, 2);
@@ -55,23 +53,6 @@ const setupStartCommand = (bot) => {
         referral_code: referralCode,
         referred_by: referredBy,
       });
-
-      const trialPlan = await Plan.findOne({ where: { is_trial: true, active: true } });
-
-      if (trialPlan) {
-        await Subscription.create({
-          user_id: user.id,
-          plan_id: trialPlan.id,
-          started_at: new Date(),
-          expires_at: new Date(Date.now() + trialPlan.duration_days * 24 * 60 * 60 * 1000),
-          traffic_limit: trialPlan.traffic_limit_bytes,
-          traffic_used: 0,
-          throttled: false,
-          active: true,
-        });
-
-        await addUserToAllNodes(uuid, Number(trialPlan.traffic_limit_bytes));
-      }
 
       let welcomeText = t(lang, 'welcome');
       if (referredBy) {

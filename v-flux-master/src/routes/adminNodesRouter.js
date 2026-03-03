@@ -1,5 +1,5 @@
 const express = require('express');
-const { Node, User, Subscription } = require('../../db/models');
+const { Node, User, Subscription, Plan } = require('../../db/models');
 const adminAuth = require('../middleware/adminAuth');
 const createNodeApi = require('../utils/nodeApi');
 const { getHealthCache } = require('../workers/healthChecker');
@@ -175,6 +175,64 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: `Node ${node.name} deleted` });
   } catch (err) {
     console.error('❌ Admin node delete:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /api/admin/nodes/:id/users — юзеры на конкретной ноде + инфо из БД (для админки)
+router.get('/:id/users', async (req, res) => {
+  try {
+    const node = await Node.findByPk(req.params.id);
+    if (!node) return res.status(404).json({ error: 'Node not found' });
+
+    const api = createNodeApi(node.host, node.port, node.token);
+    const stats = await api.get('/stats');
+    const nodeUsers = stats.data.users || [];
+
+    const uuids = nodeUsers.map((u) => u.uuid);
+    const dbUsers = await User.findAll({
+      where: { uuid: uuids },
+      include: [{
+        model: Subscription,
+        where: { active: true },
+        required: false,
+        include: [{ model: Plan }],
+      }],
+    });
+
+    const dbMap = {};
+    dbUsers.forEach((u) => { dbMap[u.uuid] = u; });
+
+    const result = nodeUsers.map((nu) => {
+      const db = dbMap[nu.uuid];
+      const sub = db?.Subscriptions?.[0];
+
+      return {
+        uuid: nu.uuid,
+        active_connections: nu.active_connections,
+        throttled: nu.throttled,
+        bytes_up: nu.bytes_up,
+        bytes_down: nu.bytes_down,
+        username: db?.username || null,
+        first_name: db?.first_name || null,
+        telegram_id: db?.telegram_id || null,
+        region: db?.region || null,
+        plan: sub?.Plan?.name || null,
+        traffic_used: sub?.traffic_used || 0,
+        traffic_limit: sub?.traffic_limit || 0,
+        expires_at: sub?.expires_at || null,
+        online: nu.active_connections > 0,
+      };
+    });
+
+    res.json({
+      node: node.name,
+      total: result.length,
+      online: result.filter((u) => u.online).length,
+      users: result,
+    });
+  } catch (err) {
+    console.error('❌ Admin node users:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

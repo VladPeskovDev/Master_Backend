@@ -1,5 +1,5 @@
 module.exports = {
-  welcome: '👋 Welcome to V-Flux VPN!\n\nFast and secure VPN for your privacy.\n\n🎁 You get 3 days of free access!',
+  welcome: '⚡️ <b>Welcome to V-Flux VPN!</b>\n\n🚀 Speed up to 1 Gbps\n🔒 No logs, no limits\n🌍 Servers in Europe\n📱 Works on all devices\n\n🎁 Your free trial: <b>3 days</b>\n\nTap <b>🔑 Connect VPN</b> and follow the guide — connect in 1 minute!',
   welcome_back: '👋 Welcome back, {name}!',
   referral_registered: '👤 You registered via a friend\'s invite!',
 
@@ -65,4 +65,6 @@ module.exports = {
   language_set: '✅ Language set to English',
 
   stub: '🚧 Coming soon',
+  // Terms
+  terms_text: '📄 <b>V-Flux VPN Terms of Service</b>\n\n<b>1. Service</b>\nV-Flux provides VPN service to protect your online privacy.\n\n<b>2. Subscription</b>\n• Free trial: 3 days\n• Paid plans: 1, 6 and 12 months\n• Refunds within 24 hours of payment\n\n<b>3. Usage</b>\n• One account per person\n• Sharing accounts is prohibited\n• Illegal activities are prohibited\n\n<b>4. Limitations</b>\n• Speed may be reduced if traffic limit is exceeded\n• Service may be suspended for rule violations\n\n<b>5. Privacy</b>\n• We do not store activity logs\n• We do not share data with third parties\n\n📧 Questions: @vflux_support',
 };

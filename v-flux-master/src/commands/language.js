@@ -11,8 +11,16 @@ const LANG_FLAGS = {
   tr: '🇹🇷 Türkçe',
 };
 
+const buildLanguageKeyboard = (lang) => {
+  const buttons = SUPPORTED_LANGS.map((l) => [
+    { text: LANG_FLAGS[l], callback_data: `set_lang_${l}` },
+  ]);
+  buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }]);
+  return buttons;
+};
+
 const setupLanguageHandler = (bot) => {
-  // Показать выбор языка
+  // Кнопка из меню
   bot.on('callback_query', async (query) => {
     try {
       if (query.data !== 'language') return;
@@ -20,22 +28,29 @@ const setupLanguageHandler = (bot) => {
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       if (!user) return;
 
-      const buttons = SUPPORTED_LANGS.map((lang) => [
-        { text: LANG_FLAGS[lang], callback_data: `set_lang_${lang}` },
-      ]);
-
-      // Кнопка назад
-      buttons.push([{ text: t(user.lang, 'btn_back'), callback_data: 'back_to_menu' }]);
-
       await bot.editMessageText(t(user.lang, 'select_language'), {
         chat_id: query.message.chat.id,
         message_id: query.message.message_id,
-        reply_markup: { inline_keyboard: buttons },
+        reply_markup: { inline_keyboard: buildLanguageKeyboard(user.lang) },
       });
 
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
       console.error('❌ Ошибка language:', err);
+    }
+  });
+
+  // Слеш-команда /language
+  bot.onText(/\/language/, async (msg) => {
+    try {
+      const user = await User.findOne({ where: { telegram_id: msg.from.id } });
+      if (!user) return;
+
+      await bot.sendMessage(msg.chat.id, t(user.lang, 'select_language'), {
+        reply_markup: { inline_keyboard: buildLanguageKeyboard(user.lang) },
+      });
+    } catch (err) {
+      console.error('❌ Ошибка /language:', err);
     }
   });
 

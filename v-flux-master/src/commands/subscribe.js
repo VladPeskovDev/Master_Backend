@@ -7,8 +7,39 @@ const PLAN_ICONS = {
   Annual: '👑',
 };
 
+const buildSubscribeMessage = async (user) => {
+  const lang = user.lang;
+  const region = user.region || 'uae';
+
+  const plans = await Plan.findAll({
+    where: { active: true, is_trial: false },
+    include: [{ model: PlanPrice, where: { region } }],
+    order: [['duration_days', 'ASC']],
+  });
+
+  let text = t(lang, 'subscribe_title') + '\n\n';
+
+  plans.forEach((plan) => {
+    const price = plan.PlanPrices[0];
+    text += t(lang, 'subscribe_plan', {
+      icon: PLAN_ICONS[plan.name] || '📦',
+      name: plan.name,
+      days: plan.duration_days,
+      price: price.price,
+      currency: price.currency,
+    }) + '\n\n';
+  });
+
+  const buttons = plans.map((plan) => [
+    { text: `${PLAN_ICONS[plan.name] || '📦'} ${plan.name}`, callback_data: `buy_plan_${plan.id}` },
+  ]);
+  buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }]);
+
+  return { text, buttons };
+};
+
 const setupSubscribeHandler = (bot) => {
-  // Список тарифов
+  // Кнопка из меню
   bot.on('callback_query', async (query) => {
     try {
       if (query.data !== 'subscribe') return;
@@ -16,32 +47,7 @@ const setupSubscribeHandler = (bot) => {
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       if (!user) return;
 
-      const lang = user.lang;
-      const region = user.region || 'uae';
-
-      const plans = await Plan.findAll({
-        where: { active: true, is_trial: false },
-        include: [{ model: PlanPrice, where: { region } }],
-        order: [['duration_days', 'ASC']],
-      });
-
-      let text = t(lang, 'subscribe_title') + '\n\n';
-
-      plans.forEach((plan) => {
-        const price = plan.PlanPrices[0];
-        text += t(lang, 'subscribe_plan', {
-          icon: PLAN_ICONS[plan.name] || '📦',
-          name: plan.name,
-          days: plan.duration_days,
-          price: price.price,
-          currency: price.currency,
-        }) + '\n\n';
-      });
-
-      const buttons = plans.map((plan) => [
-        { text: `${PLAN_ICONS[plan.name] || '📦'} ${plan.name}`, callback_data: `buy_plan_${plan.id}` },
-      ]);
-      buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }]);
+      const { text, buttons } = await buildSubscribeMessage(user);
 
       await bot.editMessageText(text, {
         chat_id: query.message.chat.id,
@@ -53,6 +59,23 @@ const setupSubscribeHandler = (bot) => {
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
       console.error('❌ Ошибка subscribe:', err);
+    }
+  });
+
+  // Слеш-команда /subscribe
+  bot.onText(/\/subscribe/, async (msg) => {
+    try {
+      const user = await User.findOne({ where: { telegram_id: msg.from.id } });
+      if (!user) return;
+
+      const { text, buttons } = await buildSubscribeMessage(user);
+
+      await bot.sendMessage(msg.chat.id, text, {
+        parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: buttons },
+      });
+    } catch (err) {
+      console.error('❌ Ошибка /subscribe:', err);
     }
   });
 

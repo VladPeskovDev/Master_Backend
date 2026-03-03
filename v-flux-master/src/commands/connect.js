@@ -1,9 +1,9 @@
-const { User, Subscription } = require('../../db/models');
+const { User, Subscription, Plan } = require('../../db/models');
 const { t } = require('../locales');
 const { showMainMenu } = require('./menu');
+const { addUserToAllNodes } = require('../services/nodeService');
 
 const setupConnectHandler = (bot) => {
-  // Кнопка "Подключить VPN"
   bot.on('callback_query', async (query) => {
     try {
       if (query.data !== 'connect') return;
@@ -12,21 +12,42 @@ const setupConnectHandler = (bot) => {
       if (!user) return;
 
       const lang = user.lang;
-      const sub = await Subscription.findOne({ where: { user_id: user.id, active: true } });
+      let sub = await Subscription.findOne({ where: { user_id: user.id, active: true } });
 
+      // Нет подписки — активируем триал
       if (!sub) {
-        await bot.editMessageText(t(lang, 'connect_no_sub'), {
-          chat_id: query.message.chat.id,
-          message_id: query.message.message_id,
-          parse_mode: 'HTML',
-          reply_markup: {
-            inline_keyboard: [
-              [{ text: t(lang, 'btn_subscribe'), callback_data: 'subscribe' }],
-              [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
-            ],
-          },
-        });
-        return bot.answerCallbackQuery(query.id);
+        const trialPlan = await Plan.findOne({ where: { is_trial: true, active: true } });
+
+        if (trialPlan) {
+          sub = await Subscription.create({
+            user_id: user.id,
+            plan_id: trialPlan.id,
+            started_at: new Date(),
+            expires_at: new Date(Date.now() + trialPlan.duration_days * 24 * 60 * 60 * 1000),
+            traffic_limit: trialPlan.traffic_limit_bytes,
+            traffic_used: 0,
+            throttled: false,
+            active: true,
+          });
+
+          await addUserToAllNodes(user.uuid, Number(trialPlan.traffic_limit_bytes));
+
+          console.log(`🎁 Триал активирован: ${user.uuid} (${user.username || user.telegram_id})`);
+        } else {
+          // Нет триал-плана — предлагаем купить
+          await bot.editMessageText(t(lang, 'connect_no_sub'), {
+            chat_id: query.message.chat.id,
+            message_id: query.message.message_id,
+            parse_mode: 'HTML',
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: t(lang, 'btn_subscribe'), callback_data: 'subscribe' }],
+                [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
+              ],
+            },
+          });
+          return bot.answerCallbackQuery(query.id);
+        }
       }
 
       const link = `${process.env.DOMAIN}/sub/${user.sub_token}`;
@@ -53,7 +74,6 @@ const setupConnectHandler = (bot) => {
     }
   });
 
-  // Инструкции по платформам
   ['ios', 'android', 'desktop'].forEach((platform) => {
     bot.on('callback_query', async (query) => {
       try {
@@ -80,7 +100,6 @@ const setupConnectHandler = (bot) => {
     });
   });
 
-  // QR-код
   bot.on('callback_query', async (query) => {
     try {
       if (query.data !== 'show_qr') return;
@@ -93,7 +112,7 @@ const setupConnectHandler = (bot) => {
       const qrBuffer = await QRCode.toBuffer(link, { width: 300 });
 
       await bot.sendPhoto(query.message.chat.id, qrBuffer, {
-        caption: `📷 QR-код для подключения`,
+        caption: '📷 QR-код для подключения',
       });
 
       await bot.answerCallbackQuery(query.id);
