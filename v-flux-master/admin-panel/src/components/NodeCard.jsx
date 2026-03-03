@@ -1,21 +1,36 @@
 import { useState } from 'react';
 import { fetchNodeUsers } from '../api/admin';
 
+const parseSpeed = (str) => {
+  if (!str) return 0;
+  const num = parseFloat(str);
+  if (str.includes('Gbps')) return num * 1000;
+  if (str.includes('Mbps')) return num;
+  if (str.includes('Kbps')) return num / 1000;
+  return 0;
+};
+
+const formatBytes = (bytes) => {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+};
+
 export default function NodeCard({ node }) {
   const [users, setUsers] = useState(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   const maxConns = 256;
-  const pct = Math.min((node.total_connections / maxConns) * 100, 100);
-  const color = pct < 40 ? '#10b981' : pct < 70 ? '#f59e0b' : '#ef4444';
+  const connPct = Math.min((node.total_connections / maxConns) * 100, 100);
+  const connColor = connPct < 40 ? '#10b981' : connPct < 70 ? '#f59e0b' : '#ef4444';
 
-  const formatBytes = (bytes) => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-  };
+  const speedRx = parseSpeed(node.current_speed_rx);
+  const speedTx = parseSpeed(node.current_speed_tx);
+  const totalSpeed = speedRx + speedTx;
+  const bwPct = node.bandwidth_mbps ? Math.min((totalSpeed / node.bandwidth_mbps) * 100, 100) : 0;
+  const bwColor = bwPct < 40 ? '#10b981' : bwPct < 70 ? '#f59e0b' : '#ef4444';
 
   const handleToggle = async () => {
     if (expanded) {
@@ -27,8 +42,7 @@ export default function NodeCard({ node }) {
       const res = await fetchNodeUsers(node.id);
       setUsers(res.data);
       setExpanded(true);
-    // eslint-disable-next-line no-unused-vars
-    } catch (err) {
+    } catch {
       console.error('Failed to load node users');
     } finally {
       setLoading(false);
@@ -41,6 +55,7 @@ export default function NodeCard({ node }) {
         <span className="node-name">{node.name}</span>
         <span className="node-location">{node.location}</span>
       </div>
+
       <div className="node-stats-grid">
         <div className="node-stat">
           <span className="stat-val">{node.users_online}</span>
@@ -55,19 +70,34 @@ export default function NodeCard({ node }) {
           <span className="stat-lbl">Conns</span>
         </div>
       </div>
+
       <div className="node-bar-wrap">
         <div className="node-bar-info">
           <span>Connections</span>
           <span>{node.total_connections}/{maxConns}</span>
         </div>
         <div className="bar-bg">
-          <div className="bar-fill" style={{ width: pct + '%', background: color }} />
+          <div className="bar-fill" style={{ width: connPct + '%', background: connColor }} />
         </div>
       </div>
+
+      {node.bandwidth_mbps && (
+        <div className="node-bar-wrap">
+          <div className="node-bar-info">
+            <span>Bandwidth</span>
+            <span>{totalSpeed.toFixed(1)} / {node.bandwidth_mbps} Mbps ({bwPct.toFixed(1)}%)</span>
+          </div>
+          <div className="bar-bg">
+            <div className="bar-fill" style={{ width: bwPct + '%', background: bwColor }} />
+          </div>
+        </div>
+      )}
+
       <div className="node-speeds">
         <span className="speed-up">TX {node.current_speed_tx}</span>
         <span className="speed-down">RX {node.current_speed_rx}</span>
       </div>
+
       <div className="node-uptime">Uptime: {node.uptime}</div>
 
       <button onClick={handleToggle} className="node-users-btn" disabled={loading}>
@@ -87,13 +117,13 @@ export default function NodeCard({ node }) {
                 <span className="user-indicators">
                   {u.throttled && <span className="throttle-dot" title="Throttled" />}
                   {u.online && <span className="online-dot" title="Online" />}
-               </span>
-               </div>
-               <div className="user-row-bottom">
+                </span>
+              </div>
+              <div className="user-row-bottom">
                 <span>Traffic: {formatBytes(Number(u.traffic_used))} / {formatBytes(Number(u.traffic_limit))}</span>
                 <span>{u.active_connections} conn</span>
-               {u.expires_at && <span>Exp: {new Date(u.expires_at).toLocaleDateString()}</span>}
-               </div>
+                {u.expires_at && <span>Exp: {new Date(u.expires_at).toLocaleDateString()}</span>}
+              </div>
             </div>
           ))}
         </div>

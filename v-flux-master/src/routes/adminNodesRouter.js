@@ -52,6 +52,7 @@ router.get('/stats', async (req, res) => {
           current_speed_rx: c ? formatSpeed(c.speed_rx) : '0 bps',
           current_speed_tx: c ? formatSpeed(c.speed_tx) : '0 bps',
           uptime: c ? formatUptime(c.uptime_secs) : 'unknown',
+          bandwidth_mbps: node.bandwidth_mbps,
           online_details: onlineUsers,
         };
       }),

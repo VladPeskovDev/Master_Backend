@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 250,
       },
+      bandwidth_mbps: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1000,
+      },
       active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

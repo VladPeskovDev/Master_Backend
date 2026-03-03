@@ -9,6 +9,13 @@ const router = express.Router();
  Зачем: VPN-клиент (V2Box, v2rayNG) дёргает каждый час.
  Отдаём VLESS-конфиг с наименее загруженной нодой.
  Если подписка истекла — пустой ответ, клиент не подключится.
+
+ Балансировка (гибрид):
+ 1. Фильтр: убираем ноды где user_count >= max_users (нет места)
+ 2. Сортировка: из оставшихся — минимум active_connections
+ 3. Fallback: все полные — берём с минимум коннектов (лучше чем отказ)
+ 4. Fallback: кеш пуст (первый запуск) — случайная нода
+
  для теста curl http://localhost:3000/sub/TOKEN
  */
 
@@ -25,48 +32,57 @@ router.get('/:token', async (req, res) => {
       include: [{ model: Plan }],
     });
 
-    // Нет активной подписки — пустой ответ
     if (!sub) {
       return res.status(200).send('');
     }
 
-    // Получаем активные ноды
     const nodes = await Node.findAll({ where: { active: true } });
 
     if (nodes.length === 0) {
       return res.status(503).send('');
     }
 
-    // Выбираем наименее загруженную ноду по health cache
     const cache = getHealthCache();
     let node;
 
     if (Object.keys(cache).length > 0) {
-      node = nodes.sort((a, b) => {
-        const connA = cache[a.id]?.active_connections || 0;
-        const connB = cache[b.id]?.active_connections || 0;
-        return connA - connB;
-      })[0];
+      // Фильтр: только ноды где есть место
+      const available = nodes.filter((n) => {
+        const usersOnNode = cache[n.id]?.user_count || 0;
+        return usersOnNode < (n.max_users || 250);
+      });
+
+      // Сортировка по коннектам
+      const sortByConns = (arr) =>
+        arr.sort((a, b) => {
+          const connA = cache[a.id]?.active_connections || 0;
+          const connB = cache[b.id]?.active_connections || 0;
+          return connA - connB;
+        });
+
+      if (available.length > 0) {
+        node = sortByConns(available)[0];
+      } else {
+        // Все полные — fallback на минимум коннектов
+        node = sortByConns([...nodes])[0];
+      }
     } else {
       node = nodes[Math.floor(Math.random() * nodes.length)];
     }
 
-    // Генерируем VLESS ссылку
     const vlessLink = [
       `vless://${user.uuid}@${node.domain}:443`,
-      `?type=ws`,
-      `&security=tls`,
-      `&path=%2Fvflux`,
-      `&encryption=none`,
+      '?type=ws',
+      '&security=tls',
+      '&path=%2Fvflux',
+      '&encryption=none',
       `#V-Flux-${node.location.replace(/\s/g, '-')}`,
     ].join('');
 
-    // V2Box/v2rayNG ожидают base64
     const base64 = Buffer.from(vlessLink).toString('base64');
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
-    // Триал — показываем лимит трафика, платная — только дату окончания
     if (sub.Plan.is_trial) {
       res.setHeader('Subscription-Userinfo', `upload=0; download=${sub.traffic_used}; total=${sub.traffic_limit}; expire=${Math.floor(new Date(sub.expires_at).getTime() / 1000)}`);
     } else {
