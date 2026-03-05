@@ -59,7 +59,7 @@ export default function Dashboard() {
         <div className="card"><div className="card-val">{stats?.db?.total_users || 0}</div><div className="card-lbl">Users</div></div>
         <div className="card green"><div className="card-val">{totalOnline}</div><div className="card-lbl">Online</div></div>
         <div className="card"><div className="card-val">{stats?.db?.active_subscriptions || 0}</div><div className="card-lbl">Active Subs</div></div>
-        <div className="card"><div className="card-val">{stats?.db?.expired_subscriptions || 0}</div><div className="card-lbl">Expired</div></div>
+        
         <div className="card"><div className="card-val">{totalConns}</div><div className="card-lbl">Connections</div></div>
         <div className="card"><div className="card-val">{(stats?.nodes || []).length}</div><div className="card-lbl">Nodes</div></div>
       </div>

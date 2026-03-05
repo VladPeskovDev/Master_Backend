@@ -105,28 +105,37 @@ router.post('/:id/subscription', async (req, res) => {
 
     const durationDays = days || plan.duration_days;
 
+    // Ищем старую подписку до деактивации
+    const oldSub = await Subscription.findOne({
+      where: { user_id: user.id, active: true },
+    });
+
     // Деактивируем старые подписки
     await Subscription.update(
       { active: false },
       { where: { user_id: user.id, active: true } },
     );
 
+    // Продлеваем от expires_at старой подписки если она ещё не истекла
+    const now = Date.now();
+    const baseDate = oldSub
+      ? Math.max(now, new Date(oldSub.expires_at).getTime())
+      : now;
+
     // Создаём новую
     const sub = await Subscription.create({
       user_id: user.id,
       plan_id: plan.id,
       started_at: new Date(),
-      expires_at: new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000),
+      expires_at: new Date(baseDate + durationDays * 24 * 60 * 60 * 1000),
       traffic_limit: plan.traffic_limit_bytes,
       traffic_used: 0,
       throttled: false,
       active: true,
     });
 
-    // Добавляем на ноды
     // Если юзер уже на нодах — обновляем лимит, если нет — добавляем
     await syncUserOnAllNodes(user.uuid, Number(plan.traffic_limit_bytes));
-
 
     res.status(201).json({ subscription: sub });
   } catch (err) {

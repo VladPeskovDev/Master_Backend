@@ -56,17 +56,17 @@ module.exports = {
       { plan_id: monthly.id, region: 'ru', price: 120, currency: 'RUB', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: monthly.id, region: 'uae', price: 4, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: monthly.id, region: 'tr', price: 2, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
-      { plan_id: monthly.id, region: 'uz', price: 1, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: monthly.id, region: 'uz', price: 30000, currency: 'UZS', createdAt: new Date(), updatedAt: new Date() },
       // Semi-Annual
       { plan_id: semi.id, region: 'ru', price: 600, currency: 'RUB', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: semi.id, region: 'uae', price: 20, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: semi.id, region: 'tr', price: 10, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
-      { plan_id: semi.id, region: 'uz', price: 5, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: semi.id, region: 'uz', price: 150000, currency: 'UZS', createdAt: new Date(), updatedAt: new Date() },
       // Annual
       { plan_id: annual.id, region: 'ru', price: 1200, currency: 'RUB', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: annual.id, region: 'uae', price: 40, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: annual.id, region: 'tr', price: 20, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
-      { plan_id: annual.id, region: 'uz', price: 10, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: annual.id, region: 'uz', price: 250000, currency: 'UZS', createdAt: new Date(), updatedAt: new Date() },
     ]);
   },
 

@@ -22,9 +22,9 @@ export default function NodeCard({ node }) {
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const maxConns = 256;
-  const connPct = Math.min((node.total_connections / maxConns) * 100, 100);
-  const connColor = connPct < 40 ? '#10b981' : connPct < 70 ? '#f59e0b' : '#ef4444';
+  const maxUsers = 250;
+  const usersPct = Math.min((node.users_online / maxUsers) * 100, 100);
+  const usersColor = usersPct < 40 ? '#10b981' : usersPct < 70 ? '#f59e0b' : '#ef4444';
 
   const speedRx = parseSpeed(node.current_speed_rx);
   const speedTx = parseSpeed(node.current_speed_tx);
@@ -73,11 +73,11 @@ export default function NodeCard({ node }) {
 
       <div className="node-bar-wrap">
         <div className="node-bar-info">
-          <span>Connections</span>
-          <span>{node.total_connections}/{maxConns}</span>
+          <span>Users</span>
+          <span>{node.users_online}/{maxUsers}</span>
         </div>
         <div className="bar-bg">
-          <div className="bar-fill" style={{ width: connPct + '%', background: connColor }} />
+          <div className="bar-fill" style={{ width: usersPct + '%', background: usersColor }} />
         </div>
       </div>
 

@@ -59,7 +59,8 @@ const setupStartCommand = (bot) => {
         welcomeText += '\n\n' + t(lang, 'referral_registered');
       }
 
-      await bot.sendMessage(chatId, welcomeText);
+      //await bot.sendMessage(chatId, welcomeText);
+      await bot.sendMessage(chatId, welcomeText, { parse_mode: 'HTML' });
       return showMainMenu(bot, chatId, lang);
     } catch (err) {
       console.error('❌ Ошибка в /start:', err);
