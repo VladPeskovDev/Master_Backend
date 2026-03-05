@@ -15,4 +15,12 @@ const adminLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-module.exports = { subLimiter, adminLimiter };
+const botLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 300,
+  message: '',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+module.exports = { subLimiter, adminLimiter, botLimiter };

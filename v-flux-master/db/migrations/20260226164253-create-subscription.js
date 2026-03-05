@@ -66,6 +66,7 @@ module.exports = {
 
     await queryInterface.addIndex('Subscriptions', ['user_id', 'active']);
     await queryInterface.addIndex('Subscriptions', ['expires_at']);
+    await queryInterface.addIndex('Subscriptions', ['active', 'expires_at']);
   },
 
   async down(queryInterface, Sequelize) {

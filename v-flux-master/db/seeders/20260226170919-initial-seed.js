@@ -18,7 +18,7 @@ module.exports = {
         {
           name: 'Monthly',
           duration_days: 30,
-          traffic_limit_bytes: 107374182400, // 100 GB
+          traffic_limit_bytes: 161061273600, // 150 GB
           is_trial: false,
           active: true,
           createdAt: new Date(),
@@ -27,7 +27,7 @@ module.exports = {
         {
           name: 'Semi-Annual',
           duration_days: 180,
-          traffic_limit_bytes: 644245094400, // 600 GB
+          traffic_limit_bytes: 966367641600, // 900 GB
           is_trial: false,
           active: true,
           createdAt: new Date(),
@@ -36,7 +36,7 @@ module.exports = {
         {
           name: 'Annual',
           duration_days: 365,
-          traffic_limit_bytes: 1288490188800, // 1200 GB
+          traffic_limit_bytes: 1932735283200, // 1800 GB
           is_trial: false,
           active: true,
           createdAt: new Date(),

@@ -43,6 +43,7 @@ export default function Dashboard() {
 
   const totalOnline = (stats?.nodes || []).reduce((s, n) => s + (n.users_online || 0), 0);
   const totalConns = (stats?.nodes || []).reduce((s, n) => s + (n.total_connections || 0), 0);
+  const totalThrottled = (stats?.nodes || []).reduce((s, n) => s + (n.online_details || []).filter((u) => u.throttled).length, 0);
 
   return (
     <div className="dashboard">
@@ -62,6 +63,7 @@ export default function Dashboard() {
         
         <div className="card"><div className="card-val">{totalConns}</div><div className="card-lbl">Connections</div></div>
         <div className="card"><div className="card-val">{(stats?.nodes || []).length}</div><div className="card-lbl">Nodes</div></div>
+        <div className="card"><div className="card-val">{totalThrottled}</div><div className="card-lbl">Throttled</div></div>
       </div>
 
       <h2 className="section-title">Nodes</h2>

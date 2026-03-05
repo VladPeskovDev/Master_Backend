@@ -3,16 +3,6 @@ const { Node, User, Subscription } = require('../../db/models');
 const createNodeApi = require('../utils/nodeApi');
 const { throttleOnAllNodes, unthrottleOnAllNodes } = require('../services/nodeService');
 
-/*
- * Каждые 30 минут:
- * 1. GET /stats со всех нод → собираем трафик по UUID
- * 2. Обновляем traffic_used в подписке
- * 3. POST /reset-traffic/:uuid на нодах → обнуляем счётчик
- * 4. Если traffic_used >= traffic_limit → throttle (превышение лимита)
- * 5. Если суммарные коннекты > MAX → throttle (раздача ссылки)
- * 6. Если коннекты вернулись в норму → unthrottle
- */
-
 const MAX_CONNECTIONS_PER_USER = 256;
 
 const runTrafficCollection = async () => {
@@ -38,7 +28,6 @@ const runTrafficCollection = async () => {
       const users = data.users || [];
 
       for (const u of users) {
-        // Трафик
         const total = (u.bytes_up || 0) + (u.bytes_down || 0);
         if (total > 0) {
           if (!allStats[u.uuid]) {
@@ -48,29 +37,53 @@ const runTrafficCollection = async () => {
           allStats[u.uuid].nodes.push(node);
         }
 
-        // Коннекты (считаем даже если трафик 0)
         if (u.active_connections > 0) {
-           if (!connectionsByUuid[u.uuid]) connectionsByUuid[u.uuid] = 0;
-           connectionsByUuid[u.uuid] += u.active_connections;
+          if (!connectionsByUuid[u.uuid]) connectionsByUuid[u.uuid] = 0;
+          connectionsByUuid[u.uuid] += u.active_connections;
         }
       }
     }
 
-    // Обновляем трафик в БД и ресетим на нодах
+    // Собираем все UUID которые нужны (трафик + онлайн)
+    const allUuids = [...new Set([
+      ...Object.keys(allStats),
+      ...Object.keys(connectionsByUuid),
+    ])];
+
+    if (allUuids.length === 0) {
+      console.log('📊 Трафик собран: 0 юзеров обновлено');
+      return;
+    }
+
+    // Один запрос — все юзеры с активными подписками
+    const dbUsers = await User.findAll({
+      where: { uuid: allUuids },
+      include: [{
+        model: Subscription,
+        where: { active: true },
+        required: false,
+      }],
+    });
+
+    // Map для быстрого доступа
+    const userMap = {};
+    dbUsers.forEach((u) => {
+      userMap[u.uuid] = {
+        user: u,
+        sub: u.Subscriptions?.[0] || null,
+      };
+    });
+
+    // Обновляем трафик и ресетим на нодах
     for (const [uuid, stats] of Object.entries(allStats)) {
-      const user = await User.findOne({ where: { uuid } });
-      if (!user) continue;
+      const entry = userMap[uuid];
+      if (!entry || !entry.sub) continue;
 
-      const sub = await Subscription.findOne({
-        where: { user_id: user.id, active: true },
-      });
-      if (!sub) continue;
+      const { sub } = entry;
 
-      // Обновляем traffic_used
       const newTrafficUsed = Number(sub.traffic_used) + stats.total;
       await sub.update({ traffic_used: newTrafficUsed });
 
-      // Ресетим трафик на нодах
       for (const node of stats.nodes) {
         try {
           const api = createNodeApi(node.host, node.port, node.token);
@@ -80,7 +93,6 @@ const runTrafficCollection = async () => {
         }
       }
 
-      // Проверяем лимит трафика
       if (newTrafficUsed >= Number(sub.traffic_limit)) {
         if (!sub.throttled) {
           await throttleOnAllNodes(uuid);
@@ -90,25 +102,19 @@ const runTrafficCollection = async () => {
       }
     }
 
-    // Проверяем мультиаккаунт — суммарные коннекты со всех нод
-    // Антишаринг — только онлайн юзеры
+    // Антишаринг — данные уже в userMap
     for (const [uuid, totalConns] of Object.entries(connectionsByUuid)) {
-      if (totalConns > MAX_CONNECTIONS_PER_USER) {
-        const user = await User.findOne({ where: { uuid } });
-        if (!user) continue;
+      if (totalConns <= MAX_CONNECTIONS_PER_USER) continue;
 
-        const sub = await Subscription.findOne({
-          where: { user_id: user.id, active: true },
-        });
-        if (!sub || sub.throttled) continue;
+      const entry = userMap[uuid];
+      if (!entry || !entry.sub || entry.sub.throttled) continue;
 
-        await throttleOnAllNodes(uuid);
-        await sub.update({ throttled: true });
-        console.log(`🚫 Throttled (антишаринг) ${uuid}: ${totalConns} коннектов`);
-      }
+      await throttleOnAllNodes(uuid);
+      await entry.sub.update({ throttled: true });
+      console.log(`🚫 Throttled (антишаринг) ${uuid}: ${totalConns} коннектов`);
     }
 
-    // Auto-unthrottle — одним запросом все throttled подписки
+    // Auto-unthrottle — один запрос throttled подписок
     const throttledSubs = await Subscription.findAll({
       where: { active: true, throttled: true },
       include: [{ model: User }],
@@ -157,39 +163,33 @@ module.exports = { startTrafficCollector, runTrafficCollection };
  * - Делаем POST /reset-traffic/:uuid на нодах — обнуляем счётчик
  * - Поэтому на ноде всегда мало трафика, а в БД — накопленная сумма
  *
+ * ОПТИМИЗАЦИЯ:
+ * - Один User.findAll с include Subscription вместо поштучных запросов
+ * - userMap по UUID — мгновенный доступ в обоих циклах
+ * - 1000 онлайн = 2 SQL запроса вместо 4000
+ *
  * THROTTLE ПО ТРАФИКУ:
  * - Если traffic_used >= traffic_limit → throttleOnAllNodes(uuid)
  * - Скорость падает до 2-3 Mbps (настройка на ноде)
  * - Юзер видит медленный инет, а не блокировку
- * - Маркетируем как "безлимит" — технически есть лимит, но не блокируем
  *
- * THROTTLE ПО МУЛЬТИАККАУНТУ (антишаринг):
+ * THROTTLE ПО АНТИШАРИНГУ:
  * - Суммируем active_connections по UUID со ВСЕХ нод
  * - 1 устройство ≈ 20-30 WebSocket соединений
- * - MAX_CONNECTIONS_PER_USER = 100 ≈ 3-4 устройства
+ * - MAX_CONNECTIONS_PER_USER = 256
  * - Если больше → throttleOnAllNodes → 2-3 Mbps на всех
  * - Друзья которым раздали ссылку уйдут сами
  *
  * AUTO-UNTHROTTLE:
- * - Если коннекты вернулись в норму (<= 100) И трафик не превышен
+ * - Если коннекты вернулись в норму (<= 256) И трафик не превышен
  * - → unthrottleOnAllNodes → скорость восстановилась
- * - Юзер даже не заметил что был throttled
  * - Проверка каждые 30 мин — максимум 30 мин на 2-3 Mbps
  *
- * ЗАЩИТА ОТ РАЗДАЧИ ССЫЛКИ (два уровня):
- * 1. Нода: 60 сокетов на UUID на ноду (config.toml)
- *    - 4 ноды × 60 = максимум 240 сокетов
- *    - Мгновенная защита на уровне соединений
- * 2. Бэкенд: trafficCollector суммирует коннекты со всех нод
- *    - Если >256 суммарно → throttle
- *    - Ловит тех кто раскидался по нодам
- *
- * 
  * ТЕСТИРОВАНИЕ:
  *
  * 1. Тест сбора трафика:
  *    - Подключись к VPN, открой YouTube
- *    - Поменяй cron на *слеш2 (каждые 2 мин)
+ *    - Поменяй cron на каждые 2 мин
  *    - Смотри лог: "📊 Трафик собран: X юзеров обновлено"
  *    - psql: SELECT traffic_used FROM "Subscriptions" WHERE active = true
  *
@@ -208,7 +208,7 @@ module.exports = { startTrafficCollector, runTrafficCollection };
  *    - Жди цикл → лог: "✅ Unthrottled"
  *    - Проверь на ноде: throttled: false
  *
- * Не забудь вернуть: MAX = 256, cron = *слеш30
+ *  вернуть: MAX = 256, cron = каждые 30 мин
  *
+ * ============================================
  */
-
