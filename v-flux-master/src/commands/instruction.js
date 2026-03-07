@@ -18,9 +18,9 @@ const setupInstructionHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: t(lang, 'btn_ios'), callback_data: 'instr_ios' }],
-            [{ text: t(lang, 'btn_android'), callback_data: 'instr_android' }],
-            [{ text: t(lang, 'btn_desktop'), callback_data: 'instr_desktop' }],
+            [{ text: t(lang, 'btn_iphone'), callback_data: 'instr_ios' }],
+            [{ text: t(lang, 'btn_android_device'), callback_data: 'instr_android' }],
+            [{ text: t(lang, 'btn_computer'), callback_data: 'instr_desktop' }],
             [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
           ],
         },

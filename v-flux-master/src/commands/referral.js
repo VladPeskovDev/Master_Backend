@@ -5,7 +5,7 @@ const sendReferralInfo = async (bot, chatId, user) => {
   const lang = user.lang;
   const botInfo = await bot.getMe();
   const link = 'https://t.me/' + botInfo.username + '?start=ref_' + user.referral_code;
-  const shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent('🚀 V-Flux VPN — 3 days free! 👇');
+  const shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent('🚀 Rocky VPN — 3 days free! 👇');
 
   const rewards = await ReferralReward.findAll({ where: { referrer_id: user.id } });
   const count = rewards.length;

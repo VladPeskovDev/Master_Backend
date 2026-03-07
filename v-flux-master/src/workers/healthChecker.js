@@ -3,7 +3,7 @@ const { Node } = require('../../db/models');
 const createNodeApi = require('../utils/nodeApi');
 
 /*
- * Каждые 5 минут:
+ * Каждые 6 минут:
  * GET /health на все ноды
  * Ответила → active = true, обновляем last_health_at
  * Не ответила → active = false, /sub/:token не выдаёт эту ноду
@@ -85,7 +85,7 @@ const runHealthCheck = async () => {
 const startHealthChecker = () => {
   runHealthCheck();
   cron.schedule('1,6,11,16,21,26,31,36,41,46,51,56 * * * *', runHealthCheck);
-  console.log('🏥 Health checker запущен (каждые 5 мин)');
+  //console.log('🏥 Health checker запущен (каждые 5 мин)');
 };
 
 module.exports = { startHealthChecker, getHealthCache };

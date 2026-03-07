@@ -4,6 +4,7 @@ require('dotenv').config();
 const { startHealthChecker } = require('./workers/healthChecker');
 const { startTrafficCollector } = require('./workers/trafficCollector');
 const { startSubscriptionChecker } = require('./workers/subscriptionChecker');
+const { startSubscriptionNotifier } = require('./workers/subscriptionNotifier');
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,4 +15,5 @@ app.listen(PORT, () => {
   startHealthChecker();
   startTrafficCollector();
   startSubscriptionChecker();
+  startSubscriptionNotifier();
 });

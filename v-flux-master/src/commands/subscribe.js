@@ -1,10 +1,37 @@
 const { User, Plan, PlanPrice } = require('../../db/models');
 const { t } = require('../locales');
 
+const CURRENCY_SYMBOLS = {
+  RUB: '₽',
+  USD: '$',
+  UZS: 'so\'m',
+};
+
+const PLAN_TEXT_KEYS = {
+  Monthly: 'subscribe_plan_monthly',
+  'Semi-Annual': 'subscribe_plan_semi',
+  Annual: 'subscribe_plan_annual',
+};
+
 const PLAN_ICONS = {
   Monthly: '📅',
-  'Semi-Annual': '📦',
+  'Semi-Annual': '🔥',
   Annual: '👑',
+};
+
+const PLAN_NAME_KEYS = {
+  Monthly: 'plan_name_monthly',
+  'Semi-Annual': 'plan_name_semi',
+  Annual: 'plan_name_annual',
+};
+
+const formatPrice = (price, currency) => {
+  const symbol = CURRENCY_SYMBOLS[currency] || currency;
+  // Для UZS — без копеек, с разделителем тысяч
+  if (currency === 'UZS') {
+    return { formatted: price.toLocaleString('ru-RU'), symbol };
+  }
+  return { formatted: String(price), symbol };
 };
 
 const buildSubscribeMessage = async (user) => {
@@ -17,22 +44,56 @@ const buildSubscribeMessage = async (user) => {
     order: [['duration_days', 'ASC']],
   });
 
+  // Находим месячную цену для расчёта скидок
+  const monthlyPlan = plans.find((p) => p.name === 'Monthly');
+  const monthlyPrice = monthlyPlan?.PlanPrices[0]?.price || 0;
+
   let text = t(lang, 'subscribe_title') + '\n\n';
+
+  const buttons = [];
 
   plans.forEach((plan) => {
     const price = plan.PlanPrices[0];
-    text += t(lang, 'subscribe_plan', {
-      icon: PLAN_ICONS[plan.name] || '📦',
-      name: plan.name,
-      days: plan.duration_days,
-      price: price.price,
-      currency: price.currency,
-    }) + '\n\n';
+    const { formatted, symbol } = formatPrice(price.price, price.currency);
+
+    const textKey = PLAN_TEXT_KEYS[plan.name] || 'subscribe_plan_monthly';
+    const icon = PLAN_ICONS[plan.name] || '📅';
+
+    if (plan.name === 'Monthly') {
+      text += t(lang, textKey, {
+        price: formatted,
+        currency: symbol,
+        days: plan.duration_days,
+      }) + '\n\n';
+    } else {
+      // Вычисляем помесячную цену и скидку
+      const months = Math.round(plan.duration_days / 30);
+      const perMonth = Math.round(price.price / months);
+      const discount = monthlyPrice > 0
+        ? Math.round((1 - price.price / (monthlyPrice * months)) * 100)
+        : 0;
+
+      const { formatted: monthlyFormatted } = formatPrice(perMonth, price.currency);
+
+      text += t(lang, textKey, {
+        price: formatted,
+        currency: symbol,
+        days: plan.duration_days,
+        monthly_price: monthlyFormatted,
+        discount: discount > 0 ? discount : '0',
+      }) + '\n\n';
+    }
+
+    // Кнопка с ценой
+    const planName = t(lang, `plan_name_${plan.name === 'Semi-Annual' ? 'semi' : plan.name.toLowerCase()}`, { days: plan.duration_days });
+    buttons.push([{
+      text: `${icon} ${planName} — ${formatted} ${symbol}`,
+      callback_data: `buy_plan_${plan.id}`,
+    }]);
   });
 
-  const buttons = plans.map((plan) => [
-    { text: `${PLAN_ICONS[plan.name] || '📦'} ${plan.name}`, callback_data: `buy_plan_${plan.id}` },
-  ]);
+  text += t(lang, 'subscribe_footer');
+
   buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }]);
 
   return { text, buttons };
@@ -88,15 +149,33 @@ const setupSubscribeHandler = (bot) => {
       if (!user) return;
 
       const lang = user.lang;
+      const region = user.region || 'uae';
+      const planId = parseInt(query.data.replace('buy_plan_', ''), 10);
 
-      await bot.editMessageText(t(lang, 'subscribe_choose_payment'), {
+      const plan = await Plan.findOne({
+        where: { id: planId },
+        include: [{ model: PlanPrice, where: { region } }],
+      });
+
+      let paymentText;
+      if (plan && plan.PlanPrices[0]) {
+        const price = plan.PlanPrices[0];
+        const { formatted, symbol } = formatPrice(price.price, price.currency);
+        const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
+        const planName = t(lang, planNameKey, { days: plan.duration_days });
+        paymentText = t(lang, 'subscribe_choose_payment', { plan: planName, price: formatted, currency: symbol });
+      } else {
+        paymentText = t(lang, 'subscribe_choose_payment', { plan: '—', price: '—', currency: '' });
+      }
+
+      await bot.editMessageText(paymentText, {
         chat_id: query.message.chat.id,
         message_id: query.message.message_id,
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: t(lang, 'btn_pay_card'), callback_data: 'pay_card_stub' }],
-            [{ text: t(lang, 'btn_pay_stars'), callback_data: 'pay_stars_stub' }],
+            [{ text: t(lang, 'btn_pay_card'), callback_data: `pay_card_${planId}` }],
+            [{ text: t(lang, 'btn_pay_crypto'), callback_data: `pay_crypto_${planId}` }],
             [{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }],
           ],
         },
@@ -111,7 +190,7 @@ const setupSubscribeHandler = (bot) => {
   // Заглушки оплаты
   bot.on('callback_query', async (query) => {
     try {
-      if (!['pay_card_stub', 'pay_stars_stub'].includes(query.data)) return;
+      if (!query.data.startsWith('pay_card_') && !query.data.startsWith('pay_crypto_')) return;
 
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       const lang = user?.lang || 'en';

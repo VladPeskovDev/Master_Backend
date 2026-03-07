@@ -14,7 +14,7 @@ const t = (lang, key, params = {}) => {
   let text = locale[key] || locales.en[key] || key;
 
   Object.entries(params).forEach(([k, v]) => {
-    text = text.replace(`{${k}}`, v);
+    text = text.replaceAll(`{${k}}`, v);
   });
 
   return text;
