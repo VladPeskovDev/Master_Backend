@@ -24,7 +24,6 @@ const runSubscriptionNotifier = async () => {
     yesterdayStart.setHours(0, 0, 0, 0);
 
     const yesterdayEnd = new Date(yesterdayStart);
-    yesterdayEnd.setDate(yesterdayStart.getDate());
     yesterdayEnd.setHours(23, 59, 59, 999);
 
     // 1. Подписки, истекающие завтра (ещё активные)
