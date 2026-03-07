@@ -42,7 +42,7 @@ module.exports = {
   btn_plan_annual: '📅 سنة واحدة',
   subscribe_choose_payment: '💳 اختر طريقة الدفع:',
   btn_pay_card: '💳 بطاقة',
-  btn_pay_stars: '⭐ نجوم تيليجرام',
+  btn_pay_stars: '₿ Crypto',
   subscribe_payment_stub: '🚧 الدفع قريباً!',
 
   referral_title: '👥 <b>ادعُ صديقاً</b>',

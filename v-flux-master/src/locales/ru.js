@@ -47,7 +47,7 @@ module.exports = {
   btn_plan_annual: '📅 1 год',
   subscribe_choose_payment: '💳 Выберите способ оплаты:',
   btn_pay_card: '💳 Карта',
-  btn_pay_stars: '⭐ Telegram Stars',
+  btn_pay_stars: '₿ Crypto',
   subscribe_payment_stub: '🚧 Оплата скоро будет доступна!',
 
   // Referral

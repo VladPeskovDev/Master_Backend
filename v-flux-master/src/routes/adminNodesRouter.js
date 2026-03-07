@@ -189,7 +189,7 @@ router.get('/:id/users', async (req, res) => {
 
     const api = createNodeApi(node.host, node.port, node.token);
     const stats = await api.get('/stats');
-    const nodeUsers = stats.data.users || [];
+    const nodeUsers = (stats.data.users || []).filter((u) => u.active_connections > 0);
 
     const uuids = nodeUsers.map((u) => u.uuid);
     const dbUsers = await User.findAll({
@@ -229,8 +229,7 @@ router.get('/:id/users', async (req, res) => {
 
     res.json({
       node: node.name,
-      total: result.length,
-      online: result.filter((u) => u.online).length,
+      online: result.length,
       users: result,
     });
   } catch (err) {

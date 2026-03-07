@@ -42,7 +42,7 @@ module.exports = {
   btn_plan_annual: '📅 1 साल',
   subscribe_choose_payment: '💳 भुगतान विधि चुनें:',
   btn_pay_card: '💳 कार्ड',
-  btn_pay_stars: '⭐ Telegram Stars',
+  btn_pay_stars: '₿ Crypto',
   subscribe_payment_stub: '🚧 भुगतान जल्द आ रहा है!',
 
   referral_title: '👥 <b>दोस्त को आमंत्रित करें</b>',

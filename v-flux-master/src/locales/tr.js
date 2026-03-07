@@ -42,7 +42,7 @@ module.exports = {
   btn_plan_annual: '📅 1 Yıl',
   subscribe_choose_payment: '💳 Ödeme yöntemini seçin:',
   btn_pay_card: '💳 Kart',
-  btn_pay_stars: '⭐ Telegram Stars',
+  btn_pay_stars: '₿ Crypto',
   subscribe_payment_stub: '🚧 Ödemeler yakında!',
 
   referral_title: '👥 <b>Arkadaş Davet Et</b>',

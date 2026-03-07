@@ -42,7 +42,7 @@ module.exports = {
   btn_plan_annual: '📅 1 yil',
   subscribe_choose_payment: '💳 To\'lov usulini tanlang:',
   btn_pay_card: '💳 Karta',
-  btn_pay_stars: '⭐ Telegram Stars',
+  btn_pay_stars: '₿ Crypto',
   subscribe_payment_stub: '🚧 To\'lovlar tez orada!',
 
   referral_title: '👥 <b>Do\'stni taklif qiling</b>',
