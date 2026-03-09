@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>مرحباً بك في Rocky VPN!</b>\n\n🚀 سرعة تصل إلى 1 Gbps\n🔒 بدون سجلات، بدون قيود\n🌍 خوادم في أوروبا\n📱 يعمل على جميع الأجهزة\n\n🎁 فترتك التجريبية المجانية: <b>3 أيام</b>\n\nاضغط الزر أدناه للبدء!',
+  welcome_new: '⚡️ <b>مرحباً بك في Rocky VPN!</b>\n\n🚀 سرعة عالية بدون قيود\n🔒 بدون سجلات، بدون قيود\n🌍 خوادم في أوروبا\n📱 يعمل على جميع الأجهزة\n\n🎁 فترتك التجريبية المجانية: <b>3 أيام</b>\n\nاضغط الزر أدناه للبدء!',
   welcome_back_no_sub: '👋 <b>مرحباً بعودتك!</b>\n\nلم تجرب VPN بعد.\n\n🎁 لديك <b>3 أيام مجانية</b> — جرّبه الآن!',
   welcome_back_trial_active: '👋 <b>مرحباً بعودتك!</b>\n\n✅ فترتك التجريبية نشطة\n📅 صالحة حتى: <b>{date}</b>\n📊 الحركة: <b>{used} / {limit}</b>\n\nاستخدم القائمة أدناه لإدارة VPN.',
   welcome_back_trial_expired: '👋 <b>مرحباً بعودتك!</b>\n\n⏳ انتهت فترتك التجريبية.\n\nاشترك للاستمرار في استخدام VPN، أو ادعُ صديقاً للحصول على أيام إضافية!',
   welcome_back_paid_active: '👋 <b>مرحباً بعودتك!</b>\n\n✅ اشتراكك نشط\n📅 صالح حتى: <b>{date}</b>\n\nاستخدم القائمة أدناه لإدارة VPN.',
   welcome_back_paid_expired: '👋 <b>مرحباً بعودتك!</b>\n\n⏳ انتهى اشتراكك.\n\nجدد اشتراكك للاستمرار في استخدام VPN، أو ادعُ صديقاً للحصول على أيام إضافية!',
-  welcome_new_referral: '⚡️ <b>مرحباً بك في Rocky VPN!</b>\n\n👤 تمت دعوتك من قبل صديق!\n\n🚀 سرعة تصل إلى 1 Gbps\n🔒 بدون سجلات، بدون قيود\n🌍 خوادم في أوروبا\n\n🎁 فترتك التجريبية المجانية: <b>3 أيام</b>\n\nاضغط الزر أدناه للبدء!',
+  welcome_new_referral: '⚡️ <b>مرحباً بك في Rocky VPN!</b>\n\n👤 تمت دعوتك من قبل صديق!\n\n🚀 سرعة عالية بدون قيود\n🔒 بدون سجلات، بدون قيود\n🌍 خوادم في أوروبا\n\n🎁 فترتك التجريبية المجانية: <b>3 أيام</b>\n\nاضغط الزر أدناه للبدء!',
   btn_try_free: '🔗 جرّب مجاناً',
   btn_get_subscription: '💳 اشترك الآن',
   btn_renew_subscription: '💳 تجديد الاشتراك',
@@ -37,12 +37,12 @@ module.exports = {
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>الاتصال على iPhone</b>\n\n1. حمّل التطبيق:\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Add Subscription\n   → الصق الرابط → Connect\n\nتم! اضغط ▶️ — الإنترنت محمي.',
-  connect_platform_android: '🤖 <b>الاتصال على Android</b>\n\n1. حمّل التطبيق:\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: «+» → لصق من الحافظة\n   → اضغط زر الاتصال في الأسفل\n\nتم!',
+  connect_platform_ios: '📱 <b>الاتصال على iPhone</b>\n\n1. حمّل <b>V2Box</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Add Subscription\n   → الصق الرابط → Connect\n\nتم! اضغط ▶️ — الإنترنت محمي.',
+  connect_platform_android: '🤖 <b>الاتصال على Android</b>\n\n1. حمّل <b>v2rayNG</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: «+» → لصق من الحافظة\n   → اضغط زر الاتصال في الأسفل\n\nتم!',
   connect_desktop_choose: '💻 <b>اختر نظامك:</b>',
-  connect_platform_windows: '🪟 <b>الاتصال على Windows</b>\n\n1. حمّل التطبيق:\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Subscription → Subscription Setting\n   → الصق الرابط في حقل URL → OK\n   → Subscription → Update Subscription\n\nتم! انقر بالزر الأيمن على الخادم → Set as active → في الأسفل «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>الاتصال على macOS</b>\n\n1. حمّل التطبيق:\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Add Subscription\n   → الصق الرابط → Connect\n\nتم! اضغط ▶️ — الإنترنت محمي.',
-  connect_platform_linux: '🐧 <b>الاتصال على Linux</b>\n\n1. حمّل التطبيق:\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Server → Subscription → New\n   → الصق الرابط في URL → OK → Update\n\nتم! اختر خادماً → اضغط ▶️',
+  connect_platform_windows: '🪟 <b>الاتصال على Windows</b>\n\n1. حمّل <b>V2RayN</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Subscription → Subscription Setting\n   → الصق الرابط في حقل URL → OK\n   → Subscription → Update Subscription\n\nتم! انقر بالزر الأيمن على الخادم → Set as active → في الأسفل «System Proxy: Set»',
+  connect_platform_macos: '🍎 <b>الاتصال على macOS</b>\n\n1. حمّل <b>V2Box</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Add Subscription\n   → الصق الرابط → Connect\n\nتم! اضغط ▶️ — الإنترنت محمي.',
+  connect_platform_linux: '🐧 <b>الاتصال على Linux</b>\n\n1. حمّل <b>Nekoray</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Server → Subscription → New\n   → الصق الرابط في URL → OK → Update\n\nتم! اختر خادماً → اضغط ▶️',
 
   // Account
   account_title: '📊 <b>حسابي</b>',
@@ -76,14 +76,9 @@ module.exports = {
   referral_stats: '👤 المدعوون: <b>{count}</b>\n🎁 الأيام المكتسبة: <b>{days}</b>',
 
   btn_instruction: '📖 التعليمات',
-  instruction_title: '📖 <b>كيفية الاتصال بـ Rocky VPN</b>',
-  instruction_choose: '📱 اختر منصتك:',
-  instruction_ios: '📱 <b>iOS (iPhone / iPad)</b>\n\n1. حمّل <b>V2Box</b> أو <b>Streisand</b> من App Store\n2. اضغط 🔑 اتصل بـ VPN في البوت\n3. انسخ الرابط\n4. في التطبيق: + → Add Subscription → الصق الرابط\n5. اضغط Connect ✅\n\n⚠️ يتم تحديث الاشتراك تلقائياً كل ساعة',
-  instruction_android: '🤖 <b>Android</b>\n\n1. حمّل <b>v2rayNG</b> من Google Play\n2. اضغط 🔑 اتصل بـ VPN في البوت\n3. انسخ الرابط أو امسح QR\n4. في التطبيق: + → Import from clipboard\n5. اضغط اتصال ✅\n\n⚠️ فعّل التحديث التلقائي للاشتراك في الإعدادات',
-  instruction_desktop: '💻 <b>كمبيوتر</b>\n\n<b>Windows:</b> V2RayN\n<b>macOS:</b> V2Box / Streisand\n<b>Linux:</b> Nekoray\n\n1. حمّل البرنامج لنظامك\n2. اضغط 🔑 اتصل بـ VPN في البوت\n3. انسخ الرابط\n4. أضف الاشتراك بالرابط\n5. اختر الخادم → اتصل ✅',
 
   help_title: '❓ <b>المساعدة</b>',
-  help_text: '🔑 <b>كيف أتصل؟</b>\nاضغط "اتصل بـ VPN" واتبع التعليمات.\n\n📱 <b>أي تطبيق أحمّل؟</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>كيف أدفع؟</b>\nاضغط "الاشتراك" واختر خطة.\n\n❌ <b>VPN لا يعمل؟</b>\nحدّث الاشتراك في التطبيق.\n\n📧 <b>الدعم:</b>\n@vflux_support',
+  help_text: '🔑 <b>كيف أتصل؟</b>\nاضغط "اتصل بـ VPN" واتبع التعليمات.\n\n📱 <b>أي تطبيق أحمّل؟</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>كيف أدفع؟</b>\nاضغط "الاشتراك" واختر خطة.\n\n❌ <b>VPN لا يعمل؟</b>\nحدّث الاشتراك في التطبيق.\n\n📧 <b>الدعم:</b>\n@RockyVPN_support\n\n📢 <b>الأخبار:</b>\n@RockyVPN_news',
 
   select_language: '🌐 اختر لغتك:',
   language_set: '✅ تم تغيير اللغة إلى العربية',
@@ -93,5 +88,5 @@ module.exports = {
   notify_expired: '❌ انتهى اشتراكك.\n\nجدد — VPN سيعمل فوراً!',
 
   stub: '🚧 قريباً',
-  terms_text: '📄 <b>شروط استخدام Rocky VPN</b>\n\n<b>1. الخدمة</b>\nRocky VPN يقدم خدمة VPN لحماية خصوصيتك على الإنترنت.\n\n<b>2. الاشتراك</b>\n• فترة تجريبية مجانية: 3 أيام\n• خطط مدفوعة: 1، 6 و 12 شهر\n• استرداد المبلغ خلال 24 ساعة من الدفع\n\n<b>3. الاستخدام</b>\n• حساب واحد لشخص واحد\n• مشاركة الحساب ممنوعة\n• الأنشطة غير القانونية ممنوعة\n\n<b>4. القيود</b>\n• قد تنخفض السرعة عند تجاوز حد الحركة\n• قد يتم تعليق الخدمة عند مخالفة القواعد\n\n<b>5. الخصوصية</b>\n• لا نحفظ سجلات نشاطك\n• لا نشارك بياناتك مع أطراف ثالثة\n\n📧 أسئلة: @vflux_support',
+  terms_text: '📄 <b>شروط استخدام Rocky VPN</b>\n\n<b>1. الخدمة</b>\nRocky VPN يقدم خدمة VPN لحماية خصوصيتك على الإنترنت.\n\n<b>2. الاشتراك</b>\n• فترة تجريبية مجانية: 3 أيام\n• خطط مدفوعة: 1، 6 و 12 شهر\n• استرداد المبلغ خلال 24 ساعة من الدفع\n\n<b>3. الاستخدام</b>\n• حساب واحد لشخص واحد\n• مشاركة الحساب ممنوعة\n• الأنشطة غير القانونية ممنوعة\n\n<b>4. القيود</b>\n• قد تنخفض السرعة عند تجاوز حد الحركة\n• قد يتم تعليق الخدمة عند مخالفة القواعد\n\n<b>5. الخصوصية</b>\n• لا نحفظ سجلات نشاطك\n• لا نشارك بياناتك مع أطراف ثالثة\n\n📧 أسئلة: @RockyVPN_support',
 };

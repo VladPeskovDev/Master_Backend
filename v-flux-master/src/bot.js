@@ -8,7 +8,6 @@ const setupAccountHandler = require('./commands/account');
 const setupReferralHandler = require('./commands/referral');
 const setupSubscribeHandler = require('./commands/subscribe');
 const setupHelpHandler = require('./commands/help');
-const setupInstructionHandler = require('./commands/instruction');
 const setupTermsHandler = require('./commands/terms');
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { webHook: true });
@@ -37,7 +36,6 @@ setupAccountHandler(bot);
 setupReferralHandler(bot);
 setupSubscribeHandler(bot);
 setupHelpHandler(bot);
-setupInstructionHandler(bot);
 setupTermsHandler(bot);
 
 module.exports = bot;

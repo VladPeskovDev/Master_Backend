@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n🚀 Speed up to 1 Gbps\n🔒 No logs, no limits\n🌍 Servers in Europe\n📱 Works on all devices\n\n🎁 Your free trial: <b>3 days</b>\n\nTap the button below to get started!',
+  welcome_new: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n🚀 High speed, no limits\n🔒 No logs, no limits\n🌍 Servers in Europe\n📱 Works on all devices\n\n🎁 Your free trial: <b>3 days</b>\n\nTap the button below to get started!',
   welcome_back_no_sub: '👋 <b>Welcome back!</b>\n\nYou haven\'t tried our VPN yet.\n\n🎁 You have <b>3 free days</b> — try it now!',
   welcome_back_trial_active: '👋 <b>Welcome back!</b>\n\n✅ Your trial is active\n📅 Valid until: <b>{date}</b>\n📊 Traffic: <b>{used} / {limit}</b>\n\nUse the menu below to manage your VPN.',
   welcome_back_trial_expired: '👋 <b>Welcome back!</b>\n\n⏳ Your trial has expired.\n\nGet a subscription to keep using VPN, or invite a friend for bonus days!',
   welcome_back_paid_active: '👋 <b>Welcome back!</b>\n\n✅ Your subscription is active\n📅 Valid until: <b>{date}</b>\n\nUse the menu below to manage your VPN.',
   welcome_back_paid_expired: '👋 <b>Welcome back!</b>\n\n⏳ Your subscription has expired.\n\nRenew your subscription to keep using VPN, or invite a friend for bonus days!',
-  welcome_new_referral: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n👤 You were invited by a friend!\n\n🚀 Speed up to 1 Gbps\n🔒 No logs, no limits\n🌍 Servers in Europe\n\n🎁 Your free trial: <b>3 days</b>\n\nTap the button below to get started!',
+  welcome_new_referral: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n👤 You were invited by a friend!\n\n🚀 High speed, no limits\n🔒 No logs, no limits\n🌍 Servers in Europe\n\n🎁 Your free trial: <b>3 days</b>\n\nTap the button below to get started!',
   btn_try_free: '🔗 Try for free',
   btn_get_subscription: '💳 Get subscription',
   btn_renew_subscription: '💳 Renew subscription',
@@ -37,12 +37,12 @@ module.exports = {
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>Connect on iPhone</b>\n\n1. Download the app:\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Configs → "+" → Add Subscription\n   → paste the link → Connect\n\nDone! Tap ▶️ — your internet is protected.',
-  connect_platform_android: '🤖 <b>Connect on Android</b>\n\n1. Download the app:\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: "+" → Paste from clipboard\n   → tap the connect button at the bottom\n\nDone!',
+  connect_platform_ios: '📱 <b>Connect on iPhone</b>\n\n1. Download <b>V2Box</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Configs → "+" → Add Subscription\n   → paste the link → Connect\n\nDone! Tap ▶️ — your internet is protected.',
+  connect_platform_android: '🤖 <b>Connect on Android</b>\n\n1. Download <b>v2rayNG</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: "+" → Paste from clipboard\n   → tap the connect button at the bottom\n\nDone!',
   connect_desktop_choose: '💻 <b>Choose your system:</b>',
-  connect_platform_windows: '🪟 <b>Connect on Windows</b>\n\n1. Download the app:\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Subscription → Subscription Setting\n   → paste the link in URL field → OK\n   → Subscription → Update Subscription\n\nDone! Right-click server → Set as active → at the bottom "System Proxy: Set"',
-  connect_platform_macos: '🍎 <b>Connect on macOS</b>\n\n1. Download the app:\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Configs → "+" → Add Subscription\n   → paste the link → Connect\n\nDone! Tap ▶️ — your internet is protected.',
-  connect_platform_linux: '🐧 <b>Connect on Linux</b>\n\n1. Download the app:\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Server → Subscription → New\n   → paste the link in URL → OK → Update\n\nDone! Select server → tap ▶️',
+  connect_platform_windows: '🪟 <b>Connect on Windows</b>\n\n1. Download <b>V2RayN</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Subscription → Subscription Setting\n   → paste the link in URL field → OK\n   → Subscription → Update Subscription\n\nDone! Right-click server → Set as active → at the bottom "System Proxy: Set"',
+  connect_platform_macos: '🍎 <b>Connect on macOS</b>\n\n1. Download <b>V2Box</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Configs → "+" → Add Subscription\n   → paste the link → Connect\n\nDone! Tap ▶️ — your internet is protected.',
+  connect_platform_linux: '🐧 <b>Connect on Linux</b>\n\n1. Download <b>Nekoray</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Server → Subscription → New\n   → paste the link in URL → OK → Update\n\nDone! Select server → tap ▶️',
 
   // Account
   account_title: '📊 <b>My Account</b>',
@@ -62,11 +62,6 @@ module.exports = {
 
 
   btn_instruction: '📖 Instructions',
-  instruction_title: '📖 <b>How to connect Rocky VPN</b>',
-  instruction_choose: '📱 Choose your platform:',
-  instruction_ios: '📱 <b>iOS (iPhone / iPad)</b>\n\n1. Download <b>V2Box</b> or <b>Streisand</b> from App Store\n2. Tap 🔑 Connect VPN in the bot\n3. Copy the link\n4. In the app: + → Add Subscription → paste the link\n5. Tap Connect ✅\n\n⚠️ Subscription updates automatically every hour',
-  instruction_android: '🤖 <b>Android</b>\n\n1. Download <b>v2rayNG</b> from Google Play\n2. Tap 🔑 Connect VPN in the bot\n3. Copy the link or scan QR\n4. In the app: + → Import from clipboard\n5. Tap connect ✅\n\n⚠️ Enable auto subscription update in settings',
-  instruction_desktop: '💻 <b>Desktop</b>\n\n<b>Windows:</b> V2RayN\n<b>macOS:</b> V2Box / Streisand\n<b>Linux:</b> Nekoray\n\n1. Download client for your OS\n2. Tap 🔑 Connect VPN in the bot\n3. Copy the link\n4. Add subscription by link\n5. Select server → connect ✅',
 
   subscribe_title: '💳 <b>Choose a plan:</b>',
   subscribe_plan_monthly: '📅 <b>Monthly</b>\n{price} {currency} — {days} days',
@@ -84,7 +79,7 @@ module.exports = {
   referral_stats: '👤 Invited: <b>{count}</b>\n🎁 Days earned: <b>{days}</b>',
 
   help_title: '❓ <b>Help</b>',
-  help_text: '🔑 <b>How to connect?</b>\nTap "Connect VPN" and follow instructions.\n\n📱 <b>Which app?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>How to pay?</b>\nTap "Subscription" and choose a plan.\n\n❌ <b>VPN not working?</b>\nUpdate subscription in the app.\n\n📧 <b>Support:</b>\n@vflux_support',
+  help_text: '🔑 <b>How to connect?</b>\nTap "Connect VPN" and follow instructions.\n\n📱 <b>Which app?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>How to pay?</b>\nTap "Subscription" and choose a plan.\n\n❌ <b>VPN not working?</b>\nUpdate subscription in the app.\n\n📧 <b>Support:</b>\n@RockyVPN_support\n\n📢 <b>News:</b>\n@RockyVPN_news',
 
   select_language: '🌐 Choose your language:',
   language_set: '✅ Language set to English',
@@ -95,5 +90,5 @@ module.exports = {
 
   stub: '🚧 Coming soon',
   // Terms
-  terms_text: '📄 <b>Rocky VPN Terms of Service</b>\n\n<b>1. Service</b>\nRocky VPN provides VPN service to protect your online privacy.\n\n<b>2. Subscription</b>\n• Free trial: 3 days\n• Paid plans: 1, 6 and 12 months\n• Refunds within 24 hours of payment\n\n<b>3. Usage</b>\n• One account per person\n• Sharing accounts is prohibited\n• Illegal activities are prohibited\n\n<b>4. Limitations</b>\n• Speed may be reduced if traffic limit is exceeded\n• Service may be suspended for rule violations\n\n<b>5. Privacy</b>\n• We do not store activity logs\n• We do not share data with third parties\n\n📧 Questions: @vflux_support',
+  terms_text: '📄 <b>Rocky VPN Terms of Service</b>\n\n<b>1. Service</b>\nRocky VPN provides VPN service to protect your online privacy.\n\n<b>2. Subscription</b>\n• Free trial: 3 days\n• Paid plans: 1, 6 and 12 months\n• Refunds within 24 hours of payment\n\n<b>3. Usage</b>\n• One account per person\n• Sharing accounts is prohibited\n• Illegal activities are prohibited\n\n<b>4. Limitations</b>\n• Speed may be reduced if traffic limit is exceeded\n• Service may be suspended for rule violations\n\n<b>5. Privacy</b>\n• We do not store activity logs\n• We do not share data with third parties\n\n📧 Questions: @RockyVPN_support',
 };

@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n🚀 1 Gbps\'ye kadar hız\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n📱 Tüm cihazlarda çalışır\n\n🎁 Ücretsiz deneme süreniz: <b>3 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
+  welcome_new: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n🚀 Yüksek hız, sınır yok\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n📱 Tüm cihazlarda çalışır\n\n🎁 Ücretsiz deneme süreniz: <b>3 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
   welcome_back_no_sub: '👋 <b>Tekrar hoş geldiniz!</b>\n\nHenüz VPN\'imizi denemediniz.\n\n🎁 <b>3 ücretsiz gününüz</b> var — hemen deneyin!',
   welcome_back_trial_active: '👋 <b>Tekrar hoş geldiniz!</b>\n\n✅ Deneme süreniz aktif\n📅 Geçerlilik: <b>{date}</b>\n📊 Trafik: <b>{used} / {limit}</b>\n\nVPN\'inizi yönetmek için aşağıdaki menüyü kullanın.',
   welcome_back_trial_expired: '👋 <b>Tekrar hoş geldiniz!</b>\n\n⏳ Deneme süreniz sona erdi.\n\nVPN kullanmaya devam etmek için abone olun veya bonus günler için bir arkadaşınızı davet edin!',
   welcome_back_paid_active: '👋 <b>Tekrar hoş geldiniz!</b>\n\n✅ Aboneliğiniz aktif\n📅 Geçerlilik: <b>{date}</b>\n\nVPN\'inizi yönetmek için aşağıdaki menüyü kullanın.',
   welcome_back_paid_expired: '👋 <b>Tekrar hoş geldiniz!</b>\n\n⏳ Aboneliğiniz sona erdi.\n\nVPN kullanmaya devam etmek için aboneliğinizi yenileyin veya bonus günler için bir arkadaşınızı davet edin!',
-  welcome_new_referral: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n👤 Bir arkadaşınız sizi davet etti!\n\n🚀 1 Gbps\'ye kadar hız\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n\n🎁 Ücretsiz deneme süreniz: <b>3 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
+  welcome_new_referral: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n👤 Bir arkadaşınız sizi davet etti!\n\n🚀 Yüksek hız, sınır yok\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n\n🎁 Ücretsiz deneme süreniz: <b>3 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
   btn_try_free: '🔗 Ücretsiz dene',
   btn_get_subscription: '💳 Abone ol',
   btn_renew_subscription: '💳 Aboneliği yenile',
@@ -37,12 +37,12 @@ module.exports = {
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>iPhone\'da Bağlanma</b>\n\n1. Uygulamayı indirin:\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Add Subscription\n   → bağlantıyı yapıştırın → Connect\n\nTamam! ▶️ basın — internet korunuyor.',
-  connect_platform_android: '🤖 <b>Android\'de Bağlanma</b>\n\n1. Uygulamayı indirin:\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: «+» → Panodan yapıştır\n   → alttaki bağlan butonuna basın\n\nTamam!',
+  connect_platform_ios: '📱 <b>iPhone\'da Bağlanma</b>\n\n1. <b>V2Box</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Add Subscription\n   → bağlantıyı yapıştırın → Connect\n\nTamam! ▶️ basın — internet korunuyor.',
+  connect_platform_android: '🤖 <b>Android\'de Bağlanma</b>\n\n1. <b>v2rayNG</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: «+» → Panodan yapıştır\n   → alttaki bağlan butonuna basın\n\nTamam!',
   connect_desktop_choose: '💻 <b>Sisteminizi seçin:</b>',
-  connect_platform_windows: '🪟 <b>Windows\'ta Bağlanma</b>\n\n1. Uygulamayı indirin:\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Subscription → Subscription Setting\n   → URL alanına bağlantıyı yapıştırın → OK\n   → Subscription → Update Subscription\n\nTamam! Sunucuya sağ tıklayın → Set as active → altta «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>macOS\'ta Bağlanma</b>\n\n1. Uygulamayı indirin:\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Add Subscription\n   → bağlantıyı yapıştırın → Connect\n\nTamam! ▶️ basın — internet korunuyor.',
-  connect_platform_linux: '🐧 <b>Linux\'ta Bağlanma</b>\n\n1. Uygulamayı indirin:\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Server → Subscription → New\n   → URL\'ye bağlantıyı yapıştırın → OK → Update\n\nTamam! Sunucu seçin → ▶️ basın',
+  connect_platform_windows: '🪟 <b>Windows\'ta Bağlanma</b>\n\n1. <b>V2RayN</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Subscription → Subscription Setting\n   → URL alanına bağlantıyı yapıştırın → OK\n   → Subscription → Update Subscription\n\nTamam! Sunucuya sağ tıklayın → Set as active → altta «System Proxy: Set»',
+  connect_platform_macos: '🍎 <b>macOS\'ta Bağlanma</b>\n\n1. <b>V2Box</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Add Subscription\n   → bağlantıyı yapıştırın → Connect\n\nTamam! ▶️ basın — internet korunuyor.',
+  connect_platform_linux: '🐧 <b>Linux\'ta Bağlanma</b>\n\n1. <b>Nekoray</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Server → Subscription → New\n   → URL\'ye bağlantıyı yapıştırın → OK → Update\n\nTamam! Sunucu seçin → ▶️ basın',
 
   // Account
   account_title: '📊 <b>Hesabım</b>',
@@ -76,14 +76,9 @@ module.exports = {
   referral_stats: '👤 Davet edilen: <b>{count}</b>\n🎁 Kazanılan gün: <b>{days}</b>',
 
   btn_instruction: '📖 Talimatlar',
-  instruction_title: '📖 <b>Rocky VPN\'e nasıl bağlanılır</b>',
-  instruction_choose: '📱 Platformunuzu seçin:',
-  instruction_ios: '📱 <b>iOS (iPhone / iPad)</b>\n\n1. App Store\'dan <b>V2Box</b> veya <b>Streisand</b> indirin\n2. Botta 🔑 VPN\'e Bağlan\'a basın\n3. Bağlantıyı kopyalayın\n4. Uygulamada: + → Add Subscription → yapıştırın\n5. Connect\'e basın ✅\n\n⚠️ Abonelik her saat otomatik güncellenir',
-  instruction_android: '🤖 <b>Android</b>\n\n1. Google Play\'den <b>v2rayNG</b> indirin\n2. Botta 🔑 VPN\'e Bağlan\'a basın\n3. Bağlantıyı kopyalayın veya QR okutun\n4. Uygulamada: + → Import from clipboard\n5. Bağlan\'a basın ✅\n\n⚠️ Ayarlarda otomatik abonelik güncellemeyi açın',
-  instruction_desktop: '💻 <b>Masaüstü</b>\n\n<b>Windows:</b> V2RayN\n<b>macOS:</b> V2Box / Streisand\n<b>Linux:</b> Nekoray\n\n1. İşletim sisteminiz için istemciyi indirin\n2. Botta 🔑 VPN\'e Bağlan\'a basın\n3. Bağlantıyı kopyalayın\n4. Bağlantı ile abonelik ekleyin\n5. Sunucuyu seçin → bağlanın ✅',
 
   help_title: '❓ <b>Yardım</b>',
-  help_text: '🔑 <b>Nasıl bağlanırım?</b>\n"VPN\'e Bağlan"a basın ve talimatları izleyin.\n\n📱 <b>Hangi uygulamayı indirmeliyim?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>Nasıl ödeme yaparım?</b>\n"Abonelik"e basın ve plan seçin.\n\n❌ <b>VPN çalışmıyor mu?</b>\nUygulamada aboneliği güncelleyin.\n\n📧 <b>Destek:</b>\n@vflux_support',
+  help_text: '🔑 <b>Nasıl bağlanırım?</b>\n"VPN\'e Bağlan"a basın ve talimatları izleyin.\n\n📱 <b>Hangi uygulamayı indirmeliyim?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>Nasıl ödeme yaparım?</b>\n"Abonelik"e basın ve plan seçin.\n\n❌ <b>VPN çalışmıyor mu?</b>\nUygulamada aboneliği güncelleyin.\n\n📧 <b>Destek:</b>\n@RockyVPN_support\n\n📢 <b>Haberler:</b>\n@RockyVPN_news',
 
   select_language: '🌐 Dilinizi seçin:',
   language_set: '✅ Dil Türkçe olarak ayarlandı',
@@ -93,5 +88,5 @@ module.exports = {
   notify_expired: '❌ Aboneliğiniz sona erdi.\n\nYenileyin — VPN anında çalışacak!',
 
   stub: '🚧 Yakında',
-  terms_text: '📄 <b>Rocky VPN Kullanım Şartları</b>\n\n<b>1. Hizmet</b>\nRocky VPN, çevrimiçi gizliliğinizi korumak için VPN hizmeti sunar.\n\n<b>2. Abonelik</b>\n• Ücretsiz deneme: 3 gün\n• Ücretli planlar: 1, 6 ve 12 ay\n• Ödemeden sonra 24 saat içinde iade\n\n<b>3. Kullanım</b>\n• Kişi başına bir hesap\n• Hesap paylaşımı yasaktır\n• Yasadışı faaliyetler yasaktır\n\n<b>4. Kısıtlamalar</b>\n• Trafik limiti aşılırsa hız düşürülebilir\n• Kural ihlallerinde hizmet askıya alınabilir\n\n<b>5. Gizlilik</b>\n• Aktivite kayıtlarını saklamıyoruz\n• Verilerinizi üçüncü taraflarla paylaşmıyoruz\n\n📧 Sorular: @vflux_support',
+  terms_text: '📄 <b>Rocky VPN Kullanım Şartları</b>\n\n<b>1. Hizmet</b>\nRocky VPN, çevrimiçi gizliliğinizi korumak için VPN hizmeti sunar.\n\n<b>2. Abonelik</b>\n• Ücretsiz deneme: 3 gün\n• Ücretli planlar: 1, 6 ve 12 ay\n• Ödemeden sonra 24 saat içinde iade\n\n<b>3. Kullanım</b>\n• Kişi başına bir hesap\n• Hesap paylaşımı yasaktır\n• Yasadışı faaliyetler yasaktır\n\n<b>4. Kısıtlamalar</b>\n• Trafik limiti aşılırsa hız düşürülebilir\n• Kural ihlallerinde hizmet askıya alınabilir\n\n<b>5. Gizlilik</b>\n• Aktivite kayıtlarını saklamıyoruz\n• Verilerinizi üçüncü taraflarla paylaşmıyoruz\n\n📧 Sorular: @RockyVPN_support',
 };

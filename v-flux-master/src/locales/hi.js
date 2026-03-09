@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>Rocky VPN में आपका स्वागत है!</b>\n\n🚀 1 Gbps तक की स्पीड\n🔒 कोई लॉग नहीं, कोई सीमा नहीं\n🌍 यूरोप में सर्वर\n📱 सभी डिवाइस पर काम करता है\n\n🎁 आपका फ्री ट्रायल: <b>3 दिन</b>\n\nशुरू करने के लिए नीचे बटन दबाएं!',
+  welcome_new: '⚡️ <b>Rocky VPN में आपका स्वागत है!</b>\n\n🚀 तेज़ स्पिड, बिना किसी सीमा के\n🔒 कोई लॉग नहीं, कोई सीमा नहीं\n🌍 यूरोप में सर्वर\n📱 सभी डिवाइस पर काम करता है\n\n🎁 आपका फ्री ट्रायल: <b>3 दिन</b>\n\nशुरू करने के लिए नीचे बटन दबाएं!',
   welcome_back_no_sub: '👋 <b>वापसी पर स्वागत है!</b>\n\nआपने अभी तक हमारा VPN नहीं आज़माया।\n\n🎁 आपके पास <b>3 मुफ्त दिन</b> हैं — अभी आज़माएं!',
   welcome_back_trial_active: '👋 <b>वापसी पर स्वागत है!</b>\n\n✅ आपका ट्रायल सक्रिय है\n📅 वैध तक: <b>{date}</b>\n📊 ट्रैफिक: <b>{used} / {limit}</b>\n\nVPN प्रबंधित करने के लिए नीचे मेनू का उपयोग करें।',
   welcome_back_trial_expired: '👋 <b>वापसी पर स्वागत है!</b>\n\n⏳ आपका ट्रायल समाप्त हो गया।\n\nVPN जारी रखने के लिए सदस्यता लें, या बोनस दिनों के लिए दोस्त को आमंत्रित करें!',
   welcome_back_paid_active: '👋 <b>वापसी पर स्वागत है!</b>\n\n✅ आपकी सदस्यता सक्रिय है\n📅 वैध तक: <b>{date}</b>\n\nVPN प्रबंधित करने के लिए नीचे मेनू का उपयोग करें।',
   welcome_back_paid_expired: '👋 <b>वापसी पर स्वागत है!</b>\n\n⏳ आपकी सदस्यता समाप्त हो गई।\n\nVPN जारी रखने के लिए सदस्यता नवीनीकृत करें, या बोनस दिनों के लिए दोस्त को आमंत्रित करें!',
-  welcome_new_referral: '⚡️ <b>Rocky VPN में आपका स्वागत है!</b>\n\n👤 आपको एक दोस्त ने आमंत्रित किया!\n\n🚀 1 Gbps तक की स्पीड\n🔒 कोई लॉग नहीं, कोई सीमा नहीं\n🌍 यूरोप में सर्वर\n\n🎁 आपका फ्री ट्रायल: <b>3 दिन</b>\n\nशुरू करने के लिए नीचे बटन दबाएं!',
+  welcome_new_referral: '⚡️ <b>Rocky VPN में आपका स्वागत है!</b>\n\n👤 आपको एक दोस्त ने आमंत्रित किया!\n\n🚀 तेज़ स्पिड, बिना किसी सीमा के\n🔒 कोई लॉग नहीं, कोई सीमा नहीं\n🌍 यूरोप में सर्वर\n\n🎁 आपका फ्री ट्रायल: <b>3 दिन</b>\n\nशुरू करने के लिए नीचे बटन दबाएं!',
   btn_try_free: '🔗 मुफ्त आज़माएं',
   btn_get_subscription: '💳 सदस्यता लें',
   btn_renew_subscription: '💳 सदस्यता नवीनीकृत करें',
@@ -37,12 +37,12 @@ module.exports = {
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>iPhone पर कनेक्ट करें</b>\n\n1. ऐप डाउनलोड करें:\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Add Subscription\n   → लिंक पेस्ट करें → Connect\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
-  connect_platform_android: '🤖 <b>Android पर कनेक्ट करें</b>\n\n1. ऐप डाउनलोड करें:\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: «+» → क्लिपबोर्ड से पेस्ट करें\n   → नीचे कनेक्ट बटन दबाएं\n\nहो गया!',
+  connect_platform_ios: '📱 <b>iPhone पर कनेक्ट करें</b>\n\n1. <b>V2Box</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Add Subscription\n   → लिंक पेस्ट करें → Connect\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
+  connect_platform_android: '🤖 <b>Android पर कनेक्ट करें</b>\n\n1. <b>v2rayNG</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: «+» → क्लिपबोर्ड से पेस्ट करें\n   → नीचे कनेक्ट बटन दबाएं\n\nहो गया!',
   connect_desktop_choose: '💻 <b>अपना सिस्टम चुनें:</b>',
-  connect_platform_windows: '🪟 <b>Windows पर कनेक्ट करें</b>\n\n1. ऐप डाउनलोड करें:\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Subscription → Subscription Setting\n   → URL फ़ील्ड में लिंक पेस्ट करें → OK\n   → Subscription → Update Subscription\n\nहो गया! सर्वर पर राइट क्लिक → Set as active → नीचे «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>macOS पर कनेक्ट करें</b>\n\n1. ऐप डाउनलोड करें:\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Add Subscription\n   → लिंक पेस्ट करें → Connect\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
-  connect_platform_linux: '🐧 <b>Linux पर कनेक्ट करें</b>\n\n1. ऐप डाउनलोड करें:\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Server → Subscription → New\n   → URL में लिंक पेस्ट करें → OK → Update\n\nहो गया! सर्वर चुनें → ▶️ दबाएं',
+  connect_platform_windows: '🪟 <b>Windows पर कनेक्ट करें</b>\n\n1. <b>V2RayN</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Subscription → Subscription Setting\n   → URL फ़ील्ड में लिंक पेस्ट करें → OK\n   → Subscription → Update Subscription\n\nहो गया! सर्वर पर राइट क्लिक → Set as active → नीचे «System Proxy: Set»',
+  connect_platform_macos: '🍎 <b>macOS पर कनेक्ट करें</b>\n\n1. <b>V2Box</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Add Subscription\n   → लिंक पेस्ट करें → Connect\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
+  connect_platform_linux: '🐧 <b>Linux पर कनेक्ट करें</b>\n\n1. <b>Nekoray</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Server → Subscription → New\n   → URL में लिंक पेस्ट करें → OK → Update\n\nहो गया! सर्वर चुनें → ▶️ दबाएं',
 
   // Account
   account_title: '📊 <b>मेरा अकाउंट</b>',
@@ -76,14 +76,9 @@ module.exports = {
   referral_stats: '👤 आमंत्रित: <b>{count}</b>\n🎁 अर्जित दिन: <b>{days}</b>',
 
   btn_instruction: '📖 निर्देश',
-  instruction_title: '📖 <b>Rocky VPN से कैसे कनेक्ट करें</b>',
-  instruction_choose: '📱 अपना प्लेटफॉर्म चुनें:',
-  instruction_ios: '📱 <b>iOS (iPhone / iPad)</b>\n\n1. App Store से <b>V2Box</b> या <b>Streisand</b> डाउनलोड करें\n2. बोट में 🔑 VPN कनेक्ट करें दबाएं\n3. लिंक कॉपी करें\n4. ऐप में: + → Add Subscription → पेस्ट करें\n5. Connect दबाएं ✅\n\n⚠️ सदस्यता हर घंटे ऑटो अपडेट होती है',
-  instruction_android: '🤖 <b>Android</b>\n\n1. Google Play से <b>v2rayNG</b> डाउनलोड करें\n2. बोट में 🔑 VPN कनेक्ट करें दबाएं\n3. लिंक कॉपी करें या QR स्कैन करें\n4. ऐप में: + → Import from clipboard\n5. कनेक्ट दबाएं ✅\n\n⚠️ सेटिंग्स में ऑटो सदस्यता अपडेट चालू करें',
-  instruction_desktop: '💻 <b>डेस्कटॉप</b>\n\n<b>Windows:</b> V2RayN\n<b>macOS:</b> V2Box / Streisand\n<b>Linux:</b> Nekoray\n\n1. अपने OS के लिए क्लाइंट डाउनलोड करें\n2. बोट में 🔑 VPN कनेक्ट करें दबाएं\n3. लिंक कॉपी करें\n4. लिंक से सदस्यता जोड़ें\n5. सर्वर चुनें → कनेक्ट करें ✅',
 
   help_title: '❓ <b>मदद</b>',
-  help_text: '🔑 <b>कैसे कनेक्ट करें?</b>\n"VPN कनेक्ट करें" दबाएं और निर्देशों का पालन करें।\n\n📱 <b>कौन सा ऐप डाउनलोड करें?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>कैसे भुगतान करें?</b>\n"सदस्यता" दबाएं और प्लान चुनें।\n\n❌ <b>VPN काम नहीं कर रहा?</b>\nऐप में सदस्यता अपडेट करें।\n\n📧 <b>सहायता:</b>\n@vflux_support',
+  help_text: '🔑 <b>कैसे कनेक्ट करें?</b>\n"VPN कनेक्ट करें" दबाएं और निर्देशों का पालन करें।\n\n📱 <b>कौन सा ऐप डाउनलोड करें?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>कैसे भुगतान करें?</b>\n"सदस्यता" दबाएं और प्लान चुनें।\n\n❌ <b>VPN काम नहीं कर रहा?</b>\nऐप में सदस्यता अपडेट करें।\n\n📧 <b>सहायता:</b>\n@RockyVPN_support\n\n📢 <b>समाचार:</b>\n@RockyVPN_news',
 
   select_language: '🌐 अपनी भाषा चुनें:',
   language_set: '✅ भाषा हिंदी में बदली गई',
@@ -93,5 +88,5 @@ module.exports = {
   notify_expired: '❌ आपकी सदस्यता समाप्त हो गई।\n\nनवीनीकृत करें — VPN तुरंत काम करेगा!',
 
   stub: '🚧 जल्द आ रहा है',
-  terms_text: '📄 <b>Rocky VPN सेवा की शर्तें</b>\n\n<b>1. सेवा</b>\nRocky VPN आपकी ऑनलाइन गोपनीयता की सुरक्षा के लिए VPN सेवा प्रदान करता है।\n\n<b>2. सदस्यता</b>\n• फ्री ट्रायल: 3 दिन\n• पेड प्लान: 1, 6 और 12 महीने\n• भुगतान के 24 घंटे के भीतर रिफंड\n\n<b>3. उपयोग</b>\n• एक व्यक्ति — एक अकाउंट\n• अकाउंट शेयर करना प्रतिबंधित है\n• अवैध गतिविधियां प्रतिबंधित हैं\n\n<b>4. सीमाएं</b>\n• ट्रैफिक सीमा पार होने पर स्पीड कम हो सकती है\n• नियमों के उल्लंघन पर सेवा रोकी जा सकती है\n\n<b>5. गोपनीयता</b>\n• हम गतिविधि लॉग नहीं रखते\n• हम तीसरे पक्ष के साथ डेटा साझा नहीं करते\n\n📧 प्रश्न: @vflux_support',
+  terms_text: '📄 <b>Rocky VPN सेवा की शर्तें</b>\n\n<b>1. सेवा</b>\nRocky VPN आपकी ऑनलाइन गोपनीयता की सुरक्षा के लिए VPN सेवा प्रदान करता है।\n\n<b>2. सदस्यता</b>\n• फ्री ट्रायल: 3 दिन\n• पेड प्लान: 1, 6 और 12 महीने\n• भुगतान के 24 घंटे के भीतर रिफंड\n\n<b>3. उपयोग</b>\n• एक व्यक्ति — एक अकाउंट\n• अकाउंट शेयर करना प्रतिबंधित है\n• अवैध गतिविधियां प्रतिबंधित हैं\n\n<b>4. सीमाएं</b>\n• ट्रैफिक सीमा पार होने पर स्पीड कम हो सकती है\n• नियमों के उल्लंघन पर सेवा रोकी जा सकती है\n\n<b>5. गोपनीयता</b>\n• हम गतिविधि लॉग नहीं रखते\n• हम तीसरे पक्ष के साथ डेटा साझा नहीं करते\n\n📧 प्रश्न: @RockyVPN_support',
 };

@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n🚀 1 Gbps gacha tezlik\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n📱 Barcha qurilmalarda ishlaydi\n\n🎁 Bepul sinov muddati: <b>3 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
+  welcome_new: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n🚀 Yuqori tezlik, cheklovsiz\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n📱 Barcha qurilmalarda ishlaydi\n\n🎁 Bepul sinov muddati: <b>3 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
   welcome_back_no_sub: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\nSiz hali VPN\'imizni sinab ko\'rmadingiz.\n\n🎁 Sizda <b>3 bepul kun</b> bor — hoziroq sinab ko\'ring!',
   welcome_back_trial_active: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n✅ Sinov muddatingiz faol\n📅 Amal qiladi: <b>{date}</b>\n📊 Trafik: <b>{used} / {limit}</b>\n\nVPN\'ni boshqarish uchun quyidagi menyudan foydalaning.',
   welcome_back_trial_expired: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n⏳ Sinov muddatingiz tugadi.\n\nVPN\'dan foydalanishni davom ettirish uchun obuna bo\'ling yoki bonus kunlar uchun do\'stingizni taklif qiling!',
   welcome_back_paid_active: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n✅ Obunangiz faol\n📅 Amal qiladi: <b>{date}</b>\n\nVPN\'ni boshqarish uchun quyidagi menyudan foydalaning.',
   welcome_back_paid_expired: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n⏳ Obunangiz tugadi.\n\nVPN\'dan foydalanishni davom ettirish uchun obunangizni yangilang yoki bonus kunlar uchun do\'stingizni taklif qiling!',
-  welcome_new_referral: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n👤 Sizni do\'stingiz taklif qildi!\n\n🚀 1 Gbps gacha tezlik\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n\n🎁 Bepul sinov muddati: <b>3 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
+  welcome_new_referral: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n👤 Sizni do\'stingiz taklif qildi!\n\n🚀 Yuqori tezlik, cheklovsiz\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n\n🎁 Bepul sinov muddati: <b>3 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
   btn_try_free: '🔗 Bepul sinab ko\'rish',
   btn_get_subscription: '💳 Obuna bo\'lish',
   btn_renew_subscription: '💳 Obunani yangilash',
@@ -37,12 +37,12 @@ module.exports = {
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>iPhone\'da ulanish</b>\n\n1. Ilovani yuklab oling:\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Add Subscription\n   → havolani joylashtiring → Connect\n\nTayyor! ▶️ bosing — internet himoyalangan.',
-  connect_platform_android: '🤖 <b>Android\'da ulanish</b>\n\n1. Ilovani yuklab oling:\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: «+» → Buferdan joylashtirish\n   → pastdagi ulanish tugmasini bosing\n\nTayyor!',
+  connect_platform_ios: '📱 <b>iPhone\'da ulanish</b>\n\n1. <b>V2Box</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Add Subscription\n   → havolani joylashtiring → Connect\n\nTayyor! ▶️ bosing — internet himoyalangan.',
+  connect_platform_android: '🤖 <b>Android\'da ulanish</b>\n\n1. <b>v2rayNG</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: «+» → Buferdan joylashtirish\n   → pastdagi ulanish tugmasini bosing\n\nTayyor!',
   connect_desktop_choose: '💻 <b>Tizimingizni tanlang:</b>',
-  connect_platform_windows: '🪟 <b>Windows\'da ulanish</b>\n\n1. Ilovani yuklab oling:\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Subscription → Subscription Setting\n   → URL maydoniga havolani joylashtiring → OK\n   → Subscription → Update Subscription\n\nTayyor! Serverga o\'ng tugma bosing → Set as active → pastda «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>macOS\'da ulanish</b>\n\n1. Ilovani yuklab oling:\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Add Subscription\n   → havolani joylashtiring → Connect\n\nTayyor! ▶️ bosing — internet himoyalangan.',
-  connect_platform_linux: '🐧 <b>Linux\'da ulanish</b>\n\n1. Ilovani yuklab oling:\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Server → Subscription → New\n   → URL\'ga havolani joylashtiring → OK → Update\n\nTayyor! Serverni tanlang → ▶️ bosing',
+  connect_platform_windows: '🪟 <b>Windows\'da ulanish</b>\n\n1. <b>V2RayN</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Subscription → Subscription Setting\n   → URL maydoniga havolani joylashtiring → OK\n   → Subscription → Update Subscription\n\nTayyor! Serverga o\'ng tugma bosing → Set as active → pastda «System Proxy: Set»',
+  connect_platform_macos: '🍎 <b>macOS\'da ulanish</b>\n\n1. <b>V2Box</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Add Subscription\n   → havolani joylashtiring → Connect\n\nTayyor! ▶️ bosing — internet himoyalangan.',
+  connect_platform_linux: '🐧 <b>Linux\'da ulanish</b>\n\n1. <b>Nekoray</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Server → Subscription → New\n   → URL\'ga havolani joylashtiring → OK → Update\n\nTayyor! Serverni tanlang → ▶️ bosing',
 
   // Account
   account_title: '📊 <b>Mening hisobim</b>',
@@ -76,14 +76,9 @@ module.exports = {
   referral_stats: '👤 Taklif qilingan: <b>{count}</b>\n🎁 Olingan kunlar: <b>{days}</b>',
 
   btn_instruction: '📖 Ko\'rsatmalar',
-  instruction_title: '📖 <b>Rocky VPN\'ga qanday ulanish</b>',
-  instruction_choose: '📱 Platformangizni tanlang:',
-  instruction_ios: '📱 <b>iOS (iPhone / iPad)</b>\n\n1. App Store\'dan <b>V2Box</b> yoki <b>Streisand</b> yuklab oling\n2. Botda 🔑 VPN\'ga ulanish bosing\n3. Havolani nusxa oling\n4. Ilovada: + → Add Subscription → joylashtiring\n5. Connect bosing ✅\n\n⚠️ Obuna har soatda avtomatik yangilanadi',
-  instruction_android: '🤖 <b>Android</b>\n\n1. Google Play\'dan <b>v2rayNG</b> yuklab oling\n2. Botda 🔑 VPN\'ga ulanish bosing\n3. Havolani nusxa oling yoki QR skanerlang\n4. Ilovada: + → Import from clipboard\n5. Ulanish bosing ✅\n\n⚠️ Sozlamalarda avtomatik obuna yangilanishini yoqing',
-  instruction_desktop: '💻 <b>Kompyuter</b>\n\n<b>Windows:</b> V2RayN\n<b>macOS:</b> V2Box / Streisand\n<b>Linux:</b> Nekoray\n\n1. OS uchun dasturni yuklab oling\n2. Botda 🔑 VPN\'ga ulanish bosing\n3. Havolani nusxa oling\n4. Havola orqali obuna qo\'shing\n5. Serverni tanlang → ulaning ✅',
 
   help_title: '❓ <b>Yordam</b>',
-  help_text: '🔑 <b>Qanday ulanaman?</b>\n"VPN\'ga ulanish" bosing va ko\'rsatmalarga amal qiling.\n\n📱 <b>Qaysi ilovani yuklayman?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>Qanday to\'layman?</b>\n"Obuna" bosing va tarif tanlang.\n\n❌ <b>VPN ishlamayaptimi?</b>\nIlovada obunani yangilang.\n\n📧 <b>Qo\'llab-quvvatlash:</b>\n@vflux_support',
+  help_text: '🔑 <b>Qanday ulanaman?</b>\n"VPN\'ga ulanish" bosing va ko\'rsatmalarga amal qiling.\n\n📱 <b>Qaysi ilovani yuklayman?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>Qanday to\'layman?</b>\n"Obuna" bosing va tarif tanlang.\n\n❌ <b>VPN ishlamayaptimi?</b>\nIlovada obunani yangilang.\n\n📧 <b>Qo\'llab-quvvatlash:</b>\n@RockyVPN_support\n\n📢 <b>Yangiliklar:</b>\n@RockyVPN_news',
 
   select_language: '🌐 Tilni tanlang:',
   language_set: '✅ Til o\'zbek tiliga o\'zgartirildi',
@@ -93,5 +88,5 @@ module.exports = {
   notify_expired: '❌ Obunangiz tugadi.\n\nYangilang — VPN darhol ishlaydi!',
 
   stub: '🚧 Tez orada',
-  terms_text: '📄 <b>Rocky VPN foydalanish shartlari</b>\n\n<b>1. Xizmat</b>\nRocky VPN internetda maxfiyligingizni himoya qilish uchun VPN xizmati ko\'rsatadi.\n\n<b>2. Obuna</b>\n• Bepul sinov: 3 kun\n• Pullik tariflar: 1, 6 va 12 oy\n• To\'lovdan keyin 24 soat ichida qaytarish\n\n<b>3. Foydalanish</b>\n• Bir kishi — bir hisob\n• Hisobni boshqalarga berish taqiqlangan\n• Noqonuniy harakatlar taqiqlangan\n\n<b>4. Cheklovlar</b>\n• Trafik limiti oshsa tezlik kamaytirilishi mumkin\n• Qoidalar buzilsa xizmat to\'xtatilishi mumkin\n\n<b>5. Maxfiylik</b>\n• Faoliyat loglarini saqlamaymiz\n• Ma\'lumotlaringizni uchinchi tomonlarga bermaymiz\n\n📧 Savollar: @vflux_support',
+  terms_text: '📄 <b>Rocky VPN foydalanish shartlari</b>\n\n<b>1. Xizmat</b>\nRocky VPN internetda maxfiyligingizni himoya qilish uchun VPN xizmati ko\'rsatadi.\n\n<b>2. Obuna</b>\n• Bepul sinov: 3 kun\n• Pullik tariflar: 1, 6 va 12 oy\n• To\'lovdan keyin 24 soat ichida qaytarish\n\n<b>3. Foydalanish</b>\n• Bir kishi — bir hisob\n• Hisobni boshqalarga berish taqiqlangan\n• Noqonuniy harakatlar taqiqlangan\n\n<b>4. Cheklovlar</b>\n• Trafik limiti oshsa tezlik kamaytirilishi mumkin\n• Qoidalar buzilsa xizmat to\'xtatilishi mumkin\n\n<b>5. Maxfiylik</b>\n• Faoliyat loglarini saqlamaymiz\n• Ma\'lumotlaringizni uchinchi tomonlarga bermaymiz\n\n📧 Savollar: @RockyVPN_support',
 };
