@@ -39,7 +39,7 @@ const runSubscriptionCheck = async () => {
 };
 
  const startSubscriptionChecker = () => {
-  cron.schedule('0 * * * *', runSubscriptionCheck);
+  cron.schedule('15 * * * *', runSubscriptionCheck);
   console.log('⏰ Subscription checker запущен (каждый час)');
 }; 
 

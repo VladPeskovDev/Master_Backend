@@ -48,6 +48,27 @@ const setupReferralHandler = (bot) => {
     }
   });
 
+  // Из уведомления — новое сообщение (уведомление остаётся)
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'notify_referral') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const { text, buttons } = await sendReferralInfo(bot, query.message.chat.id, user);
+
+      await bot.sendMessage(query.message.chat.id, text, {
+        parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: buttons },
+      });
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка notify_referral:', err);
+    }
+  });
+
   bot.onText(/\/referral/, async (msg) => {
     try {
       const user = await User.findOne({ where: { telegram_id: msg.from.id } });

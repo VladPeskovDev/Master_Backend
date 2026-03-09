@@ -12,7 +12,10 @@ const showMainMenu = async (bot, chatId, lang) => {
         { text: t(lang, 'btn_referral'), callback_data: 'referral' },
         { text: t(lang, 'btn_language'), callback_data: 'language' },
       ],
-      [{ text: t(lang, 'btn_instruction'), callback_data: 'connect' }],
+      [
+        { text: t(lang, 'btn_instruction'), callback_data: 'connect' },
+        { text: t(lang, 'btn_help'), url: 'https://t.me/RockyVPN_support' },
+      ],
     ],
   };
 

@@ -48,8 +48,8 @@ const runSubscriptionNotifier = async () => {
 
     const makeKeyboard = (lang) => ({
       inline_keyboard: [
-        [{ text: t(lang, 'btn_renew_subscription'), callback_data: 'subscribe' }],
-        [{ text: t(lang, 'btn_referral_bonus'), callback_data: 'referral' }],
+        [{ text: t(lang, 'btn_renew_subscription'), callback_data: 'notify_subscribe' }],
+        [{ text: t(lang, 'btn_referral_bonus'), callback_data: 'notify_referral' }],
       ],
     });
 
@@ -88,8 +88,8 @@ const runSubscriptionNotifier = async () => {
 };
 
 const startSubscriptionNotifier = () => {
-  cron.schedule('0 10 * * *', runSubscriptionNotifier);
-  console.log('📬 Subscription notifier запущен (ежедневно в 10:00 UTC)');
+  cron.schedule('30 10 * * *', runSubscriptionNotifier);
+  console.log('📬 Subscription notifier запущен (ежедневно в 10:30 UTC)');
 };
 
 module.exports = { startSubscriptionNotifier, runSubscriptionNotifier };

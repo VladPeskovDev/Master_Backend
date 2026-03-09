@@ -124,6 +124,27 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
+  // Из уведомления — новое сообщение (уведомление остаётся)
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'notify_subscribe') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const { text, buttons } = await buildSubscribeMessage(user);
+
+      await bot.sendMessage(query.message.chat.id, text, {
+        parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: buttons },
+      });
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка notify_subscribe:', err);
+    }
+  });
+
   // Слеш-команда /subscribe
   bot.onText(/\/subscribe/, async (msg) => {
     try {

@@ -144,7 +144,7 @@ const formatBytes = (bytes) => {
 };
 
 const startTrafficCollector = () => {
-  cron.schedule('*/30 * * * *', runTrafficCollection);
+  cron.schedule('5,35 * * * *', runTrafficCollection);
   console.log('📊 Traffic collector запущен (каждые 30 мин)');
 };
 
