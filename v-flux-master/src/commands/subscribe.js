@@ -1,5 +1,6 @@
-const { User, Plan, PlanPrice } = require('../../db/models');
+const { User, Plan, PlanPrice, Payment } = require('../../db/models');
 const { t } = require('../locales');
+const { createInvoice } = require('../services/cryptoPayService');
 
 const CURRENCY_SYMBOLS = {
   RUB: '₽',
@@ -187,10 +188,10 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  // Заглушки оплаты
+  // Заглушка оплаты картой
   bot.on('callback_query', async (query) => {
     try {
-      if (!query.data.startsWith('pay_card_') && !query.data.startsWith('pay_crypto_')) return;
+      if (!query.data.startsWith('pay_card_')) return;
 
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       const lang = user?.lang || 'en';
@@ -200,7 +201,87 @@ const setupSubscribeHandler = (bot) => {
         show_alert: true,
       });
     } catch (err) {
-      console.error('❌ Ошибка pay stub:', err);
+      console.error('❌ Ошибка pay_card:', err);
+    }
+  });
+
+  // Оплата криптой через CryptoPay
+  bot.on('callback_query', async (query) => {
+    try {
+      if (!query.data.startsWith('pay_crypto_')) return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang || 'en';
+      const planId = parseInt(query.data.replace('pay_crypto_', ''), 10);
+
+      // Определяем крипто-регион
+      const cryptoRegion = user.region === 'uae' ? 'crypto_uae' : 'crypto';
+
+      const plan = await Plan.findOne({
+        where: { id: planId },
+        include: [{ model: PlanPrice, where: { region: cryptoRegion } }],
+      });
+
+      if (!plan || !plan.PlanPrices[0]) {
+        await bot.answerCallbackQuery(query.id, {
+          text: t(lang, 'subscribe_payment_stub'),
+          show_alert: true,
+        });
+        return;
+      }
+
+      const price = plan.PlanPrices[0];
+
+      // Создаём Payment (pending)
+      const payment = await Payment.create({
+        user_id: user.id,
+        plan_id: planId,
+        amount: price.price,
+        currency: 'USD',
+        method: 'crypto',
+        status: 'pending',
+      });
+
+      // Создаём инвойс в CryptoPay
+      const invoice = await createInvoice({
+        amount: price.price,
+        userId: user.id,
+        planId,
+        chatId: query.message.chat.id,
+      });
+
+      // Сохраняем provider_id
+      await payment.update({ provider_id: String(invoice.invoice_id) });
+
+      const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
+      const planName = t(lang, planNameKey, { days: plan.duration_days });
+
+      await bot.editMessageText(
+        t(lang, 'payment_crypto_invoice', { plan: planName, amount: (price.price / 100).toFixed(2) }),
+        {
+          chat_id: query.message.chat.id,
+          message_id: query.message.message_id,
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: t(lang, 'btn_pay_crypto_link'), url: invoice.bot_invoice_url }],
+              [{ text: t(lang, 'btn_back'), callback_data: `buy_plan_${planId}` }],
+            ],
+          },
+        },
+      );
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка pay_crypto:', err);
+      try {
+        await bot.answerCallbackQuery(query.id, {
+          text: 'Error creating invoice. Try again.',
+          show_alert: true,
+        });
+      } catch {}
     }
   });
 };

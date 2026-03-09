@@ -69,6 +69,9 @@ module.exports = {
   btn_pay_card: '💳 Kart (Visa, Mastercard)',
   btn_pay_crypto: '🪙 Kripto (USDT, TON, BTC)',
   subscribe_payment_stub: '🚧 Ödemeler yakında!',
+  payment_crypto_invoice: '🪙 <b>Ödeme: {plan} — ${amount}</b>\n\n@CryptoBot üzerinden ödeme yapmak için aşağıdaki butona basın.\nÖdeme sonrası aboneliğiniz otomatik aktifleşir.',
+  btn_pay_crypto_link: '🪙 Kripto ile Öde',
+  payment_success: '✅ <b>Ödeme başarılı!</b>\n\nAboneliğiniz <b>{days} gün</b> süreyle aktif.\nBaşlamak için "VPN\'e Bağlan" basın.',
 
   referral_title: '👥 <b>Arkadaş Davet Et</b>',
   referral_description: '🎁 Bir arkadaşınızı davet edin, abonelik ödediğinde <b>1 ay ücretsiz + 100 GB</b> kazanın!',

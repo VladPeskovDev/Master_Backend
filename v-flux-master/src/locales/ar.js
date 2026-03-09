@@ -69,6 +69,9 @@ module.exports = {
   btn_pay_card: '💳 بطاقة (Visa, Mastercard)',
   btn_pay_crypto: '🪙 كريبتو (USDT, TON, BTC)',
   subscribe_payment_stub: '🚧 الدفع قريباً!',
+  payment_crypto_invoice: '🪙 <b>الدفع: {plan} — ${amount}</b>\n\nاضغط الزر أدناه للدفع عبر @CryptoBot.\nسيتم تفعيل اشتراكك تلقائياً بعد الدفع.',
+  btn_pay_crypto_link: '🪙 ادفع بالكريبتو',
+  payment_success: '✅ <b>تم الدفع بنجاح!</b>\n\nاشتراكك نشط لمدة <b>{days} يوم</b>.\nاضغط "اتصل بـ VPN" للبدء.',
 
   referral_title: '👥 <b>ادعُ صديقاً</b>',
   referral_description: '🎁 ادعُ صديقاً واحصل على <b>شهر مجاني + 100 جيجابايت</b> عندما يدفع صديقك للاشتراك!',

@@ -8,6 +8,7 @@ const nodeSyncRouter = require('./routes/nodeSyncRouter');
 const subRouter = require('./routes/subRouter');
 const adminNodesRouter = require('./routes/adminNodesRouter');
 const adminUsersRouter = require('./routes/adminUsersRouter');
+const cryptoPayWebhook = require('./routes/cryptoPayWebhook');
 const { subLimiter, adminLimiter, botLimiter } = require('./middleware/rateLimiter');
 const { nodeIpWhitelist, adminIpWhitelist } = require('./middleware/ipWhitelist');
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Routes
+app.use('/api/cryptopay/webhook', cryptoPayWebhook);
 app.use('/api/nodes', nodeIpWhitelist, nodeSyncRouter);
 app.use('/sub', subLimiter, subRouter);
 app.use('/api/admin/nodes', adminIpWhitelist, adminLimiter, adminNodesRouter);

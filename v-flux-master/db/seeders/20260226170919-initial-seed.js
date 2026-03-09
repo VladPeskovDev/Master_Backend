@@ -67,6 +67,14 @@ module.exports = {
       { plan_id: annual.id, region: 'uae', price: 40, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: annual.id, region: 'tr', price: 20, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: annual.id, region: 'uz', price: 250000, currency: 'UZS', createdAt: new Date(), updatedAt: new Date() },
+      // Crypto prices (cents)
+      { plan_id: monthly.id, region: 'crypto', price: 200, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: semi.id, region: 'crypto', price: 1000, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: annual.id, region: 'crypto', price: 2000, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      // Crypto UAE prices (cents)
+      { plan_id: monthly.id, region: 'crypto_uae', price: 400, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: semi.id, region: 'crypto_uae', price: 2000, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: annual.id, region: 'crypto_uae', price: 4000, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
     ]);
   },
 

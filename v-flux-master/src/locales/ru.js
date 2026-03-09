@@ -71,6 +71,9 @@ module.exports = {
   btn_pay_card: '💳 Карта (Visa, MC, Мир)',
   btn_pay_crypto: '🪙 Крипто (USDT, TON, BTC)',
   subscribe_payment_stub: '🚧 Оплата скоро будет доступна!',
+  payment_crypto_invoice: '🪙 <b>Оплата: {plan} — ${amount}</b>\n\nНажмите кнопку ниже, чтобы оплатить через @CryptoBot.\nПосле оплаты подписка активируется автоматически.',
+  btn_pay_crypto_link: '🪙 Оплатить криптой',
+  payment_success: '✅ <b>Оплата прошла успешно!</b>\n\nВаша подписка активирована на <b>{days} дней</b>.\nНажмите "Подключить VPN" чтобы начать.',
 
   // Referral
   referral_title: '👥 <b>Пригласите друга</b>',

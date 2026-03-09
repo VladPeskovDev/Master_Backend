@@ -69,6 +69,9 @@ module.exports = {
   btn_pay_card: '💳 Karta (Visa, Humo, UzCard)',
   btn_pay_crypto: '🪙 Kripto (USDT, TON, BTC)',
   subscribe_payment_stub: '🚧 To\'lovlar tez orada!',
+  payment_crypto_invoice: '🪙 <b>To\'lov: {plan} — ${amount}</b>\n\n@CryptoBot orqali to\'lash uchun pastdagi tugmani bosing.\nTo\'lovdan so\'ng obunangiz avtomatik faollashadi.',
+  btn_pay_crypto_link: '🪙 Kripto bilan to\'lash',
+  payment_success: '✅ <b>To\'lov muvaffaqiyatli!</b>\n\nObunangiz <b>{days} kun</b>ga faol.\nBoshlash uchun "VPN\'ga ulanish" bosing.',
 
   referral_title: '👥 <b>Do\'stni taklif qiling</b>',
   referral_description: '🎁 Do\'stingizni taklif qiling, u obunaga to\'laganda <b>1 oy bepul + 100 GB</b> oling!',

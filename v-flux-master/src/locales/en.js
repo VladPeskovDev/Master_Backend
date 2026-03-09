@@ -72,6 +72,9 @@ module.exports = {
   btn_pay_card: '💳 Card (Visa, Mastercard)',
   btn_pay_crypto: '🪙 Crypto (USDT, TON, BTC)',
   subscribe_payment_stub: '🚧 Payments coming soon!',
+  payment_crypto_invoice: '🪙 <b>Payment: {plan} — ${amount}</b>\n\nTap the button below to pay via @CryptoBot.\nYour subscription will activate automatically after payment.',
+  btn_pay_crypto_link: '🪙 Pay with Crypto',
+  payment_success: '✅ <b>Payment successful!</b>\n\nYour subscription is active for <b>{days} days</b>.\nTap "Connect VPN" to get started.',
 
   referral_title: '👥 <b>Invite a Friend</b>',
   referral_description: '🎁 Invite a friend and get <b>1 month free + 100 GB</b> when they pay for a subscription!',

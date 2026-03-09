@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   class Payment extends Model {
     static associate(models) {
       Payment.belongsTo(models.User, { foreignKey: 'user_id' });
+      Payment.belongsTo(models.Plan, { foreignKey: 'plan_id' });
     }
   }
 
@@ -29,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       provider_id: {
         type: DataTypes.STRING,
         unique: true,
+      },
+      plan_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       status: {
         type: DataTypes.STRING(10),

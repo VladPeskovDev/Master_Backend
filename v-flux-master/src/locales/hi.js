@@ -69,6 +69,9 @@ module.exports = {
   btn_pay_card: '💳 कार्ड (Visa, Mastercard)',
   btn_pay_crypto: '🪙 क्रिप्टो (USDT, TON, BTC)',
   subscribe_payment_stub: '🚧 भुगतान जल्द आ रहा है!',
+  payment_crypto_invoice: '🪙 <b>भुगतान: {plan} — ${amount}</b>\n\n@CryptoBot के माध्यम से भुगतान करने के लिए नीचे बटन दबाएं।\nभुगतान के बाद आपकी सदस्यता स्वचालित रूप से सक्रिय हो जाएगी।',
+  btn_pay_crypto_link: '🪙 क्रिप्टो से भुगतान करें',
+  payment_success: '✅ <b>भुगतान सफल!</b>\n\nआपकी सदस्यता <b>{days} दिनों</b> के लिए सक्रिय है।\nशुरू करने के लिए "VPN कनेक्ट करें" दबाएं।',
 
   referral_title: '👥 <b>दोस्त को आमंत्रित करें</b>',
   referral_description: '🎁 दोस्त को आमंत्रित करें, जब वो सदस्यता ले तो आपको <b>1 महीना फ्री + 100 GB</b> मिलेगा!',
