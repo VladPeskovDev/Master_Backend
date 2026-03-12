@@ -9,15 +9,21 @@ const activateSubscription = async (userId, planId) => {
   const plan = await Plan.findByPk(planId);
   if (!plan) throw new Error(`Plan ${planId} not found`);
 
-  // Деактивируем старую подписку
-  await Subscription.update(
-    { active: false },
-    { where: { user_id: userId, active: true } },
-  );
+  // Ищем старую подписку — если есть остаток дней, приплюсуем
+  const oldSub = await Subscription.findOne({
+    where: { user_id: userId, active: true },
+  });
 
-  // Создаём новую подписку
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + plan.duration_days * 24 * 60 * 60 * 1000);
+  const baseDate = oldSub && new Date(oldSub.expires_at) > now
+    ? new Date(oldSub.expires_at).getTime()
+    : now.getTime();
+  const expiresAt = new Date(baseDate + plan.duration_days * 24 * 60 * 60 * 1000);
+
+  // Деактивируем старую подписку
+  if (oldSub) {
+    await oldSub.update({ active: false });
+  }
 
   const subscription = await Subscription.create({
     user_id: userId,

@@ -302,7 +302,9 @@ const setupSubscribeHandler = (bot) => {
           text: 'Error creating invoice. Try again.',
           show_alert: true,
         });
-      } catch {}
+      } catch (answerErr) {
+        console.error('❌ Ошибка answerCallbackQuery:', answerErr.message);
+      }
     }
   });
 };

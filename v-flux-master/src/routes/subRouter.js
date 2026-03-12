@@ -77,7 +77,7 @@ router.get('/:token', async (req, res) => {
       '&path=%2Fws',
       '&encryption=none',
       '&mux=off',
-      `#V-Flux-${node.location.replace(/\s/g, '-')}`,
+      `#RockyVPN-${node.location.replace(/\s/g, '-')}`,
     ].join('');
 
     const base64 = Buffer.from(vlessLink).toString('base64');

@@ -21,11 +21,20 @@ router.post('/', async (req, res) => {
 
     const invoice = update.payload;
     const invoiceId = String(invoice.invoice_id);
-    const payloadData = JSON.parse(invoice.payload || '{}');
-    const { user_id: userId, plan_id: planId } = payloadData;
 
-    if (!userId || !planId) {
-      console.error('❌ CryptoPay webhook: missing userId or planId in payload');
+    let payloadData;
+    try {
+      payloadData = JSON.parse(invoice.payload || '{}');
+    } catch {
+      console.error('❌ CryptoPay webhook: invalid JSON in payload:', invoice.payload);
+      return res.sendStatus(200);
+    }
+
+    const userId = Number(payloadData.user_id);
+    const planId = Number(payloadData.plan_id);
+
+    if (!userId || !planId || isNaN(userId) || isNaN(planId)) {
+      console.error('❌ CryptoPay webhook: invalid userId or planId:', payloadData);
       return res.sendStatus(200);
     }
 

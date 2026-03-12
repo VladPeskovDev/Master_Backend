@@ -46,21 +46,26 @@ const setupConnectHandler = (bot) => {
         const trialPlan = await Plan.findOne({ where: { is_trial: true, active: true } });
 
         if (trialPlan) {
-          sub = await Subscription.create({
-            user_id: user.id,
-            plan_id: trialPlan.id,
-            started_at: new Date(),
-            expires_at: new Date(Date.now() + trialPlan.duration_days * 24 * 60 * 60 * 1000),
-            traffic_limit: trialPlan.traffic_limit_bytes,
-            traffic_used: 0,
-            throttled: false,
-            active: true,
+          const [created, isNew] = await Subscription.findOrCreate({
+            where: { user_id: user.id, active: true },
+            defaults: {
+              plan_id: trialPlan.id,
+              started_at: new Date(),
+              expires_at: new Date(Date.now() + trialPlan.duration_days * 24 * 60 * 60 * 1000),
+              traffic_limit: trialPlan.traffic_limit_bytes,
+              traffic_used: 0,
+              throttled: false,
+              active: true,
+            },
           });
 
-          await addUserToAllNodes(user.uuid, Number(trialPlan.traffic_limit_bytes));
-          justActivated = true;
+          sub = created;
 
-          console.log(`🎁 Триал активирован: ${user.uuid} (${user.username || user.telegram_id})`);
+          if (isNew) {
+            await addUserToAllNodes(user.uuid, Number(trialPlan.traffic_limit_bytes));
+            justActivated = true;
+            console.log(`🎁 Триал активирован: ${user.uuid} (${user.username || user.telegram_id})`);
+          }
         } else {
           // Нет триал-плана — предлагаем купить
           await bot.editMessageText(t(lang, 'connect_no_sub'), {

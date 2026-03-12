@@ -2,6 +2,7 @@ const { User, Subscription, Plan } = require('../../db/models');
 const { t } = require('../locales');
 
 const formatBytes = (bytes) => {
+  if (bytes == null) return '∞';
   const gb = Number(bytes) / (1024 * 1024 * 1024);
   return `${gb.toFixed(1)} GB`;
 };
