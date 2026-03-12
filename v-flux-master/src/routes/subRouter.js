@@ -74,8 +74,9 @@ router.get('/:token', async (req, res) => {
       `vless://${user.uuid}@${node.domain}:443`,
       '?type=ws',
       '&security=tls',
-      '&path=%2Fvflux',
+      '&path=%2Fws',
       '&encryption=none',
+      '&mux=off',
       `#V-Flux-${node.location.replace(/\s/g, '-')}`,
     ].join('');
 
