@@ -53,7 +53,7 @@ module.exports = {
     // PlanPrices
     await queryInterface.bulkInsert('PlanPrices', [
       // Monthly
-      { plan_id: monthly.id, region: 'ru', price: 120, currency: 'RUB', createdAt: new Date(), updatedAt: new Date() },
+      { plan_id: monthly.id, region: 'ru', price: 150, currency: 'RUB', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: monthly.id, region: 'uae', price: 4, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: monthly.id, region: 'tr', price: 2, currency: 'USD', createdAt: new Date(), updatedAt: new Date() },
       { plan_id: monthly.id, region: 'uz', price: 30000, currency: 'UZS', createdAt: new Date(), updatedAt: new Date() },

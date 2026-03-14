@@ -1,6 +1,7 @@
 const { User, Plan, PlanPrice, Payment } = require('../../db/models');
 const { t } = require('../locales');
 const { createInvoice } = require('../services/cryptoPayService');
+const { createPaylink } = require('../services/telegaPayService');
 
 const CURRENCY_SYMBOLS = {
   RUB: '₽',
@@ -209,20 +210,81 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  // Заглушка оплаты картой
+  // Оплата картой через TelegaPay (₽)
   bot.on('callback_query', async (query) => {
     try {
       if (!query.data.startsWith('pay_card_')) return;
 
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
-      const lang = user?.lang || 'en';
+      if (!user) return;
 
-      await bot.answerCallbackQuery(query.id, {
-        text: t(lang, 'subscribe_payment_stub'),
-        show_alert: true,
+      const lang = user.lang || 'en';
+      const planId = parseInt(query.data.replace('pay_card_', ''), 10);
+
+      const plan = await Plan.findOne({
+        where: { id: planId },
+        include: [{ model: PlanPrice, where: { region: 'ru' } }],
       });
+
+      if (!plan || !plan.PlanPrices[0]) {
+        await bot.answerCallbackQuery(query.id, {
+          text: t(lang, 'subscribe_payment_stub'),
+          show_alert: true,
+        });
+        return;
+      }
+
+      const price = plan.PlanPrices[0];
+
+      // Создаём Payment (pending)
+      const payment = await Payment.create({
+        user_id: user.id,
+        plan_id: planId,
+        amount: price.price,
+        currency: 'RUB',
+        method: 'card',
+        status: 'pending',
+      });
+
+      // Создаём ссылку на оплату в TelegaPay
+      const result = await createPaylink({
+        amount: price.price,
+        orderId: `pay_${payment.id}`,
+        userId: user.id,
+      });
+
+      // Сохраняем provider_id
+      await payment.update({ provider_id: String(result.transactionId) });
+
+      const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
+      const planName = t(lang, planNameKey, { days: plan.duration_days });
+
+      await bot.editMessageText(
+        t(lang, 'payment_card_invoice', { plan: planName, amount: price.price, currency: '₽' }),
+        {
+          chat_id: query.message.chat.id,
+          message_id: query.message.message_id,
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: t(lang, 'btn_pay_card_link'), url: result.paymentUrl }],
+              [{ text: t(lang, 'btn_back'), callback_data: `buy_plan_${planId}` }],
+            ],
+          },
+        },
+      );
+
+      await bot.answerCallbackQuery(query.id);
     } catch (err) {
       console.error('❌ Ошибка pay_card:', err);
+      try {
+        await bot.answerCallbackQuery(query.id, {
+          text: 'Error creating payment. Try again.',
+          show_alert: true,
+        });
+      } catch (answerErr) {
+        console.error('❌ Ошибка answerCallbackQuery:', answerErr.message);
+      }
     }
   });
 

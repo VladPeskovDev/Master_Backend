@@ -68,11 +68,13 @@ module.exports = {
   subscribe_plan_annual: '👑 <b>Год — лучшая цена</b>\n{price} {currency} — {days} дней ({monthly_price} {currency}/мес, скидка {discount}%)',
   subscribe_footer: '\nВсе тарифы: безлимитный трафик,\nмаксимальная скорость, без логов.',
   subscribe_choose_payment: '💳 <b>Оплата: {plan} — {price} {currency}</b>\n\nВыбери способ оплаты:',
-  btn_pay_card: '💳 Карта (Visa, MC, Мир)',
-  btn_pay_crypto: '🪙 Крипто (USDT, TON, BTC)',
+  btn_pay_card: '🇷🇺 Оплата в ₽',
+  btn_pay_crypto: '💰 Криптовалюта',
   subscribe_payment_stub: '🚧 Оплата скоро будет доступна!',
   payment_crypto_invoice: '🪙 <b>Оплата: {plan} — ${amount}</b>\n\nНажмите кнопку ниже, чтобы оплатить через @CryptoBot.\nПосле оплаты подписка активируется автоматически.',
   btn_pay_crypto_link: '🪙 Оплатить криптой',
+  payment_card_invoice: '💳 <b>Оплата: {plan} — {amount} {currency}</b>\n\nНажмите кнопку ниже для перехода к оплате.\nПосле оплаты подписка активируется автоматически.',
+  btn_pay_card_link: '💳 Перейти к оплате',
   payment_success: '✅ <b>Оплата прошла успешно!</b>\n\nВаша подписка активирована на <b>{days} дней</b>.\nНажмите "Подключить VPN" чтобы начать.',
 
   // Referral
