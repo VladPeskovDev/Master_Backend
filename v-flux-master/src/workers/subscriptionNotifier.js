@@ -36,13 +36,22 @@ const runSubscriptionNotifier = async () => {
     });
 
     // 2. Подписки, истёкшие вчера (уже неактивные)
-    const expired = await Subscription.findAll({
+    const expiredAll = await Subscription.findAll({
       where: {
         active: false,
         expires_at: { [Op.between]: [yesterdayStart, yesterdayEnd] },
       },
       include: [{ model: User }],
     });
+
+    // Фильтр: не слать если юзер уже купил новую подписку
+    const expired = [];
+    for (const sub of expiredAll) {
+      const hasActive = await Subscription.findOne({
+        where: { user_id: sub.user_id, active: true },
+      });
+      if (!hasActive) expired.push(sub);
+    }
 
     console.log(`📬 Уведомления: ${expiring.length} истекают завтра, ${expired.length} истекли вчера`);
 

@@ -1,10 +1,10 @@
 const axios = require('axios');
 
-//const BASE_URL = 'https://testapp.telegapay.pro/api/v1';
-//const API_KEY = process.env.TELEGAPAY_API_KEY_TEST;
+const BASE_URL = 'https://testapp.telegapay.pro/api/v1';
+const API_KEY = process.env.TELEGAPAY_API_KEY_TEST;
 
-const BASE_URL = process.env.TELEGAPAY_BASE_URL;
-const API_KEY = process.env.TELEGAPAY_API_KEY;
+//const BASE_URL = process.env.TELEGAPAY_BASE_URL;
+//const API_KEY = process.env.TELEGAPAY_API_KEY;
 
 const api = axios.create({
   baseURL: BASE_URL,
