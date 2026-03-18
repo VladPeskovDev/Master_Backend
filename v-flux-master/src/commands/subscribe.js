@@ -1,7 +1,7 @@
 const { User, Plan, PlanPrice, Payment } = require('../../db/models');
 const { t } = require('../locales');
 const { createInvoice } = require('../services/cryptoPayService');
-const { createPaylink } = require('../services/telegaPayService');
+const { createOrder } = require('../services/rioPayService');
 
 const CURRENCY_SYMBOLS = {
   RUB: '₽',
@@ -210,7 +210,7 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  // Оплата картой через TelegaPay (₽)
+  // Оплата картой через RioPay (₽)
   bot.on('callback_query', async (query) => {
     try {
       if (!query.data.startsWith('pay_card_')) return;
@@ -246,18 +246,20 @@ const setupSubscribeHandler = (bot) => {
         status: 'pending',
       });
 
-      // Создаём ссылку на оплату в TelegaPay
-      const result = await createPaylink({
+      // Создаём заказ в RioPay
+      const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
+      const planName = t(lang, planNameKey, { days: plan.duration_days });
+
+      const result = await createOrder({
         amount: price.price,
-        orderId: `pay_${payment.id}`,
-        userId: user.id,
+        currency: 'RUB',
+        externalId: `pay_${payment.id}`,
+        externalUserId: `user_${user.id}`,
+        purpose: `Rocky VPN — ${planName}`,
       });
 
       // Сохраняем provider_id
-      await payment.update({ provider_id: String(result.transactionId) });
-
-      const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
-      const planName = t(lang, planNameKey, { days: plan.duration_days });
+      await payment.update({ provider_id: result.orderId });
 
       await bot.editMessageText(
         t(lang, 'payment_card_invoice', { plan: planName, amount: price.price, currency: '₽' }),
@@ -267,7 +269,7 @@ const setupSubscribeHandler = (bot) => {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
-              [{ text: t(lang, 'btn_pay_card_link'), url: result.paymentUrl }],
+              [{ text: t(lang, 'btn_pay_card_link'), url: result.paymentLink }],
               [{ text: t(lang, 'btn_back'), callback_data: `buy_plan_${planId}` }],
             ],
           },

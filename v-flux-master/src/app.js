@@ -9,7 +9,7 @@ const subRouter = require('./routes/subRouter');
 const adminNodesRouter = require('./routes/adminNodesRouter');
 const adminUsersRouter = require('./routes/adminUsersRouter');
 const cryptoPayWebhook = require('./routes/cryptoPayWebhook');
-const telegaPayWebhook = require('./routes/telegaPayWebhook');
+const rioPayWebhook = require('./routes/rioPayWebhook');
 const { subLimiter, adminLimiter, botLimiter } = require('./middleware/rateLimiter');
 const { nodeIpWhitelist, adminIpWhitelist } = require('./middleware/ipWhitelist');
 
@@ -20,11 +20,16 @@ app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({
+  verify: (req, _res, buf) => {
+    // Сохраняем сырое body для верификации подписи RioPay webhook
+    req.rawBody = buf.toString('utf8');
+  },
+}));
 
 // Routes
 app.use('/api/cryptopay/webhook', cryptoPayWebhook);
-app.use('/api/telegapay/webhook', telegaPayWebhook);
+app.use('/api/riopay', rioPayWebhook);
 app.use('/api/nodes', nodeIpWhitelist, nodeSyncRouter);
 app.use('/sub', subLimiter, subRouter);
 app.use('/api/admin/nodes', adminIpWhitelist, adminLimiter, adminNodesRouter);
