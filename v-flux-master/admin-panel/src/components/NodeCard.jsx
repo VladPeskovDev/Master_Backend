@@ -98,6 +98,30 @@ export default function NodeCard({ node }) {
         <span className="speed-down">RX {node.current_speed_rx}</span>
       </div>
 
+      {node.cpu_load !== null && (
+        <div className="node-bar-wrap">
+          <div className="node-bar-info">
+            <span>CPU</span>
+            <span>{(node.cpu_load * 100).toFixed(0)}%</span>
+          </div>
+          <div className="bar-bg">
+            <div className="bar-fill" style={{ width: (node.cpu_load * 100) + '%', background: node.cpu_load < 0.4 ? '#10b981' : node.cpu_load < 0.7 ? '#f59e0b' : '#ef4444' }} />
+          </div>
+        </div>
+      )}
+
+      {node.memory_total_bytes && node.memory_used_bytes && (
+        <div className="node-bar-wrap">
+          <div className="node-bar-info">
+            <span>RAM</span>
+            <span>{formatBytes(node.memory_used_bytes)} / {formatBytes(node.memory_total_bytes)}</span>
+          </div>
+          <div className="bar-bg">
+            <div className="bar-fill" style={{ width: (node.memory_used_bytes / node.memory_total_bytes * 100) + '%', background: (node.memory_used_bytes / node.memory_total_bytes) < 0.4 ? '#10b981' : (node.memory_used_bytes / node.memory_total_bytes) < 0.7 ? '#f59e0b' : '#ef4444' }} />
+          </div>
+        </div>
+      )}
+
       <div className="node-uptime">Uptime: {node.uptime}</div>
 
       <button onClick={handleToggle} className="node-users-btn" disabled={loading}>

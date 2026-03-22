@@ -60,6 +60,9 @@ const runHealthCheck = async () => {
           uptime_secs: d.uptime_secs || 0,
           speed_rx,
           speed_tx,
+          cpu_load: d.cpu_load ?? null,
+          memory_total_bytes: d.memory_total_bytes || null,
+          memory_used_bytes: d.memory_used_bytes || null,
         };
 
         // Сохраняем снепшот для следующего сравнения
