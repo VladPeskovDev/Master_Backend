@@ -31,18 +31,18 @@ module.exports = {
   btn_show_qr: '📷 رمز QR',
   btn_copy_link: '📋 نسخ رابط الاشتراك',
   btn_download_v2box: '⬇️ تحميل V2Box',
-  btn_download_v2rayng: '⬇️ تحميل v2rayNG',
+  btn_download_v2raytun: '⬇️ تحميل V2RayTun',
   btn_download_v2rayn: '⬇️ تحميل V2RayN',
-  btn_download_nekoray: '⬇️ تحميل Nekoray',
+  btn_download_v2raya: '⬇️ تحميل v2rayA',
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>الاتصال على iPhone</b>\n\n1. حمّل <b>V2Box</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Add Subscription\n   → الصق الرابط → Connect\n\nتم! اضغط ▶️ — الإنترنت محمي.',
-  connect_platform_android: '🤖 <b>الاتصال على Android</b>\n\n1. حمّل <b>v2rayNG</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: «+» → لصق من الحافظة\n   → اضغط زر الاتصال في الأسفل\n\nتم!',
+  connect_platform_ios: '📱 <b>الاتصال على iPhone</b>\n\n1. حمّل <b>V2Box</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Import V2Ray URI from clipboard\n\nتم! اضغط ▶️ — الإنترنت محمي.',
+  connect_platform_android: '🤖 <b>الاتصال على Android</b>\n\n1. حمّل <b>V2Box</b> أو <b>V2RayTun</b> (الأزرار أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. انسخ الرابط → افتح التطبيق → استيراد من الحافظة\n\nتم!',
   connect_desktop_choose: '💻 <b>اختر نظامك:</b>',
   connect_platform_windows: '🪟 <b>الاتصال على Windows</b>\n\n1. حمّل <b>V2RayN</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Subscription → Subscription Setting\n   → الصق الرابط في حقل URL → OK\n   → Subscription → Update Subscription\n\nتم! انقر بالزر الأيمن على الخادم → Set as active → في الأسفل «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>الاتصال على macOS</b>\n\n1. حمّل <b>V2Box</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Add Subscription\n   → الصق الرابط → Connect\n\nتم! اضغط ▶️ — الإنترنت محمي.',
-  connect_platform_linux: '🐧 <b>الاتصال على Linux</b>\n\n1. حمّل <b>Nekoray</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Server → Subscription → New\n   → الصق الرابط في URL → OK → Update\n\nتم! اختر خادماً → اضغط ▶️',
+  connect_platform_macos: '🍎 <b>الاتصال على macOS</b>\n\n1. حمّل <b>V2Box</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في التطبيق: Configs → «+» → Import V2Ray URI from clipboard\n\nتم! اضغط ▶️ — الإنترنت محمي.',
+  connect_platform_linux: '🐧 <b>الاتصال على Linux</b>\n\n1. حمّل <b>v2rayA</b> (الزر أدناه)\n\n2. رابط اشتراكك:\n<code>{link}</code>\n\n3. في واجهة الويب: Import → الصق الرابط → OK\n\nتم!',
 
   // Account
   account_title: '📊 <b>حسابي</b>',
@@ -83,7 +83,7 @@ module.exports = {
   btn_instruction: '📖 التعليمات',
 
   help_title: '❓ <b>المساعدة</b>',
-  help_text: '🔑 <b>كيف أتصل؟</b>\nاضغط "اتصل بـ VPN" واتبع التعليمات.\n\n📱 <b>أي تطبيق أحمّل؟</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>كيف أدفع؟</b>\nاضغط "الاشتراك" واختر خطة.\n\n❌ <b>VPN لا يعمل؟</b>\nحدّث الاشتراك في التطبيق.\n\n📧 <b>الدعم:</b>\n@RockyVPN_support\n\n📢 <b>الأخبار:</b>\n@RockyVPN_news',
+  help_text: '🔑 <b>كيف أتصل؟</b>\nاضغط "اتصل بـ VPN" واتبع التعليمات.\n\n📱 <b>أي تطبيق أحمّل؟</b>\niOS → V2Box / Streisand\nAndroid → V2Box / V2RayTun\nDesktop → V2RayN / v2rayA\n\n💳 <b>كيف أدفع؟</b>\nاضغط "الاشتراك" واختر خطة.\n\n❌ <b>VPN لا يعمل؟</b>\nحدّث الاشتراك في التطبيق.\n\n📧 <b>الدعم:</b>\n@RockyVPN_support\n\n📢 <b>الأخبار:</b>\n@RockyVPN_news',
 
   select_language: '🌐 اختر لغتك:',
   language_set: '✅ تم تغيير اللغة إلى العربية',

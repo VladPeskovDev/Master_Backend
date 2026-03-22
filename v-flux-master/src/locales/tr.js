@@ -31,18 +31,18 @@ module.exports = {
   btn_show_qr: '📷 QR Kod',
   btn_copy_link: '📋 Abonelik bağlantısını kopyala',
   btn_download_v2box: '⬇️ V2Box İndir',
-  btn_download_v2rayng: '⬇️ v2rayNG İndir',
+  btn_download_v2raytun: '⬇️ V2RayTun İndir',
   btn_download_v2rayn: '⬇️ V2RayN İndir',
-  btn_download_nekoray: '⬇️ Nekoray İndir',
+  btn_download_v2raya: '⬇️ v2rayA İndir',
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>iPhone\'da Bağlanma</b>\n\n1. <b>V2Box</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Add Subscription\n   → bağlantıyı yapıştırın → Connect\n\nTamam! ▶️ basın — internet korunuyor.',
-  connect_platform_android: '🤖 <b>Android\'de Bağlanma</b>\n\n1. <b>v2rayNG</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: «+» → Panodan yapıştır\n   → alttaki bağlan butonuna basın\n\nTamam!',
+  connect_platform_ios: '📱 <b>iPhone\'da Bağlanma</b>\n\n1. <b>V2Box</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Import V2Ray URI from clipboard\n\nTamam! ▶️ basın — internet korunuyor.',
+  connect_platform_android: '🤖 <b>Android\'de Bağlanma</b>\n\n1. <b>V2Box</b> veya <b>V2RayTun</b> indirin (aşağıdaki butonlar)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Bağlantıyı kopyalayın → uygulamayı açın → panodan içe aktarın\n\nTamam!',
   connect_desktop_choose: '💻 <b>Sisteminizi seçin:</b>',
   connect_platform_windows: '🪟 <b>Windows\'ta Bağlanma</b>\n\n1. <b>V2RayN</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Subscription → Subscription Setting\n   → URL alanına bağlantıyı yapıştırın → OK\n   → Subscription → Update Subscription\n\nTamam! Sunucuya sağ tıklayın → Set as active → altta «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>macOS\'ta Bağlanma</b>\n\n1. <b>V2Box</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Add Subscription\n   → bağlantıyı yapıştırın → Connect\n\nTamam! ▶️ basın — internet korunuyor.',
-  connect_platform_linux: '🐧 <b>Linux\'ta Bağlanma</b>\n\n1. <b>Nekoray</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Server → Subscription → New\n   → URL\'ye bağlantıyı yapıştırın → OK → Update\n\nTamam! Sunucu seçin → ▶️ basın',
+  connect_platform_macos: '🍎 <b>macOS\'ta Bağlanma</b>\n\n1. <b>V2Box</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Uygulamada: Configs → «+» → Import V2Ray URI from clipboard\n\nTamam! ▶️ basın — internet korunuyor.',
+  connect_platform_linux: '🐧 <b>Linux\'ta Bağlanma</b>\n\n1. <b>v2rayA</b> indirin (aşağıdaki buton)\n\n2. Abonelik bağlantınız:\n<code>{link}</code>\n\n3. Web arayüzünde: Import → bağlantıyı yapıştırın → OK\n\nTamam!',
 
   // Account
   account_title: '📊 <b>Hesabım</b>',
@@ -83,7 +83,7 @@ module.exports = {
   btn_instruction: '📖 Talimatlar',
 
   help_title: '❓ <b>Yardım</b>',
-  help_text: '🔑 <b>Nasıl bağlanırım?</b>\n"VPN\'e Bağlan"a basın ve talimatları izleyin.\n\n📱 <b>Hangi uygulamayı indirmeliyim?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>Nasıl ödeme yaparım?</b>\n"Abonelik"e basın ve plan seçin.\n\n❌ <b>VPN çalışmıyor mu?</b>\nUygulamada aboneliği güncelleyin.\n\n📧 <b>Destek:</b>\n@RockyVPN_support\n\n📢 <b>Haberler:</b>\n@RockyVPN_news',
+  help_text: '🔑 <b>Nasıl bağlanırım?</b>\n"VPN\'e Bağlan"a basın ve talimatları izleyin.\n\n📱 <b>Hangi uygulamayı indirmeliyim?</b>\niOS → V2Box / Streisand\nAndroid → V2Box / V2RayTun\nDesktop → V2RayN / v2rayA\n\n💳 <b>Nasıl ödeme yaparım?</b>\n"Abonelik"e basın ve plan seçin.\n\n❌ <b>VPN çalışmıyor mu?</b>\nUygulamada aboneliği güncelleyin.\n\n📧 <b>Destek:</b>\n@RockyVPN_support\n\n📢 <b>Haberler:</b>\n@RockyVPN_news',
 
   select_language: '🌐 Dilinizi seçin:',
   language_set: '✅ Dil Türkçe olarak ayarlandı',

@@ -4,10 +4,11 @@ const { addUserToAllNodes } = require('../services/nodeService');
 
 const APP_URLS = {
   v2box_ios: 'https://apps.apple.com/app/v2box-v2ray-client/id6446814690',
-  v2rayng: 'https://play.google.com/store/apps/details?id=com.v2ray.ang',
+  v2box_android: 'https://play.google.com/store/apps/details?id=dev.hexasoftware.v2box',
+  v2raytun: 'https://play.google.com/store/apps/details?id=com.v2raytun.android',
   v2rayn: 'https://github.com/2dust/v2rayN/releases',
   v2box_macos: 'https://apps.apple.com/app/v2box-v2ray-client/id6446814690',
-  nekoray: 'https://github.com/MatsuriDayo/nekoray/releases',
+  v2raya: 'https://github.com/v2rayA/v2rayA/releases',
 };
 
 const getDeviceKeyboard = (lang) => ({
@@ -110,7 +111,7 @@ const setupConnectHandler = (bot) => {
       if (!user) return;
 
       const lang = user.lang;
-      const link = `${process.env.DOMAIN}/sub/${user.sub_token}`;
+      const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
 
       await bot.editMessageText(t(lang, 'connect_platform_ios', { link }), {
         chat_id: query.message.chat.id,
@@ -134,13 +135,21 @@ const setupConnectHandler = (bot) => {
       if (!user) return;
 
       const lang = user.lang;
-      const link = `${process.env.DOMAIN}/sub/${user.sub_token}`;
+      const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
 
       await bot.editMessageText(t(lang, 'connect_platform_android', { link }), {
         chat_id: query.message.chat.id,
         message_id: query.message.message_id,
         parse_mode: 'HTML',
-        reply_markup: getPlatformKeyboard(lang, link, 'btn_download_v2rayng', APP_URLS.v2rayng, 'connect'),
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_download_v2box'), url: APP_URLS.v2box_android }],
+            [{ text: t(lang, 'btn_download_v2raytun'), url: APP_URLS.v2raytun }],
+            [{ text: t(lang, 'btn_copy_link'), copy_text: { text: link } }],
+            [{ text: t(lang, 'btn_show_qr'), callback_data: 'show_qr' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'connect' }],
+          ],
+        },
       });
 
       await bot.answerCallbackQuery(query.id);
@@ -183,7 +192,7 @@ const setupConnectHandler = (bot) => {
   const desktopPlatforms = [
     { callback: 'desktop_windows', textKey: 'connect_platform_windows', downloadBtn: 'btn_download_v2rayn', url: APP_URLS.v2rayn },
     { callback: 'desktop_macos', textKey: 'connect_platform_macos', downloadBtn: 'btn_download_v2box', url: APP_URLS.v2box_macos },
-    { callback: 'desktop_linux', textKey: 'connect_platform_linux', downloadBtn: 'btn_download_nekoray', url: APP_URLS.nekoray },
+    { callback: 'desktop_linux', textKey: 'connect_platform_linux', downloadBtn: 'btn_download_v2raya', url: APP_URLS.v2raya },
   ];
 
   desktopPlatforms.forEach(({ callback, textKey, downloadBtn, url }) => {
@@ -195,7 +204,7 @@ const setupConnectHandler = (bot) => {
         if (!user) return;
 
         const lang = user.lang;
-        const link = `${process.env.DOMAIN}/sub/${user.sub_token}`;
+        const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
 
         await bot.editMessageText(t(lang, textKey, { link }), {
           chat_id: query.message.chat.id,
@@ -220,7 +229,7 @@ const setupConnectHandler = (bot) => {
       if (!user) return;
 
       const QRCode = require('qrcode');
-      const link = `${process.env.DOMAIN}/sub/${user.sub_token}`;
+      const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
       const qrBuffer = await QRCode.toBuffer(link, { width: 300 });
 
       await bot.sendPhoto(query.message.chat.id, qrBuffer, {

@@ -31,18 +31,18 @@ module.exports = {
   btn_show_qr: '📷 QR कोड',
   btn_copy_link: '📋 सदस्यता लिंक कॉपी करें',
   btn_download_v2box: '⬇️ V2Box डाउनलोड करें',
-  btn_download_v2rayng: '⬇️ v2rayNG डाउनलोड करें',
+  btn_download_v2raytun: '⬇️ V2RayTun डाउनलोड करें',
   btn_download_v2rayn: '⬇️ V2RayN डाउनलोड करें',
-  btn_download_nekoray: '⬇️ Nekoray डाउनलोड करें',
+  btn_download_v2raya: '⬇️ v2rayA डाउनलोड करें',
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>iPhone पर कनेक्ट करें</b>\n\n1. <b>V2Box</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Add Subscription\n   → लिंक पेस्ट करें → Connect\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
-  connect_platform_android: '🤖 <b>Android पर कनेक्ट करें</b>\n\n1. <b>v2rayNG</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: «+» → क्लिपबोर्ड से पेस्ट करें\n   → नीचे कनेक्ट बटन दबाएं\n\nहो गया!',
+  connect_platform_ios: '📱 <b>iPhone पर कनेक्ट करें</b>\n\n1. <b>V2Box</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Import V2Ray URI from clipboard\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
+  connect_platform_android: '🤖 <b>Android पर कनेक्ट करें</b>\n\n1. <b>V2Box</b> या <b>V2RayTun</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. लिंक कॉपी करें → ऐप खोलें → क्लिपबोर्ड से इम्पोर्ट करें\n\nहो गया!',
   connect_desktop_choose: '💻 <b>अपना सिस्टम चुनें:</b>',
   connect_platform_windows: '🪟 <b>Windows पर कनेक्ट करें</b>\n\n1. <b>V2RayN</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Subscription → Subscription Setting\n   → URL फ़ील्ड में लिंक पेस्ट करें → OK\n   → Subscription → Update Subscription\n\nहो गया! सर्वर पर राइट क्लिक → Set as active → नीचे «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>macOS पर कनेक्ट करें</b>\n\n1. <b>V2Box</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Add Subscription\n   → लिंक पेस्ट करें → Connect\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
-  connect_platform_linux: '🐧 <b>Linux पर कनेक्ट करें</b>\n\n1. <b>Nekoray</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Server → Subscription → New\n   → URL में लिंक पेस्ट करें → OK → Update\n\nहो गया! सर्वर चुनें → ▶️ दबाएं',
+  connect_platform_macos: '🍎 <b>macOS पर कनेक्ट करें</b>\n\n1. <b>V2Box</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. ऐप में: Configs → «+» → Import V2Ray URI from clipboard\n\nहो गया! ▶️ दबाएं — इंटरनेट सुरक्षित है।',
+  connect_platform_linux: '🐧 <b>Linux पर कनेक्ट करें</b>\n\n1. <b>v2rayA</b> डाउनलोड करें (नीचे बटन)\n\n2. आपका सदस्यता लिंक:\n<code>{link}</code>\n\n3. वेब इंटरफेस में: Import → लिंक पेस्ट करें → OK\n\nहो गया!',
 
   // Account
   account_title: '📊 <b>मेरा अकाउंट</b>',
@@ -83,7 +83,7 @@ module.exports = {
   btn_instruction: '📖 निर्देश',
 
   help_title: '❓ <b>मदद</b>',
-  help_text: '🔑 <b>कैसे कनेक्ट करें?</b>\n"VPN कनेक्ट करें" दबाएं और निर्देशों का पालन करें।\n\n📱 <b>कौन सा ऐप डाउनलोड करें?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>कैसे भुगतान करें?</b>\n"सदस्यता" दबाएं और प्लान चुनें।\n\n❌ <b>VPN काम नहीं कर रहा?</b>\nऐप में सदस्यता अपडेट करें।\n\n📧 <b>सहायता:</b>\n@RockyVPN_support\n\n📢 <b>समाचार:</b>\n@RockyVPN_news',
+  help_text: '🔑 <b>कैसे कनेक्ट करें?</b>\n"VPN कनेक्ट करें" दबाएं और निर्देशों का पालन करें।\n\n📱 <b>कौन सा ऐप डाउनलोड करें?</b>\niOS → V2Box / Streisand\nAndroid → V2Box / V2RayTun\nDesktop → V2RayN / v2rayA\n\n💳 <b>कैसे भुगतान करें?</b>\n"सदस्यता" दबाएं और प्लान चुनें।\n\n❌ <b>VPN काम नहीं कर रहा?</b>\nऐप में सदस्यता अपडेट करें।\n\n📧 <b>सहायता:</b>\n@RockyVPN_support\n\n📢 <b>समाचार:</b>\n@RockyVPN_news',
 
   select_language: '🌐 अपनी भाषा चुनें:',
   language_set: '✅ भाषा हिंदी में बदली गई',

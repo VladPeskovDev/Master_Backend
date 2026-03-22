@@ -31,18 +31,18 @@ module.exports = {
   btn_show_qr: '📷 QR kod',
   btn_copy_link: '📋 Obuna havolasini nusxalash',
   btn_download_v2box: '⬇️ V2Box yuklab olish',
-  btn_download_v2rayng: '⬇️ v2rayNG yuklab olish',
+  btn_download_v2raytun: '⬇️ V2RayTun yuklab olish',
   btn_download_v2rayn: '⬇️ V2RayN yuklab olish',
-  btn_download_nekoray: '⬇️ Nekoray yuklab olish',
+  btn_download_v2raya: '⬇️ v2rayA yuklab olish',
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>iPhone\'da ulanish</b>\n\n1. <b>V2Box</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Add Subscription\n   → havolani joylashtiring → Connect\n\nTayyor! ▶️ bosing — internet himoyalangan.',
-  connect_platform_android: '🤖 <b>Android\'da ulanish</b>\n\n1. <b>v2rayNG</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: «+» → Buferdan joylashtirish\n   → pastdagi ulanish tugmasini bosing\n\nTayyor!',
+  connect_platform_ios: '📱 <b>iPhone\'da ulanish</b>\n\n1. <b>V2Box</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Import V2Ray URI from clipboard\n\nTayyor! ▶️ bosing — internet himoyalangan.',
+  connect_platform_android: '🤖 <b>Android\'da ulanish</b>\n\n1. <b>V2Box</b> yoki <b>V2RayTun</b> yuklab oling (pastdagi tugmalar)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Havolani nusxalang → ilovani oching → buferdan import qiling\n\nTayyor!',
   connect_desktop_choose: '💻 <b>Tizimingizni tanlang:</b>',
   connect_platform_windows: '🪟 <b>Windows\'da ulanish</b>\n\n1. <b>V2RayN</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Subscription → Subscription Setting\n   → URL maydoniga havolani joylashtiring → OK\n   → Subscription → Update Subscription\n\nTayyor! Serverga o\'ng tugma bosing → Set as active → pastda «System Proxy: Set»',
-  connect_platform_macos: '🍎 <b>macOS\'da ulanish</b>\n\n1. <b>V2Box</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Add Subscription\n   → havolani joylashtiring → Connect\n\nTayyor! ▶️ bosing — internet himoyalangan.',
-  connect_platform_linux: '🐧 <b>Linux\'da ulanish</b>\n\n1. <b>Nekoray</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Server → Subscription → New\n   → URL\'ga havolani joylashtiring → OK → Update\n\nTayyor! Serverni tanlang → ▶️ bosing',
+  connect_platform_macos: '🍎 <b>macOS\'da ulanish</b>\n\n1. <b>V2Box</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Ilovada: Configs → «+» → Import V2Ray URI from clipboard\n\nTayyor! ▶️ bosing — internet himoyalangan.',
+  connect_platform_linux: '🐧 <b>Linux\'da ulanish</b>\n\n1. <b>v2rayA</b> yuklab oling (pastdagi tugma)\n\n2. Obuna havolangiz:\n<code>{link}</code>\n\n3. Veb interfeysda: Import → havolani joylashtiring → OK\n\nTayyor!',
 
   // Account
   account_title: '📊 <b>Mening hisobim</b>',
@@ -83,7 +83,7 @@ module.exports = {
   btn_instruction: '📖 Ko\'rsatmalar',
 
   help_title: '❓ <b>Yordam</b>',
-  help_text: '🔑 <b>Qanday ulanaman?</b>\n"VPN\'ga ulanish" bosing va ko\'rsatmalarga amal qiling.\n\n📱 <b>Qaysi ilovani yuklayman?</b>\niOS → V2Box / Streisand\nAndroid → v2rayNG\nDesktop → V2RayN / Nekoray\n\n💳 <b>Qanday to\'layman?</b>\n"Obuna" bosing va tarif tanlang.\n\n❌ <b>VPN ishlamayaptimi?</b>\nIlovada obunani yangilang.\n\n📧 <b>Qo\'llab-quvvatlash:</b>\n@RockyVPN_support\n\n📢 <b>Yangiliklar:</b>\n@RockyVPN_news',
+  help_text: '🔑 <b>Qanday ulanaman?</b>\n"VPN\'ga ulanish" bosing va ko\'rsatmalarga amal qiling.\n\n📱 <b>Qaysi ilovani yuklayman?</b>\niOS → V2Box / Streisand\nAndroid → V2Box / V2RayTun\nDesktop → V2RayN / v2rayA\n\n💳 <b>Qanday to\'layman?</b>\n"Obuna" bosing va tarif tanlang.\n\n❌ <b>VPN ishlamayaptimi?</b>\nIlovada obunani yangilang.\n\n📧 <b>Qo\'llab-quvvatlash:</b>\n@RockyVPN_support\n\n📢 <b>Yangiliklar:</b>\n@RockyVPN_news',
 
   select_language: '🌐 Tilni tanlang:',
   language_set: '✅ Til o\'zbek tiliga o\'zgartirildi',

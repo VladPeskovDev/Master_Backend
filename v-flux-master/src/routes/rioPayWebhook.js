@@ -86,7 +86,7 @@ router.post('/webhook', async (req, res) => {
 });
 
 router.get('/success', (req, res) => {
-  res.send('✅ Оплата успешна! Вернитесь в Telegram — подписка активирована.');
+  res.send('✅ Оплата успешна! Вернитесь в Telegram — подписка активируется в течение пары минут.');
 });
 
 router.get('/fail', (req, res) => {
