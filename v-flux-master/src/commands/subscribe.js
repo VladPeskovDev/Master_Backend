@@ -2,6 +2,7 @@ const { User, Plan, PlanPrice, Payment } = require('../../db/models');
 const { t } = require('../locales');
 const { createInvoice } = require('../services/cryptoPayService');
 const { createOrder } = require('../services/rioPayService');
+const { generatePaymentUrl } = require('../services/robokassaService');
 
 const CURRENCY_SYMBOLS = {
   RUB: '₽',
@@ -198,7 +199,8 @@ const setupSubscribeHandler = (bot) => {
         reply_markup: {
           inline_keyboard: [
             [{ text: t(lang, 'btn_pay_card'), callback_data: `pay_card_${planId}` }],
-            [{ text: t(lang, 'btn_pay_crypto'), callback_data: `pay_crypto_${planId}` }],
+            // [{ text: t(lang, 'btn_pay_robokassa'), callback_data: `pay_robokassa_${planId}` }],
+            // [{ text: t(lang, 'btn_pay_crypto'), callback_data: `pay_crypto_${planId}` }],
             [{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }],
           ],
         },
@@ -279,6 +281,87 @@ const setupSubscribeHandler = (bot) => {
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
       console.error('❌ Ошибка pay_card:', err);
+      try {
+        await bot.answerCallbackQuery(query.id, {
+          text: 'Error creating payment. Try again.',
+          show_alert: true,
+        });
+      } catch (answerErr) {
+        console.error('❌ Ошибка answerCallbackQuery:', answerErr.message);
+      }
+    }
+  });
+
+  // Оплата через Robokassa (Visa/Mastercard)
+  bot.on('callback_query', async (query) => {
+    try {
+      if (!query.data.startsWith('pay_robokassa_')) return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang || 'en';
+      const planId = parseInt(query.data.replace('pay_robokassa_', ''), 10);
+
+      // RU → рубли, UAE → $4/мес, остальные → $2/мес (регион tr)
+      const roboRegion = user.region === 'ru' ? 'ru' : user.region === 'uae' ? 'uae' : 'tr';
+
+      const plan = await Plan.findOne({
+        where: { id: planId },
+        include: [{ model: PlanPrice, where: { region: roboRegion } }],
+      });
+
+      if (!plan || !plan.PlanPrices[0]) {
+        await bot.answerCallbackQuery(query.id, {
+          text: t(lang, 'subscribe_payment_stub'),
+          show_alert: true,
+        });
+        return;
+      }
+
+      const price = plan.PlanPrices[0];
+
+      // Создаём Payment (pending)
+      const payment = await Payment.create({
+        user_id: user.id,
+        plan_id: planId,
+        amount: price.price,
+        currency: price.currency,
+        method: 'robokassa',
+        status: 'pending',
+      });
+
+      const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
+      const planName = t(lang, planNameKey, { days: plan.duration_days });
+
+      const payUrl = generatePaymentUrl({
+        invoiceId: payment.id,
+        amount: price.price,
+        description: `Rocky Network — ${planName}`,
+        userId: user.id,
+        planId,
+      });
+
+      const { formatted, symbol } = formatPrice(price.price, price.currency);
+
+      await bot.editMessageText(
+        t(lang, 'payment_card_invoice', { plan: planName, amount: formatted, currency: symbol }),
+        {
+          chat_id: query.message.chat.id,
+          message_id: query.message.message_id,
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: t(lang, 'btn_pay_card_link'), url: payUrl }],
+              [{ text: t(lang, 'btn_back'), callback_data: `buy_plan_${planId}` }],
+            ],
+          },
+        },
+      );
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка pay_robokassa:', err);
       try {
         await bot.answerCallbackQuery(query.id, {
           text: 'Error creating payment. Try again.',

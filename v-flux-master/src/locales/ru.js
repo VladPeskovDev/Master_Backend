@@ -69,6 +69,7 @@ module.exports = {
   subscribe_footer: '\nВсе тарифы: безлимитный трафик,\nмаксимальная скорость, без логов.',
   subscribe_choose_payment: '💳 <b>Оплата: {plan} — {price} {currency}</b>\n\nВыбери способ оплаты:',
   btn_pay_card: '🇷🇺 Оплата в ₽',
+  btn_pay_robokassa: '💳 Visa/Mastercard (зарубежная карта)',
   btn_pay_crypto: '💰 Криптовалюта',
   subscribe_payment_stub: '🚧 Оплата скоро будет доступна!',
   payment_crypto_invoice: '🪙 <b>Оплата: {plan} — ${amount}</b>\n\nНажмите кнопку ниже, чтобы оплатить через @CryptoBot.\nПосле оплаты подписка активируется автоматически.',
