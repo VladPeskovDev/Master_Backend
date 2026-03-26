@@ -30,35 +30,36 @@ const PLAN_NAME_KEYS = {
 
 const formatPrice = (price, currency) => {
   const symbol = CURRENCY_SYMBOLS[currency] || currency;
-  // Для UZS — без копеек, с разделителем тысяч
   if (currency === 'UZS') {
     return { formatted: price.toLocaleString('ru-RU'), symbol };
   }
   return { formatted: String(price), symbol };
 };
 
-const buildSubscribeMessage = async (user) => {
-  const lang = user.lang;
-  const region = user.region || 'uae';
-
+// Построить список планов с ценами для конкретного региона
+const buildPlanButtons = async (lang, region, callbackPrefix, excludeMonthly = false) => {
   const plans = await Plan.findAll({
     where: { active: true, is_trial: false },
     include: [{ model: PlanPrice, where: { region } }],
     order: [['duration_days', 'ASC']],
   });
 
-  // Находим месячную цену для расчёта скидок
+  // Крипто-цены в центах — конвертируем для отображения
+  const isCents = region === 'crypto' || region === 'crypto_uae';
+
   const monthlyPlan = plans.find((p) => p.name === 'Monthly');
-  const monthlyPrice = monthlyPlan?.PlanPrices[0]?.price || 0;
+  const monthlyRaw = monthlyPlan?.PlanPrices[0]?.price || 0;
+  const monthlyPrice = isCents ? monthlyRaw / 100 : monthlyRaw;
 
-  let text = t(lang, 'subscribe_title') + '\n\n';
-
+  let text = '';
   const buttons = [];
 
   plans.forEach((plan) => {
-    const price = plan.PlanPrices[0];
-    const { formatted, symbol } = formatPrice(price.price, price.currency);
+    if (excludeMonthly && plan.name === 'Monthly') return;
 
+    const price = plan.PlanPrices[0];
+    const displayPrice = isCents ? price.price / 100 : price.price;
+    const { formatted, symbol } = formatPrice(displayPrice, price.currency);
     const textKey = PLAN_TEXT_KEYS[plan.name] || 'subscribe_plan_monthly';
     const icon = PLAN_ICONS[plan.name] || '📅';
 
@@ -69,13 +70,13 @@ const buildSubscribeMessage = async (user) => {
         days: plan.duration_days,
       }) + '\n\n';
     } else {
-      // Вычисляем помесячную цену и скидку
       const months = Math.round(plan.duration_days / 30);
-      const perMonth = Math.round(price.price / months);
+      const perMonth = isCents
+        ? (price.price / 100 / months).toFixed(2)
+        : Math.round(displayPrice / months);
       const discount = monthlyPrice > 0
-        ? Math.round((1 - price.price / (monthlyPrice * months)) * 100)
+        ? Math.round((1 - displayPrice / (monthlyPrice * months)) * 100)
         : 0;
-
       const { formatted: monthlyFormatted } = formatPrice(perMonth, price.currency);
 
       text += t(lang, textKey, {
@@ -87,22 +88,19 @@ const buildSubscribeMessage = async (user) => {
       }) + '\n\n';
     }
 
-    // Кнопка с ценой
     const planName = t(lang, `plan_name_${plan.name === 'Semi-Annual' ? 'semi' : plan.name.toLowerCase()}`, { days: plan.duration_days });
     buttons.push([{
       text: `${icon} ${planName} — ${formatted} ${symbol}`,
-      callback_data: `buy_plan_${plan.id}`,
+      callback_data: `${callbackPrefix}_${plan.id}`,
     }]);
   });
-
-  text += t(lang, 'subscribe_footer');
-
-  buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }]);
 
   return { text, buttons };
 };
 
 const setupSubscribeHandler = (bot) => {
+  // ===== ШАГ 1: Подписка → выбор метода оплаты =====
+
   // Кнопка из меню
   bot.on('callback_query', async (query) => {
     try {
@@ -111,13 +109,20 @@ const setupSubscribeHandler = (bot) => {
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       if (!user) return;
 
-      const { text, buttons } = await buildSubscribeMessage(user);
+      const lang = user.lang;
 
-      await bot.editMessageText(text, {
+      await bot.editMessageText(t(lang, 'subscribe_choose_method'), {
         chat_id: query.message.chat.id,
         message_id: query.message.message_id,
         parse_mode: 'HTML',
-        reply_markup: { inline_keyboard: buttons },
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            [{ text: t(lang, 'btn_pay_robokassa'), callback_data: 'method_robokassa' }],
+            [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
+          ],
+        },
       });
 
       await bot.answerCallbackQuery(query.id);
@@ -126,7 +131,7 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  // Из уведомления — новое сообщение (уведомление остаётся)
+  // Из уведомления — новое сообщение
   bot.on('callback_query', async (query) => {
     try {
       if (query.data !== 'notify_subscribe') return;
@@ -134,11 +139,18 @@ const setupSubscribeHandler = (bot) => {
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       if (!user) return;
 
-      const { text, buttons } = await buildSubscribeMessage(user);
+      const lang = user.lang;
 
-      await bot.sendMessage(query.message.chat.id, text, {
+      await bot.sendMessage(query.message.chat.id, t(lang, 'subscribe_choose_method'), {
         parse_mode: 'HTML',
-        reply_markup: { inline_keyboard: buttons },
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            [{ text: t(lang, 'btn_pay_robokassa'), callback_data: 'method_robokassa' }],
+            [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
+          ],
+        },
       });
 
       await bot.answerCallbackQuery(query.id);
@@ -153,64 +165,107 @@ const setupSubscribeHandler = (bot) => {
       const user = await User.findOne({ where: { telegram_id: msg.from.id } });
       if (!user) return;
 
-      const { text, buttons } = await buildSubscribeMessage(user);
+      const lang = user.lang;
 
-      await bot.sendMessage(msg.chat.id, text, {
+      await bot.sendMessage(msg.chat.id, t(lang, 'subscribe_choose_method'), {
         parse_mode: 'HTML',
-        reply_markup: { inline_keyboard: buttons },
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            [{ text: t(lang, 'btn_pay_robokassa'), callback_data: 'method_robokassa' }],
+            [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
+          ],
+        },
       });
     } catch (err) {
       console.error('❌ Ошибка /subscribe:', err);
     }
   });
 
-  // Выбор способа оплаты
+  // ===== ШАГ 2: Выбрал метод → список планов =====
+
+  // Карта РФ (RioPay) → все планы
   bot.on('callback_query', async (query) => {
     try {
-      if (!query.data.startsWith('buy_plan_')) return;
+      if (query.data !== 'method_card') return;
 
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       if (!user) return;
 
       const lang = user.lang;
-      const region = user.region || 'uae';
-      const planId = parseInt(query.data.replace('buy_plan_', ''), 10);
+      const { text, buttons } = await buildPlanButtons(lang, 'ru', 'pay_card');
 
-      const plan = await Plan.findOne({
-        where: { id: planId },
-        include: [{ model: PlanPrice, where: { region } }],
-      });
+      buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }]);
 
-      let paymentText;
-      if (plan && plan.PlanPrices[0]) {
-        const price = plan.PlanPrices[0];
-        const { formatted, symbol } = formatPrice(price.price, price.currency);
-        const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
-        const planName = t(lang, planNameKey, { days: plan.duration_days });
-        paymentText = t(lang, 'subscribe_choose_payment', { plan: planName, price: formatted, currency: symbol });
-      } else {
-        paymentText = t(lang, 'subscribe_choose_payment', { plan: '—', price: '—', currency: '' });
-      }
-
-      await bot.editMessageText(paymentText, {
+      await bot.editMessageText(t(lang, 'subscribe_title') + '\n\n' + text + t(lang, 'subscribe_footer'), {
         chat_id: query.message.chat.id,
         message_id: query.message.message_id,
         parse_mode: 'HTML',
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: t(lang, 'btn_pay_card'), callback_data: `pay_card_${planId}` }],
-            // [{ text: t(lang, 'btn_pay_robokassa'), callback_data: `pay_robokassa_${planId}` }],
-            // [{ text: t(lang, 'btn_pay_crypto'), callback_data: `pay_crypto_${planId}` }],
-            [{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }],
-          ],
-        },
+        reply_markup: { inline_keyboard: buttons },
       });
 
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
-      console.error('❌ Ошибка buy_plan:', err);
+      console.error('❌ Ошибка method_card:', err);
     }
   });
+
+  // Visa/Mastercard (Robokassa) → без месячного
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'method_robokassa') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang;
+      const roboRegion = user.region === 'ru' ? 'ru' : user.region === 'uae' ? 'uae' : 'tr';
+      const { text, buttons } = await buildPlanButtons(lang, roboRegion, 'pay_robokassa', true);
+
+      buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }]);
+
+      await bot.editMessageText(t(lang, 'subscribe_title') + '\n\n' + text + t(lang, 'subscribe_footer'), {
+        chat_id: query.message.chat.id,
+        message_id: query.message.message_id,
+        parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: buttons },
+      });
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка method_robokassa:', err);
+    }
+  });
+
+  // Крипта (CryptoPay) → все планы
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'method_crypto') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang;
+      const cryptoRegion = user.region === 'uae' ? 'crypto_uae' : 'crypto';
+      const { text, buttons } = await buildPlanButtons(lang, cryptoRegion, 'pay_crypto');
+
+      buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }]);
+
+      await bot.editMessageText(t(lang, 'subscribe_title') + '\n\n' + text + t(lang, 'subscribe_footer'), {
+        chat_id: query.message.chat.id,
+        message_id: query.message.message_id,
+        parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: buttons },
+      });
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка method_crypto:', err);
+    }
+  });
+
+  // ===== ШАГ 3: Оплата =====
 
   // Оплата картой через RioPay (₽)
   bot.on('callback_query', async (query) => {
@@ -238,7 +293,6 @@ const setupSubscribeHandler = (bot) => {
 
       const price = plan.PlanPrices[0];
 
-      // Создаём Payment (pending)
       const payment = await Payment.create({
         user_id: user.id,
         plan_id: planId,
@@ -248,7 +302,6 @@ const setupSubscribeHandler = (bot) => {
         status: 'pending',
       });
 
-      // Создаём заказ в RioPay
       const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
       const planName = t(lang, planNameKey, { days: plan.duration_days });
 
@@ -260,7 +313,6 @@ const setupSubscribeHandler = (bot) => {
         purpose: `Rocky VPN — ${planName}`,
       });
 
-      // Сохраняем provider_id
       await payment.update({ provider_id: result.orderId });
 
       await bot.editMessageText(
@@ -272,7 +324,7 @@ const setupSubscribeHandler = (bot) => {
           reply_markup: {
             inline_keyboard: [
               [{ text: t(lang, 'btn_pay_card_link'), url: result.paymentLink }],
-              [{ text: t(lang, 'btn_back'), callback_data: `buy_plan_${planId}` }],
+              [{ text: t(lang, 'btn_back'), callback_data: 'method_card' }],
             ],
           },
         },
@@ -303,7 +355,6 @@ const setupSubscribeHandler = (bot) => {
       const lang = user.lang || 'en';
       const planId = parseInt(query.data.replace('pay_robokassa_', ''), 10);
 
-      // RU → рубли, UAE → $4/мес, остальные → $2/мес (регион tr)
       const roboRegion = user.region === 'ru' ? 'ru' : user.region === 'uae' ? 'uae' : 'tr';
 
       const plan = await Plan.findOne({
@@ -321,7 +372,6 @@ const setupSubscribeHandler = (bot) => {
 
       const price = plan.PlanPrices[0];
 
-      // Создаём Payment (pending)
       const payment = await Payment.create({
         user_id: user.id,
         plan_id: planId,
@@ -353,7 +403,7 @@ const setupSubscribeHandler = (bot) => {
           reply_markup: {
             inline_keyboard: [
               [{ text: t(lang, 'btn_pay_card_link'), url: payUrl }],
-              [{ text: t(lang, 'btn_back'), callback_data: `buy_plan_${planId}` }],
+              [{ text: t(lang, 'btn_back'), callback_data: 'method_robokassa' }],
             ],
           },
         },
@@ -384,7 +434,6 @@ const setupSubscribeHandler = (bot) => {
       const lang = user.lang || 'en';
       const planId = parseInt(query.data.replace('pay_crypto_', ''), 10);
 
-      // Определяем крипто-регион
       const cryptoRegion = user.region === 'uae' ? 'crypto_uae' : 'crypto';
 
       const plan = await Plan.findOne({
@@ -402,7 +451,6 @@ const setupSubscribeHandler = (bot) => {
 
       const price = plan.PlanPrices[0];
 
-      // Создаём Payment (pending)
       const payment = await Payment.create({
         user_id: user.id,
         plan_id: planId,
@@ -412,7 +460,6 @@ const setupSubscribeHandler = (bot) => {
         status: 'pending',
       });
 
-      // Создаём инвойс в CryptoPay
       const invoice = await createInvoice({
         amount: price.price,
         userId: user.id,
@@ -420,7 +467,6 @@ const setupSubscribeHandler = (bot) => {
         chatId: query.message.chat.id,
       });
 
-      // Сохраняем provider_id
       await payment.update({ provider_id: String(invoice.invoice_id) });
 
       const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
@@ -435,7 +481,7 @@ const setupSubscribeHandler = (bot) => {
           reply_markup: {
             inline_keyboard: [
               [{ text: t(lang, 'btn_pay_crypto_link'), url: invoice.bot_invoice_url }],
-              [{ text: t(lang, 'btn_back'), callback_data: `buy_plan_${planId}` }],
+              [{ text: t(lang, 'btn_back'), callback_data: 'method_crypto' }],
             ],
           },
         },

@@ -62,6 +62,7 @@ module.exports = {
   plan_name_annual: 'Годовой',
 
   // Subscribe
+  subscribe_choose_method: '💳 <b>Выбери способ оплаты:</b>',
   subscribe_title: '💳 <b>Выбери тариф:</b>',
   subscribe_plan_monthly: '📅 <b>Месяц</b>\n{price} {currency} — {days} дней',
   subscribe_plan_semi: '🔥 <b>Полгода — выгодно!</b>\n{price} {currency} — {days} дней ({monthly_price} {currency}/мес, скидка {discount}%)',

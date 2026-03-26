@@ -60,6 +60,7 @@ module.exports = {
   plan_name_semi: '6 Ay',
   plan_name_annual: 'Yıllık',
 
+  subscribe_choose_method: '💳 <b>Ödeme yöntemini seçin:</b>',
   subscribe_title: '💳 <b>Plan seçin:</b>',
   subscribe_plan_monthly: '📅 <b>Aylık</b>\n{price} {currency} — {days} gün',
   subscribe_plan_semi: '🔥 <b>6 Ay — en avantajlı!</b>\n{price} {currency} — {days} gün ({monthly_price} {currency}/ay, %{discount} indirim)',

@@ -60,6 +60,7 @@ module.exports = {
   plan_name_semi: '6 oy',
   plan_name_annual: 'Yillik',
 
+  subscribe_choose_method: '💳 <b>To\'lov usulini tanlang:</b>',
   subscribe_title: '💳 <b>Tarifni tanlang:</b>',
   subscribe_plan_monthly: '📅 <b>Oylik</b>\n{price} {currency} — {days} kun',
   subscribe_plan_semi: '🔥 <b>6 oy — eng foydali!</b>\n{price} {currency} — {days} kun ({monthly_price} {currency}/oy, {discount}% chegirma)',

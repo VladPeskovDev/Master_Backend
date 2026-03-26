@@ -63,6 +63,7 @@ module.exports = {
 
   btn_instruction: '📖 Instructions',
 
+  subscribe_choose_method: '💳 <b>Choose payment method:</b>',
   subscribe_title: '💳 <b>Choose a plan:</b>',
   subscribe_plan_monthly: '📅 <b>Monthly</b>\n{price} {currency} — {days} days',
   subscribe_plan_semi: '🔥 <b>6 Months — best value!</b>\n{price} {currency} — {days} days ({monthly_price} {currency}/mo, save {discount}%)',

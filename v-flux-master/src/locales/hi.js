@@ -60,6 +60,7 @@ module.exports = {
   plan_name_semi: '6 महीने',
   plan_name_annual: 'वार्षिक',
 
+  subscribe_choose_method: '💳 <b>भुगतान विधि चुनें:</b>',
   subscribe_title: '💳 <b>प्लान चुनें:</b>',
   subscribe_plan_monthly: '📅 <b>मासिक</b>\n{price} {currency} — {days} दिन',
   subscribe_plan_semi: '🔥 <b>6 महीने — सबसे फायदेमंद!</b>\n{price} {currency} — {days} दिन ({monthly_price} {currency}/माह, {discount}% छूट)',

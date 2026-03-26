@@ -1,6 +1,6 @@
 const express = require('express');
 const { User, Subscription, Plan, Payment } = require('../../db/models');
-const { removeUserFromAllNodes, syncUserOnAllNodes } = require('../services/nodeService');
+const { removeUserFromAllNodes, syncUserOnAllNodes, throttleOnAllNodes, unthrottleOnAllNodes } = require('../services/nodeService');
 const adminAuth = require('../middleware/adminAuth');
 
 const router = express.Router();
@@ -140,6 +140,46 @@ router.post('/:id/subscription', async (req, res) => {
     res.status(201).json({ subscription: sub });
   } catch (err) {
     console.error('❌ Admin grant sub:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/admin/users/:id/throttle — ручной тротл
+router.post('/:id/throttle', async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const sub = await Subscription.findOne({ where: { user_id: user.id, active: true } });
+    if (!sub) return res.status(400).json({ error: 'No active subscription' });
+
+    await sub.update({ throttled: true, traffic_used: sub.traffic_limit });
+    await throttleOnAllNodes(user.uuid);
+
+    console.log(`🔒 Admin throttle: user ${user.id} (${user.username || user.telegram_id})`);
+    res.json({ message: `User ${user.id} throttled` });
+  } catch (err) {
+    console.error('❌ Admin throttle:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/admin/users/:id/unthrottle — снять ручной тротл
+router.post('/:id/unthrottle', async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const sub = await Subscription.findOne({ where: { user_id: user.id, active: true } });
+    if (!sub) return res.status(400).json({ error: 'No active subscription' });
+
+    await sub.update({ throttled: false, traffic_used: 0 });
+    await unthrottleOnAllNodes(user.uuid);
+
+    console.log(`🔓 Admin unthrottle: user ${user.id} (${user.username || user.telegram_id})`);
+    res.json({ message: `User ${user.id} unthrottled` });
+  } catch (err) {
+    console.error('❌ Admin unthrottle:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
