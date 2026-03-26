@@ -8,7 +8,7 @@ const nodeSyncRouter = require('./routes/nodeSyncRouter');
 const subRouter = require('./routes/subRouter');
 const adminNodesRouter = require('./routes/adminNodesRouter');
 const adminUsersRouter = require('./routes/adminUsersRouter');
-const cryptoPayWebhook = require('./routes/cryptoPayWebhook');
+const oxaPayWebhook = require('./routes/oxaPayWebhook');
 const rioPayWebhook = require('./routes/rioPayWebhook');
 const robokassaWebhook = require('./routes/robokassaWebhook');
 const { subLimiter, adminLimiter, botLimiter } = require('./middleware/rateLimiter');
@@ -29,7 +29,7 @@ app.use(express.json({
 }));
 
 // Routes
-app.use('/api/cryptopay/webhook', cryptoPayWebhook);
+app.use('/api/oxapay', oxaPayWebhook);
 app.use('/api/riopay', rioPayWebhook);
 app.use('/api/robokassa', robokassaWebhook);
 app.use('/api/nodes', nodeIpWhitelist, nodeSyncRouter);

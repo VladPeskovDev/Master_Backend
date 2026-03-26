@@ -10,13 +10,17 @@ function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
-const generatePaymentUrl = ({ invoiceId, amount, description, userId, planId }) => {
+const generatePaymentUrl = ({ invoiceId, amount, currency, description, userId, planId }) => {
   const shpParams = { planId, userId };
   const shpSorted = Object.keys(shpParams)
     .sort()
     .map((key) => `Shp_${key}=${shpParams[key]}`);
 
-  const baseString = `${MERCHANT_LOGIN}:${amount}:${invoiceId}:${PASSWORD_1}:${shpSorted.join(':')}`;
+  // Если валюта не RUB — включаем OutSumCurrency в подпись
+  const outSumCurrency = currency && currency !== 'RUB' ? currency : null;
+  let baseString = outSumCurrency
+    ? `${MERCHANT_LOGIN}:${amount}:${invoiceId}:${outSumCurrency}:${PASSWORD_1}:${shpSorted.join(':')}`
+    : `${MERCHANT_LOGIN}:${amount}:${invoiceId}:${PASSWORD_1}:${shpSorted.join(':')}`;
   const signature = md5(baseString).toUpperCase();
 
   let url = 'https://auth.robokassa.ru/Merchant/Index.aspx';
@@ -25,8 +29,9 @@ const generatePaymentUrl = ({ invoiceId, amount, description, userId, planId }) 
   url += `&InvId=${invoiceId}`;
   url += `&Description=${encodeURIComponent(description)}`;
   url += `&SignatureValue=${signature}`;
-  url += `&SuccessUrl=${encodeURIComponent(`${DOMAIN}/api/robokassa/success`)}`;
-  url += `&FailUrl=${encodeURIComponent(`${DOMAIN}/api/robokassa/fail`)}`;
+  if (outSumCurrency) {
+    url += `&OutSumCurrency=${outSumCurrency}`;
+  }
   shpSorted.forEach((pair) => {
     const [key, value] = pair.split('=');
     url += `&${key}=${value}`;

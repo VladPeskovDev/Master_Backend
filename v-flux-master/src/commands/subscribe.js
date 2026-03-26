@@ -1,6 +1,6 @@
 const { User, Plan, PlanPrice, Payment } = require('../../db/models');
 const { t } = require('../locales');
-const { createInvoice } = require('../services/cryptoPayService');
+const { createInvoice } = require('../services/oxaPayService');
 const { createOrder } = require('../services/rioPayService');
 const { generatePaymentUrl } = require('../services/robokassaService');
 
@@ -220,7 +220,8 @@ const setupSubscribeHandler = (bot) => {
       if (!user) return;
 
       const lang = user.lang;
-      const roboRegion = user.region === 'ru' ? 'ru' : user.region === 'uae' ? 'uae' : 'tr';
+      // Робокасса всегда в USD — международные карты
+      const roboRegion = user.region === 'uae' ? 'uae' : 'tr';
       const { text, buttons } = await buildPlanButtons(lang, roboRegion, 'pay_robokassa', true);
 
       buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }]);
@@ -355,7 +356,8 @@ const setupSubscribeHandler = (bot) => {
       const lang = user.lang || 'en';
       const planId = parseInt(query.data.replace('pay_robokassa_', ''), 10);
 
-      const roboRegion = user.region === 'ru' ? 'ru' : user.region === 'uae' ? 'uae' : 'tr';
+      // Робокасса всегда в USD — международные карты
+      const roboRegion = user.region === 'uae' ? 'uae' : 'tr';
 
       const plan = await Plan.findOne({
         where: { id: planId },
@@ -376,7 +378,7 @@ const setupSubscribeHandler = (bot) => {
         user_id: user.id,
         plan_id: planId,
         amount: price.price,
-        currency: price.currency,
+        currency: 'USD',
         method: 'robokassa',
         status: 'pending',
       });
@@ -387,6 +389,7 @@ const setupSubscribeHandler = (bot) => {
       const payUrl = generatePaymentUrl({
         invoiceId: payment.id,
         amount: price.price,
+        currency: 'USD',
         description: `Rocky Network — ${planName}`,
         userId: user.id,
         planId,
@@ -423,7 +426,7 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  // Оплата криптой через CryptoPay
+  // Оплата криптой через OxaPay
   bot.on('callback_query', async (query) => {
     try {
       if (!query.data.startsWith('pay_crypto_')) return;
@@ -450,6 +453,8 @@ const setupSubscribeHandler = (bot) => {
       }
 
       const price = plan.PlanPrices[0];
+      // Цены в центах → доллары для OxaPay
+      const amountUsd = (price.price / 100).toFixed(2);
 
       const payment = await Payment.create({
         user_id: user.id,
@@ -460,27 +465,28 @@ const setupSubscribeHandler = (bot) => {
         status: 'pending',
       });
 
-      const invoice = await createInvoice({
-        amount: price.price,
-        userId: user.id,
-        planId,
-        chatId: query.message.chat.id,
-      });
-
-      await payment.update({ provider_id: String(invoice.invoice_id) });
-
       const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
       const planName = t(lang, planNameKey, { days: plan.duration_days });
 
+      const invoice = await createInvoice({
+        amount: amountUsd,
+        orderId: `pay_${payment.id}`,
+        userId: user.id,
+        planId,
+        description: `Rocky Network — ${planName}`,
+      });
+
+      await payment.update({ provider_id: invoice.trackId });
+
       await bot.editMessageText(
-        t(lang, 'payment_crypto_invoice', { plan: planName, amount: (price.price / 100).toFixed(2) }),
+        t(lang, 'payment_crypto_invoice', { plan: planName, amount: amountUsd }),
         {
           chat_id: query.message.chat.id,
           message_id: query.message.message_id,
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
-              [{ text: t(lang, 'btn_pay_crypto_link'), url: invoice.bot_invoice_url }],
+              [{ text: t(lang, 'btn_pay_crypto_link'), url: invoice.paymentUrl }],
               [{ text: t(lang, 'btn_back'), callback_data: 'method_crypto' }],
             ],
           },

@@ -1,44 +1,52 @@
 const express = require('express');
 const { Payment, User } = require('../../db/models');
-const { verifyResult } = require('../services/robokassaService');
+const { verifySignature } = require('../services/oxaPayService');
 const { activateSubscription } = require('../services/subscriptionService');
 const bot = require('../bot');
 const { t } = require('../locales');
 
 const router = express.Router();
 
-// ResultURL — Робокасса стучит сюда после успешной оплаты
-router.post('/result', async (req, res) => {
+// Webhook — OxaPay стучит сюда при изменении статуса
+router.post('/webhook', async (req, res) => {
   try {
-    const { OutSum, InvId, SignatureValue, ...rest } = req.body;
+    const signature = req.headers['hmac'];
+    const rawBody = req.rawBody || JSON.stringify(req.body);
 
-    // Собираем Shp_ параметры
-    const shpParams = {};
-    Object.keys(rest).forEach((key) => {
-      if (key.startsWith('Shp_')) shpParams[key] = rest[key];
-    });
-
-    // Проверяем подпись
-    if (!verifyResult({ OutSum, InvId, SignatureValue, shpParams })) {
-      console.error('❌ Robokassa: invalid signature');
-      return res.status(400).send('bad sign');
+    if (!signature || !verifySignature(rawBody, signature)) {
+      console.error('❌ OxaPay webhook: invalid signature');
+      return res.status(403).send('Invalid signature');
     }
 
-    const invoiceId = Number(InvId);
-    const payment = await Payment.findByPk(invoiceId);
+    const data = req.body;
+
+    // Только Paid
+    if (data.status !== 'Paid') {
+      return res.send('ok');
+    }
+
+    const orderId = data.order_id;
+    if (!orderId) {
+      console.error('❌ OxaPay webhook: missing order_id');
+      return res.send('ok');
+    }
+
+    // order_id = "pay_123"
+    const paymentId = orderId.replace('pay_', '');
+    const payment = await Payment.findByPk(paymentId);
 
     if (!payment) {
-      console.error('❌ Robokassa: payment not found, InvId:', invoiceId);
-      return res.status(404).send('payment not found');
+      console.error('❌ OxaPay webhook: payment not found for order_id:', orderId);
+      return res.send('ok');
     }
 
     // Идемпотентность
     if (payment.status === 'paid') {
-      return res.send(`OK${InvId}`);
+      return res.send('ok');
     }
 
     // Обновляем Payment
-    await payment.update({ status: 'paid', provider_id: String(InvId) });
+    await payment.update({ status: 'paid', provider_id: String(data.track_id) });
 
     // Активируем подписку
     const subscription = await activateSubscription(payment.user_id, payment.plan_id);
@@ -62,20 +70,16 @@ router.post('/result', async (req, res) => {
       });
     }
 
-    console.log(`✅ Robokassa: подписка активирована для user ${payment.user_id}, plan ${payment.plan_id}`);
-    return res.send(`OK${InvId}`);
+    console.log(`✅ OxaPay: подписка активирована для user ${payment.user_id}, plan ${payment.plan_id}`);
+    res.send('ok');
   } catch (err) {
-    console.error('❌ Robokassa result error:', err);
-    return res.status(500).send('error');
+    console.error('❌ OxaPay webhook error:', err);
+    res.send('ok');
   }
 });
 
 router.get('/success', (req, res) => {
   res.send('✅ Оплата успешна! Вернитесь в Telegram — подписка активируется автоматически.');
-});
-
-router.get('/fail', (req, res) => {
-  res.send('❌ Оплата не прошла. Вернитесь в Telegram и попробуйте снова.');
 });
 
 module.exports = router;
