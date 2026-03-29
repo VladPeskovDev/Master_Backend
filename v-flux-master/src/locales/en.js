@@ -31,6 +31,7 @@ module.exports = {
   btn_show_qr: '📷 QR Code',
   btn_copy_link: '📋 Copy subscription link',
   btn_download_v2box: '⬇️ Download V2Box',
+  btn_download_happ: '⬇️ Download Happ',
   btn_download_v2raytun: '⬇️ Download V2RayTun',
   btn_download_v2rayn: '⬇️ Download V2RayN',
   btn_download_v2raya: '⬇️ Download v2rayA',

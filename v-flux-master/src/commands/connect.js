@@ -9,6 +9,7 @@ const APP_URLS = {
   v2rayn: 'https://github.com/2dust/v2rayN/releases',
   v2box_macos: 'https://apps.apple.com/app/v2box-v2ray-client/id6446814690',
   v2raya: 'https://github.com/v2rayA/v2rayA/releases',
+  happ_ios: 'https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973',
 };
 
 const getDeviceKeyboard = (lang) => ({
@@ -113,11 +114,23 @@ const setupConnectHandler = (bot) => {
       const lang = user.lang;
       const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
 
+      const iosKeyboard = lang === 'ru'
+        ? {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_download_happ'), url: APP_URLS.happ_ios }],
+            [{ text: t(lang, 'btn_download_v2box'), url: APP_URLS.v2box_ios }],
+            [{ text: t(lang, 'btn_copy_link'), copy_text: { text: link } }],
+            [{ text: t(lang, 'btn_show_qr'), callback_data: 'show_qr' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'connect' }],
+          ],
+        }
+        : getPlatformKeyboard(lang, link, 'btn_download_v2box', APP_URLS.v2box_ios, 'connect');
+
       await bot.editMessageText(t(lang, 'connect_platform_ios', { link }), {
         chat_id: query.message.chat.id,
         message_id: query.message.message_id,
         parse_mode: 'HTML',
-        reply_markup: getPlatformKeyboard(lang, link, 'btn_download_v2box', APP_URLS.v2box_ios, 'connect'),
+        reply_markup: iosKeyboard,
       });
 
       await bot.answerCallbackQuery(query.id);
@@ -191,7 +204,6 @@ const setupConnectHandler = (bot) => {
   // === Экраны Desktop ОС: Windows, macOS, Linux ===
   const desktopPlatforms = [
     { callback: 'desktop_windows', textKey: 'connect_platform_windows', downloadBtn: 'btn_download_v2rayn', url: APP_URLS.v2rayn },
-    { callback: 'desktop_macos', textKey: 'connect_platform_macos', downloadBtn: 'btn_download_v2box', url: APP_URLS.v2box_macos },
     { callback: 'desktop_linux', textKey: 'connect_platform_linux', downloadBtn: 'btn_download_v2raya', url: APP_URLS.v2raya },
   ];
 
@@ -218,6 +230,42 @@ const setupConnectHandler = (bot) => {
         console.error(`❌ Ошибка ${callback}:`, err);
       }
     });
+  });
+
+  // === macOS — отдельно для RU (Happ + V2Box) ===
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'desktop_macos') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang;
+      const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
+
+      const macKeyboard = lang === 'ru'
+        ? {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_download_happ'), url: APP_URLS.happ_ios }],
+            [{ text: t(lang, 'btn_download_v2box'), url: APP_URLS.v2box_macos }],
+            [{ text: t(lang, 'btn_copy_link'), copy_text: { text: link } }],
+            [{ text: t(lang, 'btn_show_qr'), callback_data: 'show_qr' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'platform_desktop' }],
+          ],
+        }
+        : getPlatformKeyboard(lang, link, 'btn_download_v2box', APP_URLS.v2box_macos, 'platform_desktop');
+
+      await bot.editMessageText(t(lang, 'connect_platform_macos', { link }), {
+        chat_id: query.message.chat.id,
+        message_id: query.message.message_id,
+        parse_mode: 'HTML',
+        reply_markup: macKeyboard,
+      });
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка desktop_macos:', err);
+    }
   });
 
   // === QR-код ===
