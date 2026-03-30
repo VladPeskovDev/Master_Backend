@@ -6,6 +6,51 @@ const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
 router.use(adminAuth);
 
+// GET /api/admin/users/paid — платные подписки с пагинацией
+router.get('/paid', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Subscription.findAndCountAll({
+      where: { active: true },
+      include: [
+        { model: Plan, where: { is_trial: false } },
+        { model: User },
+      ],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset,
+    });
+
+    const result = rows.map((sub) => ({
+      id: sub.id,
+      user_id: sub.User?.id,
+      telegram_id: sub.User?.telegram_id,
+      username: sub.User?.username,
+      first_name: sub.User?.first_name,
+      plan: sub.Plan?.name,
+      started_at: sub.started_at,
+      expires_at: sub.expires_at,
+      traffic_used: sub.traffic_used,
+      traffic_limit: sub.traffic_limit,
+      throttled: sub.throttled,
+      created_at: sub.createdAt,
+    }));
+
+    res.json({
+      users: result,
+      total: count,
+      page,
+      pages: Math.ceil(count / limit),
+    });
+  } catch (err) {
+    console.error('❌ Admin paid users:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // GET /api/admin/users — список юзеров
 router.get('/', async (req, res) => {
   try {

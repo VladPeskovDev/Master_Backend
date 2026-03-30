@@ -27,5 +27,6 @@ api.interceptors.response.use(
 export const fetchNodeStats = () => api.get('/nodes/stats');
 export const fetchUsers = () => api.get('/users');
 export const fetchNodeUsers = (id) => api.get('/nodes/' + id + '/users');
+export const fetchPaidUsers = (page = 1, limit = 20) => api.get('/users/paid?page=' + page + '&limit=' + limit);
 
 export default api;

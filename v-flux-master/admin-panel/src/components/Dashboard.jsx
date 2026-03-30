@@ -7,6 +7,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [newIdx, setNewIdx] = useState(0);
 
   const loadData = async () => {
   try {
@@ -42,8 +43,13 @@ export default function Dashboard() {
   );
 
   const totalOnline = (stats?.nodes || []).reduce((s, n) => s + (n.users_online || 0), 0);
-  const totalConns = (stats?.nodes || []).reduce((s, n) => s + (n.total_connections || 0), 0);
   const totalThrottled = (stats?.nodes || []).reduce((s, n) => s + (n.online_details || []).filter((u) => u.throttled).length, 0);
+
+  const newPeriods = [
+    { key: 'new_24h', label: '24h' },
+    { key: 'new_7d', label: '7d' },
+    { key: 'new_30d', label: '30d' },
+  ];
 
   return (
     <div className="dashboard">
@@ -61,9 +67,12 @@ export default function Dashboard() {
         <div className="card green"><div className="card-val">{totalOnline}</div><div className="card-lbl">Online</div></div>
         <div className="card"><div className="card-val">{stats?.db?.active_subscriptions || 0}</div><div className="card-lbl">Active Subs</div></div>
         
-        <div className="card"><div className="card-val">{totalConns}</div><div className="card-lbl">Connections</div></div>
-        <div className="card"><div className="card-val">{(stats?.nodes || []).length}</div><div className="card-lbl">Nodes</div></div>
+        <div className="card"><div className="card-val">{stats?.db?.paid_subscriptions || 0}</div><div className="card-lbl">Paid Subs</div></div>
         <div className="card"><div className="card-val">{totalThrottled}</div><div className="card-lbl">Throttled</div></div>
+        <div className="card clickable" onClick={() => setNewIdx((newIdx + 1) % 3)}>
+          <div className="card-val">{stats?.db?.[newPeriods[newIdx].key] || 0}</div>
+          <div className="card-lbl">New {newPeriods[newIdx].label}</div>
+        </div>
       </div>
 
       <h2 className="section-title">Nodes</h2>

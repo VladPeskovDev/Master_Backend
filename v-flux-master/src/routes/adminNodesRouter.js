@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const { Node, User, Subscription, Plan } = require('../../db/models');
 const adminAuth = require('../middleware/adminAuth');
 const createNodeApi = require('../utils/nodeApi');
@@ -76,6 +77,21 @@ router.get('/stats', async (req, res) => {
     const totalUsers = await User.count();
     const activeSubs = await Subscription.count({ where: { active: true } });
     const expiredSubs = await Subscription.count({ where: { active: false } });
+    const paidSubs = await Subscription.count({
+      where: { active: true },
+      include: [{ model: Plan, where: { is_trial: false }, attributes: [] }],
+    });
+
+    const now = new Date();
+    const day1 = new Date(now - 24 * 60 * 60 * 1000);
+    const day7 = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    const day30 = new Date(now - 30 * 24 * 60 * 60 * 1000);
+
+    const [new24h, new7d, new30d] = await Promise.all([
+      User.count({ where: { createdAt: { [Op.gte]: day1 } } }),
+      User.count({ where: { createdAt: { [Op.gte]: day7 } } }),
+      User.count({ where: { createdAt: { [Op.gte]: day30 } } }),
+    ]);
 
     res.json({
       nodes: nodeStats,
@@ -83,6 +99,10 @@ router.get('/stats', async (req, res) => {
         total_users: totalUsers,
         active_subscriptions: activeSubs,
         expired_subscriptions: expiredSubs,
+        paid_subscriptions: paidSubs,
+        new_24h: new24h,
+        new_7d: new7d,
+        new_30d: new30d,
       },
     });
   } catch (err) {
