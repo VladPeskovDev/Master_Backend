@@ -46,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       referred_by: DataTypes.INTEGER,
+      source: DataTypes.STRING(50),
     },
     {
       sequelize,

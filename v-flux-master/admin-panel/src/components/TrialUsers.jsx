@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchPaidUsers, throttleUser, unthrottleUser } from '../api/admin';
+import { fetchTrialUsers } from '../api/admin';
 
 const formatBytes = (bytes) => {
   const n = Number(bytes);
@@ -10,20 +10,20 @@ const formatBytes = (bytes) => {
 };
 
 const formatDate = (d) => d ? new Date(d).toLocaleDateString('ru-RU') : '—';
+const formatDateTime = (d) => d ? new Date(d).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
 
-export default function PaidUsers() {
+export default function TrialUsers() {
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(null);
 
   const load = async (p) => {
     setLoading(true);
     try {
-      const res = await fetchPaidUsers(p);
+      const res = await fetchTrialUsers(p);
       setData(res.data);
     } catch {
-      console.error('Failed to load paid users');
+      console.error('Failed to load trial users');
     } finally {
       setLoading(false);
     }
@@ -31,28 +31,12 @@ export default function PaidUsers() {
 
   useEffect(() => { load(page); }, [page]);
 
-  const handleToggleThrottle = async (userId, isThrottled) => {
-    setActionLoading(userId);
-    try {
-      if (isThrottled) {
-        await unthrottleUser(userId);
-      } else {
-        await throttleUser(userId);
-      }
-      await load(page);
-    } catch {
-      console.error('Failed to toggle throttle');
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
   if (loading && !data) return <div className="loading">Loading...</div>;
 
   return (
     <div className="paid-users">
       <div className="paid-header">
-        <h2 className="section-title">Paid Subscriptions ({data?.total || 0})</h2>
+        <h2 className="section-title">Trial Users ({data?.total || 0})</h2>
       </div>
 
       <div className="table-wrap">
@@ -61,12 +45,10 @@ export default function PaidUsers() {
             <tr>
               <th>User</th>
               <th>Source</th>
-              <th>Plan</th>
-              <th>Purchased</th>
+              <th>Started</th>
               <th>Expires</th>
               <th>Traffic</th>
               <th>Status</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -79,8 +61,7 @@ export default function PaidUsers() {
                   </div>
                 </td>
                 <td><span className="source-tag">{u.source || 'organic'}</span></td>
-                <td>{u.plan}</td>
-                <td>{formatDate(u.started_at)}</td>
+                <td>{formatDateTime(u.started_at)}</td>
                 <td>{formatDate(u.expires_at)}</td>
                 <td>{formatBytes(u.traffic_used)} / {formatBytes(u.traffic_limit)}</td>
                 <td>
@@ -88,15 +69,6 @@ export default function PaidUsers() {
                     ? <span className="badge badge-red">Throttled</span>
                     : <span className="badge badge-green">Active</span>
                   }
-                </td>
-                <td>
-                  <button
-                    className={'action-btn' + (u.throttled ? ' btn-unthrottle' : ' btn-throttle')}
-                    disabled={actionLoading === u.user_id}
-                    onClick={() => handleToggleThrottle(u.user_id, u.throttled)}
-                  >
-                    {actionLoading === u.user_id ? '...' : u.throttled ? 'Unthrottle' : 'Throttle'}
-                  </button>
                 </td>
               </tr>
             ))}

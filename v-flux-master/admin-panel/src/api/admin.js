@@ -28,5 +28,9 @@ export const fetchNodeStats = () => api.get('/nodes/stats');
 export const fetchUsers = () => api.get('/users');
 export const fetchNodeUsers = (id) => api.get('/nodes/' + id + '/users');
 export const fetchPaidUsers = (page = 1, limit = 20) => api.get('/users/paid?page=' + page + '&limit=' + limit);
+export const fetchTrialUsers = (page = 1, limit = 20) => api.get('/users/trial?page=' + page + '&limit=' + limit);
+export const fetchInactiveUsers = (type = 'expired_trial', page = 1, limit = 20) => api.get('/users/inactive?type=' + type + '&page=' + page + '&limit=' + limit);
+export const throttleUser = (id) => api.post('/users/' + id + '/throttle');
+export const unthrottleUser = (id) => api.post('/users/' + id + '/unthrottle');
 
 export default api;

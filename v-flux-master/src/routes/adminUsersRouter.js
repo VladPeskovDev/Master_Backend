@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const { User, Subscription, Plan, Payment } = require('../../db/models');
 const { removeUserFromAllNodes, syncUserOnAllNodes, throttleOnAllNodes, unthrottleOnAllNodes } = require('../services/nodeService');
 const adminAuth = require('../middleware/adminAuth');
@@ -30,6 +31,7 @@ router.get('/paid', async (req, res) => {
       telegram_id: sub.User?.telegram_id,
       username: sub.User?.username,
       first_name: sub.User?.first_name,
+      source: sub.User?.source || null,
       plan: sub.Plan?.name,
       started_at: sub.started_at,
       expires_at: sub.expires_at,
@@ -47,6 +49,152 @@ router.get('/paid', async (req, res) => {
     });
   } catch (err) {
     console.error('❌ Admin paid users:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /api/admin/users/inactive — мёртвые юзеры
+router.get('/inactive', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+    const offset = (page - 1) * limit;
+    const type = req.query.type || 'expired_trial'; // expired_trial | expired_paid | no_sub
+
+    if (type === 'no_sub') {
+      // ID юзеров у которых есть хоть одна подписка
+      const usersWithSubs = await Subscription.findAll({
+        attributes: ['user_id'],
+        group: ['user_id'],
+        raw: true,
+      });
+      const idsWithSubs = usersWithSubs.map((s) => s.user_id);
+
+      const where = idsWithSubs.length > 0
+        ? { id: { [Op.notIn]: idsWithSubs } }
+        : {};
+
+      const { count, rows } = await User.findAndCountAll({
+        where,
+        order: [['createdAt', 'DESC']],
+        limit,
+        offset,
+      });
+
+      const result = rows.map((u) => ({
+        user_id: u.id,
+        telegram_id: u.telegram_id,
+        username: u.username,
+        first_name: u.first_name,
+        source: u.source || null,
+        registered_at: u.createdAt,
+      }));
+
+      return res.json({
+        users: result,
+        total: count,
+        page,
+        pages: Math.ceil(count / limit),
+        type: 'no_sub',
+      });
+    }
+
+    // ID юзеров с активной подпиской (общий для expired_trial и expired_paid)
+    const activeUserIds = await Subscription.findAll({
+      attributes: ['user_id'],
+      where: { active: true },
+      group: ['user_id'],
+      raw: true,
+    });
+    const activeIds = activeUserIds.map((s) => s.user_id);
+
+    const expiredWhere = { active: false };
+    if (activeIds.length > 0) {
+      expiredWhere.user_id = { [Op.notIn]: activeIds };
+    }
+
+    const isTrial = type === 'expired_trial';
+
+    const { count, rows } = await Subscription.findAndCountAll({
+      where: expiredWhere,
+      include: [
+        { model: Plan, where: { is_trial: isTrial } },
+        { model: User },
+      ],
+      order: [['expires_at', 'DESC']],
+      limit,
+      offset,
+    });
+
+    const result = rows.map((sub) => ({
+      user_id: sub.User?.id,
+      telegram_id: sub.User?.telegram_id,
+      username: sub.User?.username,
+      first_name: sub.User?.first_name,
+      source: sub.User?.source || null,
+      plan: sub.Plan?.name,
+      started_at: sub.started_at,
+      expires_at: sub.expires_at,
+      traffic_used: sub.traffic_used,
+      traffic_limit: sub.traffic_limit,
+      registered_at: sub.User?.createdAt,
+    }));
+
+    res.json({
+      users: result,
+      total: count,
+      page,
+      pages: Math.ceil(count / limit),
+      type,
+    });
+  } catch (err) {
+    console.error('❌ Admin inactive users:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /api/admin/users/trial — триальные подписки с пагинацией
+router.get('/trial', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Subscription.findAndCountAll({
+      where: { active: true },
+      include: [
+        { model: Plan, where: { is_trial: true } },
+        { model: User },
+      ],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset,
+    });
+
+    const result = rows.map((sub) => ({
+      id: sub.id,
+      user_id: sub.User?.id,
+      telegram_id: sub.User?.telegram_id,
+      username: sub.User?.username,
+      first_name: sub.User?.first_name,
+      source: sub.User?.source || null,
+      plan: sub.Plan?.name,
+      started_at: sub.started_at,
+      expires_at: sub.expires_at,
+      traffic_used: sub.traffic_used,
+      traffic_limit: sub.traffic_limit,
+      throttled: sub.throttled,
+      created_at: sub.createdAt,
+    }));
+
+    res.json({
+      users: result,
+      total: count,
+      page,
+      pages: Math.ceil(count / limit),
+    });
+  } catch (err) {
+    console.error('❌ Admin trial users:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

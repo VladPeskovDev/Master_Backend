@@ -59,10 +59,16 @@ const setupStartCommand = (bot) => {
         const referralCode = crypto.randomBytes(4).toString('hex');
 
         let referredBy = null;
-        if (referralParam && referralParam.startsWith('ref_')) {
-          const refCode = referralParam.replace('ref_', '');
-          const referrer = await User.findOne({ where: { referral_code: refCode } });
-          if (referrer) referredBy = referrer.id;
+        let source = null;
+
+        if (referralParam) {
+          if (referralParam.startsWith('ref_')) {
+            const refCode = referralParam.replace('ref_', '');
+            const referrer = await User.findOne({ where: { referral_code: refCode } });
+            if (referrer) referredBy = referrer.id;
+          } else if (referralParam.startsWith('src_')) {
+            source = referralParam.replace('src_', '');
+          }
         }
 
         user = await User.create({
@@ -76,6 +82,7 @@ const setupStartCommand = (bot) => {
           region,
           referral_code: referralCode,
           referred_by: referredBy,
+          source,
         });
 
         // Сценарий Ж — новый по реферальной ссылке
