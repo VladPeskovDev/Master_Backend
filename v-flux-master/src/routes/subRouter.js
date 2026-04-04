@@ -1,6 +1,7 @@
 const express = require('express');
 const { User, Subscription, Plan, Node } = require('../../db/models');
 const { getHealthCache } = require('../workers/healthChecker');
+const { getFlag } = require('../utils/countryFlags');
 
 const router = express.Router();
 
@@ -77,7 +78,7 @@ router.get('/:token', async (req, res) => {
       '&path=%2Fws',
       '&encryption=none',
       '&mux=off',
-      `#RockyVPN-${node.location.replace(/\s/g, '-')}`,
+      `#${getFlag(node.location)} RockyVPN-${node.location.replace(/\s/g, '-')}`,
     ].join('');
 
     const base64 = Buffer.from(vlessLink).toString('base64');

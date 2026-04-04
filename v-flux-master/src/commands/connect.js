@@ -10,6 +10,8 @@ const APP_URLS = {
   v2box_macos: 'https://apps.apple.com/app/v2box-v2ray-client/id6446814690',
   v2raya: 'https://github.com/v2rayA/v2rayA/releases',
   happ_ios: 'https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973',
+  happ_by: 'https://apps.apple.com/by/app/happ-proxy-utility/id6504287215',
+  v2box_uz: 'https://apps.apple.com/uz/app/v2box-v2ray-client/id6446814690',
 };
 
 const getDeviceKeyboard = (lang) => ({
@@ -114,17 +116,29 @@ const setupConnectHandler = (bot) => {
       const lang = user.lang;
       const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
 
-      const iosKeyboard = lang === 'ru'
-        ? {
+      let iosKeyboard;
+      if (lang === 'ru') {
+        iosKeyboard = {
           inline_keyboard: [
             [{ text: t(lang, 'btn_download_happ'), url: APP_URLS.happ_ios }],
-            [{ text: t(lang, 'btn_download_v2box'), url: APP_URLS.v2box_ios }],
+            [{ text: '🇧🇾 Скачать Happ (App Store Беларусь)', url: APP_URLS.happ_by }],
             [{ text: t(lang, 'btn_copy_link'), copy_text: { text: link } }],
             [{ text: t(lang, 'btn_show_qr'), callback_data: 'show_qr' }],
             [{ text: t(lang, 'btn_back'), callback_data: 'connect' }],
           ],
-        }
-        : getPlatformKeyboard(lang, link, 'btn_download_v2box', APP_URLS.v2box_ios, 'connect');
+        };
+      } else if (lang === 'uz') {
+        iosKeyboard = {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_download_v2box'), url: APP_URLS.v2box_uz }],
+            [{ text: t(lang, 'btn_copy_link'), copy_text: { text: link } }],
+            [{ text: t(lang, 'btn_show_qr'), callback_data: 'show_qr' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'connect' }],
+          ],
+        };
+      } else {
+        iosKeyboard = getPlatformKeyboard(lang, link, 'btn_download_v2box', APP_URLS.v2box_ios, 'connect');
+      }
 
       await bot.editMessageText(t(lang, 'connect_platform_ios', { link }), {
         chat_id: query.message.chat.id,
@@ -243,17 +257,29 @@ const setupConnectHandler = (bot) => {
       const lang = user.lang;
       const link = `${process.env.SUB_DOMAIN || process.env.DOMAIN}/sub/${user.sub_token}`;
 
-      const macKeyboard = lang === 'ru'
-        ? {
+      let macKeyboard;
+      if (lang === 'ru') {
+        macKeyboard = {
           inline_keyboard: [
             [{ text: t(lang, 'btn_download_happ'), url: APP_URLS.happ_ios }],
-            [{ text: t(lang, 'btn_download_v2box'), url: APP_URLS.v2box_macos }],
+            [{ text: '🇧🇾 Скачать Happ (App Store Беларусь)', url: APP_URLS.happ_by }],
             [{ text: t(lang, 'btn_copy_link'), copy_text: { text: link } }],
             [{ text: t(lang, 'btn_show_qr'), callback_data: 'show_qr' }],
             [{ text: t(lang, 'btn_back'), callback_data: 'platform_desktop' }],
           ],
-        }
-        : getPlatformKeyboard(lang, link, 'btn_download_v2box', APP_URLS.v2box_macos, 'platform_desktop');
+        };
+      } else if (lang === 'uz') {
+        macKeyboard = {
+          inline_keyboard: [
+            [{ text: t(lang, 'btn_download_v2box'), url: APP_URLS.v2box_uz }],
+            [{ text: t(lang, 'btn_copy_link'), copy_text: { text: link } }],
+            [{ text: t(lang, 'btn_show_qr'), callback_data: 'show_qr' }],
+            [{ text: t(lang, 'btn_back'), callback_data: 'platform_desktop' }],
+          ],
+        };
+      } else {
+        macKeyboard = getPlatformKeyboard(lang, link, 'btn_download_v2box', APP_URLS.v2box_macos, 'platform_desktop');
+      }
 
       await bot.editMessageText(t(lang, 'connect_platform_macos', { link }), {
         chat_id: query.message.chat.id,

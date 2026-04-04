@@ -37,7 +37,7 @@ const formatPrice = (price, currency) => {
 };
 
 // Построить список планов с ценами для конкретного региона
-const buildPlanButtons = async (lang, region, callbackPrefix, excludeMonthly = false) => {
+const buildPlanButtons = async (lang, region, callbackPrefix, excludeMonthly = false, minPrice = 0) => {
   const plans = await Plan.findAll({
     where: { active: true, is_trial: false },
     include: [{ model: PlanPrice, where: { region } }],
@@ -58,7 +58,8 @@ const buildPlanButtons = async (lang, region, callbackPrefix, excludeMonthly = f
     if (excludeMonthly && plan.name === 'Monthly') return;
 
     const price = plan.PlanPrices[0];
-    const displayPrice = isCents ? price.price / 100 : price.price;
+    const rawPrice = isCents ? price.price / 100 : price.price;
+    const displayPrice = minPrice > 0 ? Math.max(rawPrice, minPrice) : rawPrice;
     const { formatted, symbol } = formatPrice(displayPrice, price.currency);
     const textKey = PLAN_TEXT_KEYS[plan.name] || 'subscribe_plan_monthly';
     const icon = PLAN_ICONS[plan.name] || '📅';
@@ -118,7 +119,8 @@ const setupSubscribeHandler = (bot) => {
         reply_markup: {
           inline_keyboard: [
             [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
-            [{ text: t(lang, 'btn_pay_robokassa'), callback_data: 'method_robokassa' }],
+            [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
+            [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
             [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
           ],
@@ -146,7 +148,8 @@ const setupSubscribeHandler = (bot) => {
         reply_markup: {
           inline_keyboard: [
             [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
-            [{ text: t(lang, 'btn_pay_robokassa'), callback_data: 'method_robokassa' }],
+            [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
+            [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
             [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
           ],
@@ -172,7 +175,8 @@ const setupSubscribeHandler = (bot) => {
         reply_markup: {
           inline_keyboard: [
             [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
-            [{ text: t(lang, 'btn_pay_robokassa'), callback_data: 'method_robokassa' }],
+            [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
+            [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
             [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
           ],
@@ -211,18 +215,17 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  // Visa/Mastercard (Robokassa) → без месячного
+  // МИР (Robokassa, USD) → все планы из БД
   bot.on('callback_query', async (query) => {
     try {
-      if (query.data !== 'method_robokassa') return;
+      if (query.data !== 'method_mir') return;
 
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       if (!user) return;
 
       const lang = user.lang;
-      // Робокасса всегда в USD — международные карты
-      const roboRegion = user.region === 'uae' ? 'uae' : 'tr';
-      const { text, buttons } = await buildPlanButtons(lang, roboRegion, 'pay_robokassa', true);
+      const mirRegion = user.region === 'uae' ? 'uae' : 'tr';
+      const { text, buttons } = await buildPlanButtons(lang, mirRegion, 'pay_mir');
 
       buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }]);
 
@@ -235,7 +238,47 @@ const setupSubscribeHandler = (bot) => {
 
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
-      console.error('❌ Ошибка method_robokassa:', err);
+      console.error('❌ Ошибка method_mir:', err);
+    }
+  });
+
+  // Visa/Mastercard (Robokassa, USD) → спецпланы
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'method_visa') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang;
+      const isUae = user.region === 'uae';
+
+      // Спецпланы для Visa/MC (хардкод, минимум $6)
+      const visaPlans = isUae
+        ? [
+          { label: '📅 3 месяца — $6', callback: 'pay_visa_3mo_6' },
+          { label: '🔥 6 месяцев — $20', callback: 'pay_visa_semi_20' },
+          { label: '👑 12 месяцев — $40', callback: 'pay_visa_annual_40' },
+        ]
+        : [
+          { label: '📅 3 месяца — $6', callback: 'pay_visa_3mo_6' },
+          { label: '🔥 6 месяцев — $10', callback: 'pay_visa_semi_10' },
+          { label: '👑 12 месяцев — $20', callback: 'pay_visa_annual_20' },
+        ];
+
+      const buttons = visaPlans.map((p) => [{ text: p.label, callback_data: p.callback }]);
+      buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }]);
+
+      await bot.editMessageText(t(lang, 'subscribe_title') + '\n\n' + t(lang, 'subscribe_footer'), {
+        chat_id: query.message.chat.id,
+        message_id: query.message.message_id,
+        parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: buttons },
+      });
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка method_visa:', err);
     }
   });
 
@@ -345,23 +388,22 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  // Оплата через Robokassa (Visa/Mastercard)
+  // Оплата МИР через Robokassa (USD из БД)
   bot.on('callback_query', async (query) => {
     try {
-      if (!query.data.startsWith('pay_robokassa_')) return;
+      if (!query.data.startsWith('pay_mir_')) return;
 
       const user = await User.findOne({ where: { telegram_id: query.from.id } });
       if (!user) return;
 
       const lang = user.lang || 'en';
-      const planId = parseInt(query.data.replace('pay_robokassa_', ''), 10);
+      const planId = parseInt(query.data.replace('pay_mir_', ''), 10);
 
-      // Робокасса всегда в USD — международные карты
-      const roboRegion = user.region === 'uae' ? 'uae' : 'tr';
+      const mirRegion = user.region === 'uae' ? 'uae' : 'tr';
 
       const plan = await Plan.findOne({
         where: { id: planId },
-        include: [{ model: PlanPrice, where: { region: roboRegion } }],
+        include: [{ model: PlanPrice, where: { region: mirRegion } }],
       });
 
       if (!plan || !plan.PlanPrices[0]) {
@@ -373,13 +415,12 @@ const setupSubscribeHandler = (bot) => {
       }
 
       const price = plan.PlanPrices[0];
-
       const payment = await Payment.create({
         user_id: user.id,
         plan_id: planId,
         amount: price.price,
         currency: 'USD',
-        method: 'robokassa',
+        method: 'mir',
         status: 'pending',
       });
 
@@ -406,7 +447,7 @@ const setupSubscribeHandler = (bot) => {
           reply_markup: {
             inline_keyboard: [
               [{ text: t(lang, 'btn_pay_card_link'), url: payUrl }],
-              [{ text: t(lang, 'btn_back'), callback_data: 'method_robokassa' }],
+              [{ text: t(lang, 'btn_back'), callback_data: 'method_mir' }],
             ],
           },
         },
@@ -414,7 +455,90 @@ const setupSubscribeHandler = (bot) => {
 
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
-      console.error('❌ Ошибка pay_robokassa:', err);
+      console.error('❌ Ошибка pay_mir:', err);
+      try {
+        await bot.answerCallbackQuery(query.id, {
+          text: 'Error creating payment. Try again.',
+          show_alert: true,
+        });
+      } catch (answerErr) {
+        console.error('❌ Ошибка answerCallbackQuery:', answerErr.message);
+      }
+    }
+  });
+
+  // Оплата Visa/Mastercard через Robokassa (спецпланы, USD)
+  bot.on('callback_query', async (query) => {
+    try {
+      if (!query.data.startsWith('pay_visa_')) return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang || 'en';
+
+      // Парсим спецплан: pay_visa_3mo_6, pay_visa_semi_10, pay_visa_annual_20
+      const visaData = query.data.replace('pay_visa_', '');
+      let amount, days, trafficMultiplier, planLabel;
+
+      // Находим Monthly план для расчёта трафика
+      const monthlyPlan = await Plan.findOne({ where: { name: 'Monthly', active: true } });
+      const monthlyTraffic = monthlyPlan ? Number(monthlyPlan.traffic_limit_bytes) : 161061273600;
+
+      if (visaData === '3mo_6') {
+        amount = 6; days = 90; trafficMultiplier = 3; planLabel = '3 months';
+      } else if (visaData === 'semi_10') {
+        amount = 10; days = 180; trafficMultiplier = 6; planLabel = '6 months';
+      } else if (visaData === 'semi_20') {
+        amount = 20; days = 180; trafficMultiplier = 6; planLabel = '6 months';
+      } else if (visaData === 'annual_20') {
+        amount = 20; days = 365; trafficMultiplier = 12; planLabel = '1 year';
+      } else if (visaData === 'annual_40') {
+        amount = 40; days = 365; trafficMultiplier = 12; planLabel = '1 year';
+      } else {
+        return;
+      }
+
+      const payment = await Payment.create({
+        user_id: user.id,
+        plan_id: monthlyPlan?.id || 2,
+        amount,
+        currency: 'USD',
+        method: 'visa',
+        status: 'pending',
+        // Сохраним доп.данные в provider_id временно
+      });
+
+      // Сохраняем спецданные в payment для обработки в вебхуке
+      await payment.update({ provider_id: `visa_${days}_${trafficMultiplier}` });
+
+      const payUrl = generatePaymentUrl({
+        invoiceId: payment.id,
+        amount,
+        currency: 'USD',
+        description: `Rocky Network — ${planLabel}`,
+        userId: user.id,
+        planId: monthlyPlan?.id || 2,
+      });
+
+      await bot.editMessageText(
+        t(lang, 'payment_card_invoice', { plan: planLabel, amount, currency: '$' }),
+        {
+          chat_id: query.message.chat.id,
+          message_id: query.message.message_id,
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: t(lang, 'btn_pay_card_link'), url: payUrl }],
+              [{ text: t(lang, 'btn_back'), callback_data: 'method_visa' }],
+            ],
+          },
+        },
+      );
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка pay_visa:', err);
       try {
         await bot.answerCallbackQuery(query.id, {
           text: 'Error creating payment. Try again.',

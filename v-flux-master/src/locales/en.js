@@ -38,11 +38,11 @@ module.exports = {
   btn_windows: '🪟 Windows',
   btn_macos: '🍎 macOS',
   btn_linux: '🐧 Linux',
-  connect_platform_ios: '📱 <b>Connect on iPhone</b>\n\n1. Download <b>V2Box</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Configs → "+" → Import V2Ray URI from clipboard\n\nDone! Tap ▶️ — your internet is protected.',
+  connect_platform_ios: '📱 <b>Connect on iPhone</b>\n\n1. Download one of these apps from App Store:\n<b>V2Box</b>, <b>Happ</b>, <b>Streisand</b>, <b>Hiddify</b>\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: copy the link → import from clipboard\n\nDone! Tap ▶️ — your internet is protected.',
   connect_platform_android: '🤖 <b>Connect on Android</b>\n\n1. Download <b>V2Box</b> or <b>V2RayTun</b> (buttons below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. Copy the link → open the app → import from clipboard\n\nDone!',
   connect_desktop_choose: '💻 <b>Choose your system:</b>',
   connect_platform_windows: '🪟 <b>Connect on Windows</b>\n\n1. Download <b>V2RayN</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Subscription → Subscription Setting\n   → paste the link in URL field → OK\n   → Subscription → Update Subscription\n\nDone! Right-click server → Set as active → at the bottom "System Proxy: Set"',
-  connect_platform_macos: '🍎 <b>Connect on macOS</b>\n\n1. Download <b>V2Box</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: Configs → "+" → Import V2Ray URI from clipboard\n\nDone! Tap ▶️ — your internet is protected.',
+  connect_platform_macos: '🍎 <b>Connect on macOS</b>\n\n1. Download one of these apps from App Store:\n<b>V2Box</b>, <b>Happ</b>, <b>Streisand</b>, <b>Hiddify</b>\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the app: copy the link → import from clipboard\n\nDone! Tap ▶️ — your internet is protected.',
   connect_platform_linux: '🐧 <b>Connect on Linux</b>\n\n1. Download <b>v2rayA</b> (button below)\n\n2. Your subscription link:\n<code>{link}</code>\n\n3. In the web interface: Import → paste the link → OK\n\nDone!',
 
   // Account
@@ -72,7 +72,8 @@ module.exports = {
   subscribe_footer: '\nAll plans: unlimited traffic,\nmax speed, no logs.',
   subscribe_choose_payment: '💳 <b>Payment: {plan} — {price} {currency}</b>\n\nChoose payment method:',
   btn_pay_card: '🇷🇺 Pay in ₽',
-  btn_pay_robokassa: '💳 Visa/Mastercard',
+  btn_pay_mir: '💳 MIR Card',
+  btn_pay_visa: '💳 Visa/Mastercard',
   btn_pay_crypto: '💰 Cryptocurrency',
   subscribe_payment_stub: '🚧 Payments coming soon!',
   payment_crypto_invoice: '🪙 <b>Payment: {plan} — ${amount}</b>\n\nTap the button below to pay via @CryptoBot.\nYour subscription will activate automatically after payment.',

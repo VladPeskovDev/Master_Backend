@@ -1,7 +1,9 @@
 const express = require('express');
-const { Payment, User } = require('../../db/models');
+const { Payment, User, Subscription, Plan } = require('../../db/models');
 const { verifyResult } = require('../services/robokassaService');
 const { activateSubscription } = require('../services/subscriptionService');
+const { syncUserOnAllNodes } = require('../services/nodeService');
+const { processReferralReward } = require('../services/referralService');
 const bot = require('../bot');
 const { t } = require('../locales');
 
@@ -37,11 +39,48 @@ router.post('/result', async (req, res) => {
       return res.send(`OK${InvId}`);
     }
 
-    // Обновляем Payment
-    await payment.update({ status: 'paid', provider_id: String(InvId) });
+    let subscription;
 
-    // Активируем подписку
-    const subscription = await activateSubscription(payment.user_id, payment.plan_id);
+    if (payment.method === 'visa' && payment.provider_id?.startsWith('visa_')) {
+      // Спецплан Visa/MC — кастомные дни и трафик
+      const parts = payment.provider_id.split('_'); // visa_90_3
+      const customDays = parseInt(parts[1], 10);
+      const trafficMultiplier = parseInt(parts[2], 10);
+
+      const plan = await Plan.findOne({ where: { name: 'Monthly', active: true } });
+      const trafficPerMonth = plan ? Number(plan.traffic_limit_bytes) : 161061273600;
+
+      const user = await User.findByPk(payment.user_id);
+      if (!user) return res.send(`OK${InvId}`);
+
+      // Деактивируем старую подписку
+      const oldSub = await Subscription.findOne({ where: { user_id: payment.user_id, active: true } });
+      const now = new Date();
+      const baseDate = oldSub && new Date(oldSub.expires_at) > now
+        ? new Date(oldSub.expires_at).getTime()
+        : now.getTime();
+
+      if (oldSub) await oldSub.update({ active: false });
+
+      subscription = await Subscription.create({
+        user_id: payment.user_id,
+        plan_id: plan?.id || payment.plan_id,
+        started_at: now,
+        expires_at: new Date(baseDate + customDays * 24 * 60 * 60 * 1000),
+        traffic_limit: trafficPerMonth * trafficMultiplier,
+        traffic_used: 0,
+        throttled: false,
+        active: true,
+      });
+
+      await payment.update({ status: 'paid', provider_id: String(InvId) });
+      await syncUserOnAllNodes(user.uuid, trafficPerMonth * trafficMultiplier);
+      await processReferralReward(payment.user_id);
+    } else {
+      // Стандартная активация (МИР и прочие)
+      await payment.update({ status: 'paid', provider_id: String(InvId) });
+      subscription = await activateSubscription(payment.user_id, payment.plan_id);
+    }
 
     // Уведомляем юзера
     const user = await User.findByPk(payment.user_id);
