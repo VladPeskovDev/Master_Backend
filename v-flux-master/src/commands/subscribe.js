@@ -256,12 +256,12 @@ const setupSubscribeHandler = (bot) => {
       // Спецпланы для Visa/MC (хардкод, минимум $6)
       const visaPlans = isUae
         ? [
-          { label: '📅 3 месяца — $6', callback: 'pay_visa_3mo_6' },
+          { label: '📅 3 месяца — $7', callback: 'pay_visa_3mo_7' },
           { label: '🔥 6 месяцев — $20', callback: 'pay_visa_semi_20' },
           { label: '👑 12 месяцев — $40', callback: 'pay_visa_annual_40' },
         ]
         : [
-          { label: '📅 3 месяца — $6', callback: 'pay_visa_3mo_6' },
+          { label: '📅 3 месяца — $7', callback: 'pay_visa_3mo_7' },
           { label: '🔥 6 месяцев — $10', callback: 'pay_visa_semi_10' },
           { label: '👑 12 месяцев — $20', callback: 'pay_visa_annual_20' },
         ];
@@ -485,8 +485,8 @@ const setupSubscribeHandler = (bot) => {
       const monthlyPlan = await Plan.findOne({ where: { name: 'Monthly', active: true } });
       const monthlyTraffic = monthlyPlan ? Number(monthlyPlan.traffic_limit_bytes) : 161061273600;
 
-      if (visaData === '3mo_6') {
-        amount = 6; days = 90; trafficMultiplier = 3; planLabel = '3 months';
+      if (visaData === '3mo_7') {
+        amount = 7; days = 90; trafficMultiplier = 3; planLabel = '3 months';
       } else if (visaData === 'semi_10') {
         amount = 10; days = 180; trafficMultiplier = 6; planLabel = '6 months';
       } else if (visaData === 'semi_20') {
