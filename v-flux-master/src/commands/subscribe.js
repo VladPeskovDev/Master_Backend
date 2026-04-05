@@ -510,7 +510,7 @@ const setupSubscribeHandler = (bot) => {
       });
 
       // Сохраняем спецданные в payment для обработки в вебхуке
-      await payment.update({ provider_id: `visa_${days}_${trafficMultiplier}` });
+      await payment.update({ provider_id: `visa_${days}_${trafficMultiplier}_${payment.id}` });
 
       const payUrl = generatePaymentUrl({
         invoiceId: payment.id,
