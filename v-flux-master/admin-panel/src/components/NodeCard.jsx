@@ -21,6 +21,7 @@ export default function NodeCard({ node }) {
   const [users, setUsers] = useState(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [showCount, setShowCount] = useState(20);
 
   const maxUsers = 250;
   const usersPct = Math.min((node.users_online / maxUsers) * 100, 100);
@@ -41,6 +42,7 @@ export default function NodeCard({ node }) {
     try {
       const res = await fetchNodeUsers(node.id);
       setUsers(res.data);
+      setShowCount(20);
       setExpanded(true);
     } catch {
       console.error('Failed to load node users');
@@ -133,7 +135,7 @@ export default function NodeCard({ node }) {
           <div className="node-users-header">
             {users.online} online / {users.total} total
           </div>
-          {users.users.map((u) => (
+          {users.users.slice(0, showCount).map((u) => (
             <div key={u.uuid} className={'user-row' + (u.online ? ' user-online' : '')}>
               <div className="user-row-top">
                 <span className="user-name">{u.username || u.first_name || u.uuid.substring(0, 8)}</span>
@@ -150,6 +152,11 @@ export default function NodeCard({ node }) {
               </div>
             </div>
           ))}
+          {users.users.length > showCount && (
+            <button className="node-users-btn" onClick={() => setShowCount(showCount + 20)}>
+              Show more ({users.users.length - showCount} remaining)
+            </button>
+          )}
         </div>
       )}
     </div>

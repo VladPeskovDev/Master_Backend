@@ -111,6 +111,69 @@ router.get('/stats', async (req, res) => {
   }
 });
 
+// GET /api/admin/nodes/sync-check — проверка расхождений БД vs ноды
+router.get('/sync-check', async (req, res) => {
+  try {
+    // UUID из БД с активными подписками
+    const dbSubs = await Subscription.findAll({
+      where: { active: true },
+      include: [{ model: User, attributes: ['uuid', 'username', 'first_name', 'telegram_id'] }],
+    });
+    const dbUuids = new Set(dbSubs.map((s) => s.User?.uuid).filter(Boolean));
+
+    // UUID со всех нод
+    const nodes = await Node.findAll({ where: { active: true } });
+    const nodeUuids = new Set();
+    const nodeDetails = {};
+
+    const results = await Promise.allSettled(
+      nodes.map(async (node) => {
+        const api = createNodeApi(node.host, node.port, node.token);
+        const stats = await api.get('/stats');
+        return { node, users: stats.data.users || [] };
+      }),
+    );
+
+    for (const result of results) {
+      if (result.status !== 'fulfilled') continue;
+      for (const u of result.value.users) {
+        nodeUuids.add(u.uuid);
+        nodeDetails[u.uuid] = result.value.node.name;
+      }
+    }
+
+    // Расхождения
+    const inDbNotOnNodes = [];
+    for (const sub of dbSubs) {
+      if (sub.User?.uuid && !nodeUuids.has(sub.User.uuid)) {
+        inDbNotOnNodes.push({
+          uuid: sub.User.uuid,
+          username: sub.User.username,
+          first_name: sub.User.first_name,
+          telegram_id: sub.User.telegram_id,
+        });
+      }
+    }
+
+    const onNodesNotInDb = [];
+    for (const uuid of nodeUuids) {
+      if (!dbUuids.has(uuid)) {
+        onNodesNotInDb.push({ uuid, node: nodeDetails[uuid] });
+      }
+    }
+
+    res.json({
+      db_active: dbUuids.size,
+      nodes_total: nodeUuids.size,
+      in_db_not_on_nodes: inDbNotOnNodes,
+      on_nodes_not_in_db: onNodesNotInDb,
+    });
+  } catch (err) {
+    console.error('❌ Sync check error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 function formatTraffic(bytes) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)} KB`;

@@ -92,6 +92,7 @@ module.exports = {
   language_set: '✅ Til o\'zbek tiliga o\'zgartirildi',
 
   // Notifications
+  notify_throttled_trial: '⚠️ <b>Bepul trafik tugadi.</b>\n\nVPN faol qoladi, lekin tezlik pulli foydalanuvchilar qulayligi uchun kamaytirildi.\n\nObuna rasmiylang — cheksiz trafik va maksimal tezlik!',
   notify_expiring: '⏳ Obunangiz ertaga tugaydi!\n\nVPN kirish huquqini yo\'qotmaslik uchun hozir yangilang!',
   notify_expired: '❌ Obunangiz tugadi.\n\nYangilang — VPN darhol ishlaydi!',
 

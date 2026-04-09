@@ -256,12 +256,12 @@ const setupSubscribeHandler = (bot) => {
       // Спецпланы для Visa/MC (хардкод, минимум $6)
       const visaPlans = isUae
         ? [
-          { label: '📅 3 месяца — $7', callback: 'pay_visa_3mo_7' },
+          // { label: '📅 3 месяца — $7', callback: 'pay_visa_3mo_7' },
           { label: '🔥 6 месяцев — $20', callback: 'pay_visa_semi_20' },
           { label: '👑 12 месяцев — $40', callback: 'pay_visa_annual_40' },
         ]
         : [
-          { label: '📅 3 месяца — $7', callback: 'pay_visa_3mo_7' },
+          // { label: '📅 3 месяца — $7', callback: 'pay_visa_3mo_7' },
           { label: '🔥 6 месяцев — $10', callback: 'pay_visa_semi_10' },
           { label: '👑 12 месяцев — $20', callback: 'pay_visa_annual_20' },
         ];

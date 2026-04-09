@@ -94,6 +94,7 @@ module.exports = {
   language_set: '✅ Language set to English',
 
   // Notifications
+  notify_throttled_trial: '⚠️ <b>Free traffic limit reached.</b>\n\nWe keep your VPN active, but speed is reduced for the comfort of paid users.\n\nGet a subscription — unlimited traffic and max speed!',
   notify_expiring: '⏳ Your subscription expires tomorrow!\n\nRenew now to keep your VPN access!',
   notify_expired: '❌ Your subscription has expired.\n\nRenew — VPN will work instantly!',
 

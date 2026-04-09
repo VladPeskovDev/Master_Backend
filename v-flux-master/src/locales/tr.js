@@ -92,6 +92,7 @@ module.exports = {
   language_set: '✅ Dil Türkçe olarak ayarlandı',
 
   // Notifications
+  notify_throttled_trial: '⚠️ <b>Ücretsiz trafik limiti doldu.</b>\n\nVPN aktif kalıyor ancak ücretli kullanıcıların konforu için hız düşürüldü.\n\nAbonelik alın — sınırsız trafik ve maksimum hız!',
   notify_expiring: '⏳ Aboneliğiniz yarın sona eriyor!\n\nVPN erişiminizi kaybetmemek için şimdi yenileyin!',
   notify_expired: '❌ Aboneliğiniz sona erdi.\n\nYenileyin — VPN anında çalışacak!',
 

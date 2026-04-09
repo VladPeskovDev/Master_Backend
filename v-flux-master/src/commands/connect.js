@@ -32,6 +32,9 @@ const getPlatformKeyboard = (lang, link, downloadBtn, downloadUrl, backCallback)
   ],
 });
 
+// Защита от двойного нажатия при создании триала
+const trialLock = new Set();
+
 const setupConnectHandler = (bot) => {
   // === Экран 1: connect → создание триала + выбор устройства ===
   bot.on('callback_query', async (query) => {
@@ -47,43 +50,58 @@ const setupConnectHandler = (bot) => {
 
       // Нет подписки — активируем триал
       if (!sub) {
-        const trialPlan = await Plan.findOne({ where: { is_trial: true, active: true } });
+        // Защита от race condition
+        if (trialLock.has(user.id)) {
+          await bot.answerCallbackQuery(query.id);
+          return;
+        }
+        trialLock.add(user.id);
 
-        if (trialPlan) {
-          const [created, isNew] = await Subscription.findOrCreate({
-            where: { user_id: user.id, active: true },
-            defaults: {
-              plan_id: trialPlan.id,
-              started_at: new Date(),
-              expires_at: new Date(Date.now() + trialPlan.duration_days * 24 * 60 * 60 * 1000),
-              traffic_limit: trialPlan.traffic_limit_bytes,
-              traffic_used: 0,
-              throttled: false,
-              active: true,
-            },
-          });
+        try {
+          // Повторная проверка после лока
+          sub = await Subscription.findOne({ where: { user_id: user.id, active: true } });
+          if (sub) {
+            trialLock.delete(user.id);
+          } else {
+            const trialPlan = await Plan.findOne({ where: { is_trial: true, active: true } });
 
-          sub = created;
+            if (trialPlan) {
+              sub = await Subscription.create({
+                user_id: user.id,
+                plan_id: trialPlan.id,
+                started_at: new Date(),
+                expires_at: new Date(Date.now() + trialPlan.duration_days * 24 * 60 * 60 * 1000),
+                traffic_limit: trialPlan.traffic_limit_bytes,
+                traffic_used: 0,
+                throttled: false,
+                active: true,
+              });
 
-          if (isNew) {
-            await addUserToAllNodes(user.uuid, Number(trialPlan.traffic_limit_bytes));
-            justActivated = true;
-            console.log(`🎁 Триал активирован: ${user.uuid} (${user.username || user.telegram_id})`);
+              await addUserToAllNodes(user.uuid, Number(trialPlan.traffic_limit_bytes));
+              justActivated = true;
+              console.log(`🎁 Триал активирован: ${user.uuid} (${user.username || user.telegram_id})`);
+            }
+            trialLock.delete(user.id);
           }
-        } else {
-          // Нет триал-плана — предлагаем купить
-          await bot.editMessageText(t(lang, 'connect_no_sub'), {
-            chat_id: query.message.chat.id,
-            message_id: query.message.message_id,
-            parse_mode: 'HTML',
-            reply_markup: {
-              inline_keyboard: [
-                [{ text: t(lang, 'btn_subscribe'), callback_data: 'subscribe' }],
-                [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
-              ],
-            },
-          });
-          return bot.answerCallbackQuery(query.id);
+
+          if (!sub) {
+            // Нет триал-плана — предлагаем купить
+            await bot.editMessageText(t(lang, 'connect_no_sub'), {
+              chat_id: query.message.chat.id,
+              message_id: query.message.message_id,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: t(lang, 'btn_subscribe'), callback_data: 'subscribe' }],
+                  [{ text: t(lang, 'btn_back'), callback_data: 'back_to_menu' }],
+                ],
+              },
+            });
+            return bot.answerCallbackQuery(query.id);
+          }
+        } catch (lockErr) {
+          trialLock.delete(user.id);
+          throw lockErr;
         }
       }
 
