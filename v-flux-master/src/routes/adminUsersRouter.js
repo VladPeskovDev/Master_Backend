@@ -153,18 +153,32 @@ router.get('/inactive', async (req, res) => {
   }
 });
 
-// GET /api/admin/users/trial — триальные подписки с пагинацией
+// GET /api/admin/users/trial — триальные подписки с пагинацией и фильтрацией
 router.get('/trial', async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
     const offset = (page - 1) * limit;
+    const sourceFilter = req.query.source || null;
+    const hideUnused = req.query.hide_unused === '1';
+
+    // Фильтры на User
+    const userWhere = {};
+    if (sourceFilter) {
+      userWhere.source = sourceFilter === 'organic' ? null : sourceFilter;
+    }
+
+    // Фильтр по трафику
+    const subWhere = { active: true };
+    if (hideUnused) {
+      subWhere.traffic_used = { [Op.gt]: 0 };
+    }
 
     const { count, rows } = await Subscription.findAndCountAll({
-      where: { active: true },
+      where: subWhere,
       include: [
         { model: Plan, where: { is_trial: true } },
-        { model: User },
+        { model: User, where: Object.keys(userWhere).length > 0 ? userWhere : undefined },
       ],
       order: [['createdAt', 'DESC']],
       limit,
@@ -187,11 +201,20 @@ router.get('/trial', async (req, res) => {
       created_at: sub.createdAt,
     }));
 
+    // Уникальные source для dropdown
+    const allSources = await User.findAll({
+      attributes: ['source'],
+      group: ['source'],
+      raw: true,
+    });
+    const sources = allSources.map((s) => s.source || 'organic').filter((v, i, a) => a.indexOf(v) === i).sort();
+
     res.json({
       users: result,
       total: count,
       page,
       pages: Math.ceil(count / limit),
+      sources,
     });
   } catch (err) {
     console.error('❌ Admin trial users:', err);

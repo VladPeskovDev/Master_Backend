@@ -161,6 +161,13 @@ tr:hover { background: var(--surface2); }
 .badge-green { background: rgba(16,185,129,0.15); color: var(--green); }
 .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
 
+.filter-bar { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
+.filter-select { padding: 6px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 12px; cursor: pointer; outline: none; }
+.filter-select:focus { border-color: var(--accent); }
+.filter-toggle { padding: 6px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-family: inherit; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+.filter-toggle.active { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,0.1); }
+.filter-toggle:hover:not(.active) { color: var(--text); }
+
 .sub-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
 .sub-tab { padding: 6px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-family: inherit; font-size: 12px; cursor: pointer; transition: all 0.2s; }
 .sub-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,0.1); }

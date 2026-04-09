@@ -16,11 +16,13 @@ export default function TrialUsers() {
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [source, setSource] = useState('');
+  const [hideUnused, setHideUnused] = useState(false);
 
-  const load = async (p) => {
+  const load = async (p, src, hide) => {
     setLoading(true);
     try {
-      const res = await fetchTrialUsers(p);
+      const res = await fetchTrialUsers(p, 20, src, hide);
       setData(res.data);
     } catch {
       console.error('Failed to load trial users');
@@ -29,7 +31,8 @@ export default function TrialUsers() {
     }
   };
 
-  useEffect(() => { load(page); }, [page]);
+  useEffect(() => { load(page, source, hideUnused); }, [page]);
+  useEffect(() => { setPage(1); load(1, source, hideUnused); }, [source, hideUnused]);
 
   if (loading && !data) return <div className="loading">Loading...</div>;
 
@@ -37,6 +40,26 @@ export default function TrialUsers() {
     <div className="paid-users">
       <div className="paid-header">
         <h2 className="section-title">Trial Users ({data?.total || 0})</h2>
+      </div>
+
+      <div className="filter-bar">
+        <select
+          className="filter-select"
+          value={source}
+          onChange={(e) => setSource(e.target.value)}
+        >
+          <option value="">All sources</option>
+          {(data?.sources || []).map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+
+        <button
+          className={'filter-toggle' + (hideUnused ? ' active' : '')}
+          onClick={() => setHideUnused(!hideUnused)}
+        >
+          {hideUnused ? '👁 Show all' : '🚫 Hide unused'}
+        </button>
       </div>
 
       <div className="table-wrap">

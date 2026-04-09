@@ -6,6 +6,7 @@ const bot = require('../bot');
 const { t } = require('../locales');
 
 const MAX_CONNECTIONS_PER_USER = 256;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const runTrafficCollection = async () => {
   try {
@@ -90,6 +91,7 @@ const runTrafficCollection = async () => {
         try {
           const api = createNodeApi(node.host, node.port, node.token);
           await api.post(`/users/${uuid}/reset-traffic`);
+          await sleep(50);
         } catch (err) {
           console.error(`❌ Reset traffic ${uuid} на ${node.name}: ${err.message}`);
         }
@@ -151,6 +153,16 @@ const runTrafficCollection = async () => {
         await unthrottleOnAllNodes(uuid);
         await sub.update({ throttled: false });
         console.log(`✅ Unthrottled ${uuid}: коннекты ${currentConns}, трафик в норме`);
+      }
+    }
+
+    // Re-sync throttle — если в БД throttled, но на ноде нет
+    for (const sub of throttledSubs) {
+      const uuid = sub.User.uuid;
+      const trafficOver = Number(sub.traffic_used) >= Number(sub.traffic_limit);
+      if (trafficOver) {
+        await throttleOnAllNodes(uuid);
+        await sleep(50);
       }
     }
 
