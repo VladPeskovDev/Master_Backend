@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n🚀 Yuqori tezlik, cheklovsiz\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n📱 Barcha qurilmalarda ishlaydi\n\n🎁 Bepul sinov muddati: <b>3 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
-  welcome_back_no_sub: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\nSiz hali VPN\'imizni sinab ko\'rmadingiz.\n\n🎁 Sizda <b>3 bepul kun</b> bor — hoziroq sinab ko\'ring!',
+  welcome_new: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n🚀 Yuqori tezlik, cheklovsiz\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n📱 Barcha qurilmalarda ishlaydi\n\n🎁 Bepul sinov muddati: <b>2 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
+  welcome_back_no_sub: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\nSiz hali VPN\'imizni sinab ko\'rmadingiz.\n\n🎁 Sizda <b>2 bepul kun</b> bor — hoziroq sinab ko\'ring!',
   welcome_back_trial_active: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n✅ Sinov muddatingiz faol\n📅 Amal qiladi: <b>{date}</b>\n📊 Trafik: <b>{used} / {limit}</b>\n\nVPN\'ni boshqarish uchun quyidagi menyudan foydalaning.',
   welcome_back_trial_expired: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n⏳ Sinov muddatingiz tugadi.\n\nVPN\'dan foydalanishni davom ettirish uchun obuna bo\'ling yoki bonus kunlar uchun do\'stingizni taklif qiling!',
   welcome_back_paid_active: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n✅ Obunangiz faol\n📅 Amal qiladi: <b>{date}</b>\n\nVPN\'ni boshqarish uchun quyidagi menyudan foydalaning.',
   welcome_back_paid_expired: '👋 <b>Qaytganingizdan xursandmiz!</b>\n\n⏳ Obunangiz tugadi.\n\nVPN\'dan foydalanishni davom ettirish uchun obunangizni yangilang yoki bonus kunlar uchun do\'stingizni taklif qiling!',
-  welcome_new_referral: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n👤 Sizni do\'stingiz taklif qildi!\n\n🚀 Yuqori tezlik, cheklovsiz\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n\n🎁 Bepul sinov muddati: <b>3 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
+  welcome_new_referral: '⚡️ <b>Rocky VPN\'ga xush kelibsiz!</b>\n\n👤 Sizni do\'stingiz taklif qildi!\n\n🚀 Yuqori tezlik, cheklovsiz\n🔒 Loglar yo\'q, cheklovlar yo\'q\n🌍 Yevropada serverlar\n\n🎁 Bepul sinov muddati: <b>2 kun</b>\n\nBoshlash uchun quyidagi tugmani bosing!',
   btn_try_free: '🔗 Bepul sinab ko\'rish',
   btn_get_subscription: '💳 Obuna bo\'lish',
   btn_renew_subscription: '💳 Obunani yangilash',
@@ -97,5 +97,5 @@ module.exports = {
   notify_expired: '❌ Obunangiz tugadi.\n\nYangilang — VPN darhol ishlaydi!',
 
   stub: '🚧 Tez orada',
-  terms_text: '📄 <b>Rocky VPN foydalanish shartlari</b>\n\n<b>1. Xizmat</b>\nRocky VPN internetda maxfiyligingizni himoya qilish uchun VPN xizmati ko\'rsatadi.\n\n<b>2. Obuna</b>\n• Bepul sinov: 3 kun\n• Pullik tariflar: 1, 6 va 12 oy\n• To\'lovdan keyin 24 soat ichida qaytarish\n\n<b>3. Foydalanish</b>\n• Bir kishi — bir hisob\n• Hisobni boshqalarga berish taqiqlangan\n• Noqonuniy harakatlar taqiqlangan\n\n<b>4. Cheklovlar</b>\n• Trafik limiti oshsa tezlik kamaytirilishi mumkin\n• Qoidalar buzilsa xizmat to\'xtatilishi mumkin\n\n<b>5. Maxfiylik</b>\n• Faoliyat loglarini saqlamaymiz\n• Ma\'lumotlaringizni uchinchi tomonlarga bermaymiz\n\n📧 Savollar: @RockyVPN_support',
+  terms_text: '📄 <b>Rocky VPN foydalanish shartlari</b>\n\n<b>1. Xizmat</b>\nRocky VPN internetda maxfiyligingizni himoya qilish uchun VPN xizmati ko\'rsatadi.\n\n<b>2. Obuna</b>\n• Bepul sinov: 2 kun\n• Pullik tariflar: 1, 6 va 12 oy\n• To\'lovdan keyin 24 soat ichida qaytarish\n\n<b>3. Foydalanish</b>\n• Bir kishi — bir hisob\n• Hisobni boshqalarga berish taqiqlangan\n• Noqonuniy harakatlar taqiqlangan\n\n<b>4. Cheklovlar</b>\n• Trafik limiti oshsa tezlik kamaytirilishi mumkin\n• Qoidalar buzilsa xizmat to\'xtatilishi mumkin\n\n<b>5. Maxfiylik</b>\n• Faoliyat loglarini saqlamaymiz\n• Ma\'lumotlaringizni uchinchi tomonlarga bermaymiz\n\n📧 Savollar: @RockyVPN_support',
 };

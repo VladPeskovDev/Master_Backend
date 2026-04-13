@@ -22,6 +22,7 @@ const router = express.Router();
 
 router.get('/:token', async (req, res) => {
   try {
+    console.log(`📡 Sub request: UA=${req.headers['user-agent'] || 'none'}`);
     const user = await User.findOne({ where: { sub_token: req.params.token } });
 
     if (!user) {

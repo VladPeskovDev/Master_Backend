@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n🚀 High speed, no limits\n🔒 No logs, no limits\n🌍 Servers in Europe\n📱 Works on all devices\n\n🎁 Your free trial: <b>3 days</b>\n\nTap the button below to get started!',
+  welcome_new: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n🚀 High speed, no limits\n🔒 No logs, no limits\n🌍 Servers in Europe\n📱 Works on all devices\n\n🎁 Your free trial: <b>2 days</b>\n\nTap the button below to get started!',
   welcome_back_no_sub: '👋 <b>Welcome back!</b>\n\nYou haven\'t tried our VPN yet.\n\n🎁 You have <b>3 free days</b> — try it now!',
   welcome_back_trial_active: '👋 <b>Welcome back!</b>\n\n✅ Your trial is active\n📅 Valid until: <b>{date}</b>\n📊 Traffic: <b>{used} / {limit}</b>\n\nUse the menu below to manage your VPN.',
   welcome_back_trial_expired: '👋 <b>Welcome back!</b>\n\n⏳ Your trial has expired.\n\nGet a subscription to keep using VPN, or invite a friend for bonus days!',
   welcome_back_paid_active: '👋 <b>Welcome back!</b>\n\n✅ Your subscription is active\n📅 Valid until: <b>{date}</b>\n\nUse the menu below to manage your VPN.',
   welcome_back_paid_expired: '👋 <b>Welcome back!</b>\n\n⏳ Your subscription has expired.\n\nRenew your subscription to keep using VPN, or invite a friend for bonus days!',
-  welcome_new_referral: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n👤 You were invited by a friend!\n\n🚀 High speed, no limits\n🔒 No logs, no limits\n🌍 Servers in Europe\n\n🎁 Your free trial: <b>3 days</b>\n\nTap the button below to get started!',
+  welcome_new_referral: '⚡️ <b>Welcome to Rocky VPN!</b>\n\n👤 You were invited by a friend!\n\n🚀 High speed, no limits\n🔒 No logs, no limits\n🌍 Servers in Europe\n\n🎁 Your free trial: <b>2 days</b>\n\nTap the button below to get started!',
   btn_try_free: '🔗 Try for free',
   btn_get_subscription: '💳 Get subscription',
   btn_renew_subscription: '💳 Renew subscription',
@@ -100,5 +100,5 @@ module.exports = {
 
   stub: '🚧 Coming soon',
   // Terms
-  terms_text: '📄 <b>Rocky VPN Terms of Service</b>\n\n<b>1. Service</b>\nRocky VPN provides VPN service to protect your online privacy.\n\n<b>2. Subscription</b>\n• Free trial: 3 days\n• Paid plans: 1, 6 and 12 months\n• Refunds within 24 hours of payment\n\n<b>3. Usage</b>\n• One account per person\n• Sharing accounts is prohibited\n• Illegal activities are prohibited\n\n<b>4. Limitations</b>\n• Speed may be reduced if traffic limit is exceeded\n• Service may be suspended for rule violations\n\n<b>5. Privacy</b>\n• We do not store activity logs\n• We do not share data with third parties\n\n📧 Questions: @RockyVPN_support',
+  terms_text: '📄 <b>Rocky VPN Terms of Service</b>\n\n<b>1. Service</b>\nRocky VPN provides VPN service to protect your online privacy.\n\n<b>2. Subscription</b>\n• Free trial: 2 days\n• Paid plans: 1, 6 and 12 months\n• Refunds within 24 hours of payment\n\n<b>3. Usage</b>\n• One account per person\n• Sharing accounts is prohibited\n• Illegal activities are prohibited\n\n<b>4. Limitations</b>\n• Speed may be reduced if traffic limit is exceeded\n• Service may be suspended for rule violations\n\n<b>5. Privacy</b>\n• We do not store activity logs\n• We do not share data with third parties\n\n📧 Questions: @RockyVPN_support',
 };

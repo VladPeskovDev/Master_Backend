@@ -12,6 +12,34 @@ const setupTermsHandler = require('./commands/terms');
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { webHook: true });
 
+// Обёртки для безопасных вызовов Telegram API
+const ignorableErrors = [
+  'message is not modified',
+  "message can't be deleted",
+  "message can't be edited",
+  'query is too old',
+];
+
+const wrapBotMethod = (method) => {
+  const orig = method.bind(bot);
+  return async (...args) => {
+    try {
+      return await orig(...args);
+    } catch (err) {
+      const msg = err?.message || '';
+      // Игнорируем известные некритичные ошибки Telegram
+      if (ignorableErrors.some((e) => msg.includes(e))) return null;
+      // Игнорируем 403 — бот заблокирован юзером
+      if (err?.response?.statusCode === 403) return null;
+      throw err;
+    }
+  };
+};
+
+bot.editMessageText = wrapBotMethod(bot.editMessageText);
+bot.deleteMessage = wrapBotMethod(bot.deleteMessage);
+bot.answerCallbackQuery = wrapBotMethod(bot.answerCallbackQuery);
+
 // Webhook
 const WEBHOOK_URL = `${process.env.DOMAIN}/bot${process.env.TELEGRAM_BOT_TOKEN}`;
 bot.setWebHook(WEBHOOK_URL)

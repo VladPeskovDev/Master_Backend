@@ -91,7 +91,7 @@ const runTrafficCollection = async () => {
         try {
           const api = createNodeApi(node.host, node.port, node.token);
           await api.post(`/users/${uuid}/reset-traffic`);
-          await sleep(50);
+          await sleep(150);
         } catch (err) {
           console.error(`❌ Reset traffic ${uuid} на ${node.name}: ${err.message}`);
         }

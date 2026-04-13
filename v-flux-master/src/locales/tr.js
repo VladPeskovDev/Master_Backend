@@ -1,12 +1,12 @@
 module.exports = {
   // Start — welcome scenarios
-  welcome_new: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n🚀 Yüksek hız, sınır yok\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n📱 Tüm cihazlarda çalışır\n\n🎁 Ücretsiz deneme süreniz: <b>3 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
-  welcome_back_no_sub: '👋 <b>Tekrar hoş geldiniz!</b>\n\nHenüz VPN\'imizi denemediniz.\n\n🎁 <b>3 ücretsiz gününüz</b> var — hemen deneyin!',
+  welcome_new: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n🚀 Yüksek hız, sınır yok\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n📱 Tüm cihazlarda çalışır\n\n🎁 Ücretsiz deneme süreniz: <b>2 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
+  welcome_back_no_sub: '👋 <b>Tekrar hoş geldiniz!</b>\n\nHenüz VPN\'imizi denemediniz.\n\n🎁 <b>2 ücretsiz gününüz</b> var — hemen deneyin!',
   welcome_back_trial_active: '👋 <b>Tekrar hoş geldiniz!</b>\n\n✅ Deneme süreniz aktif\n📅 Geçerlilik: <b>{date}</b>\n📊 Trafik: <b>{used} / {limit}</b>\n\nVPN\'inizi yönetmek için aşağıdaki menüyü kullanın.',
   welcome_back_trial_expired: '👋 <b>Tekrar hoş geldiniz!</b>\n\n⏳ Deneme süreniz sona erdi.\n\nVPN kullanmaya devam etmek için abone olun veya bonus günler için bir arkadaşınızı davet edin!',
   welcome_back_paid_active: '👋 <b>Tekrar hoş geldiniz!</b>\n\n✅ Aboneliğiniz aktif\n📅 Geçerlilik: <b>{date}</b>\n\nVPN\'inizi yönetmek için aşağıdaki menüyü kullanın.',
   welcome_back_paid_expired: '👋 <b>Tekrar hoş geldiniz!</b>\n\n⏳ Aboneliğiniz sona erdi.\n\nVPN kullanmaya devam etmek için aboneliğinizi yenileyin veya bonus günler için bir arkadaşınızı davet edin!',
-  welcome_new_referral: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n👤 Bir arkadaşınız sizi davet etti!\n\n🚀 Yüksek hız, sınır yok\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n\n🎁 Ücretsiz deneme süreniz: <b>3 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
+  welcome_new_referral: '⚡️ <b>Rocky VPN\'e hoş geldiniz!</b>\n\n👤 Bir arkadaşınız sizi davet etti!\n\n🚀 Yüksek hız, sınır yok\n🔒 Kayıt yok, sınır yok\n🌍 Avrupa\'da sunucular\n\n🎁 Ücretsiz deneme süreniz: <b>2 gün</b>\n\nBaşlamak için aşağıdaki butona basın!',
   btn_try_free: '🔗 Ücretsiz dene',
   btn_get_subscription: '💳 Abone ol',
   btn_renew_subscription: '💳 Aboneliği yenile',
@@ -97,5 +97,5 @@ module.exports = {
   notify_expired: '❌ Aboneliğiniz sona erdi.\n\nYenileyin — VPN anında çalışacak!',
 
   stub: '🚧 Yakında',
-  terms_text: '📄 <b>Rocky VPN Kullanım Şartları</b>\n\n<b>1. Hizmet</b>\nRocky VPN, çevrimiçi gizliliğinizi korumak için VPN hizmeti sunar.\n\n<b>2. Abonelik</b>\n• Ücretsiz deneme: 3 gün\n• Ücretli planlar: 1, 6 ve 12 ay\n• Ödemeden sonra 24 saat içinde iade\n\n<b>3. Kullanım</b>\n• Kişi başına bir hesap\n• Hesap paylaşımı yasaktır\n• Yasadışı faaliyetler yasaktır\n\n<b>4. Kısıtlamalar</b>\n• Trafik limiti aşılırsa hız düşürülebilir\n• Kural ihlallerinde hizmet askıya alınabilir\n\n<b>5. Gizlilik</b>\n• Aktivite kayıtlarını saklamıyoruz\n• Verilerinizi üçüncü taraflarla paylaşmıyoruz\n\n📧 Sorular: @RockyVPN_support',
+  terms_text: '📄 <b>Rocky VPN Kullanım Şartları</b>\n\n<b>1. Hizmet</b>\nRocky VPN, çevrimiçi gizliliğinizi korumak için VPN hizmeti sunar.\n\n<b>2. Abonelik</b>\n• Ücretsiz deneme: 2 gün\n• Ücretli planlar: 1, 6 ve 12 ay\n• Ödemeden sonra 24 saat içinde iade\n\n<b>3. Kullanım</b>\n• Kişi başına bir hesap\n• Hesap paylaşımı yasaktır\n• Yasadışı faaliyetler yasaktır\n\n<b>4. Kısıtlamalar</b>\n• Trafik limiti aşılırsa hız düşürülebilir\n• Kural ihlallerinde hizmet askıya alınabilir\n\n<b>5. Gizlilik</b>\n• Aktivite kayıtlarını saklamıyoruz\n• Verilerinizi üçüncü taraflarla paylaşmıyoruz\n\n📧 Sorular: @RockyVPN_support',
 };

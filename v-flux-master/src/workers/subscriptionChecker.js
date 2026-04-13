@@ -3,6 +3,8 @@ const { Op } = require('sequelize');
 const { Subscription, User } = require('../../db/models');
 const { removeUserFromAllNodes } = require('../services/nodeService');
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 /*
  * Каждый час:
  * Находим подписки где expires_at < NOW() и active = true
@@ -29,6 +31,7 @@ const runSubscriptionCheck = async () => {
     for (const sub of expired) {
       await sub.update({ active: false });
       await removeUserFromAllNodes(sub.User.uuid);
+      await sleep(150);
       console.log(`⏰ Подписка истекла: ${sub.User.uuid} (${sub.User.username || sub.User.telegram_id})`);
     }
 

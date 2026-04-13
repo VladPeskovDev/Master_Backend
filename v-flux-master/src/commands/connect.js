@@ -107,7 +107,7 @@ const setupConnectHandler = (bot) => {
 
       // Показываем экран выбора устройства
       const text = justActivated
-        ? t(lang, 'connect_activated', { days: '3' })
+        ? t(lang, 'connect_activated', { days: '2' })
         : t(lang, 'connect_choose_device');
 
       await bot.editMessageText(text, {
