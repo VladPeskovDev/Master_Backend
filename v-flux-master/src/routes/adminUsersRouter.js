@@ -1,5 +1,5 @@
 const express = require('express');
-const { Op } = require('sequelize');
+const { Op, literal } = require('sequelize');
 const { User, Subscription, Plan, Payment } = require('../../db/models');
 const { removeUserFromAllNodes, syncUserOnAllNodes, throttleOnAllNodes, unthrottleOnAllNodes } = require('../services/nodeService');
 const adminAuth = require('../middleware/adminAuth');
@@ -62,20 +62,8 @@ router.get('/inactive', async (req, res) => {
     const type = req.query.type || 'expired_trial'; // expired_trial | expired_paid | no_sub
 
     if (type === 'no_sub') {
-      // ID юзеров у которых есть хоть одна подписка
-      const usersWithSubs = await Subscription.findAll({
-        attributes: ['user_id'],
-        group: ['user_id'],
-        raw: true,
-      });
-      const idsWithSubs = usersWithSubs.map((s) => s.user_id);
-
-      const where = idsWithSubs.length > 0
-        ? { id: { [Op.notIn]: idsWithSubs } }
-        : {};
-
       const { count, rows } = await User.findAndCountAll({
-        where,
+        where: { id: { [Op.notIn]: literal('(SELECT DISTINCT user_id FROM "Subscriptions")') } },
         order: [['createdAt', 'DESC']],
         limit,
         offset,
@@ -99,19 +87,10 @@ router.get('/inactive', async (req, res) => {
       });
     }
 
-    // ID юзеров с активной подпиской (общий для expired_trial и expired_paid)
-    const activeUserIds = await Subscription.findAll({
-      attributes: ['user_id'],
-      where: { active: true },
-      group: ['user_id'],
-      raw: true,
-    });
-    const activeIds = activeUserIds.map((s) => s.user_id);
-
-    const expiredWhere = { active: false };
-    if (activeIds.length > 0) {
-      expiredWhere.user_id = { [Op.notIn]: activeIds };
-    }
+    const expiredWhere = {
+      active: false,
+      user_id: { [Op.notIn]: literal('(SELECT DISTINCT user_id FROM "Subscriptions" WHERE active = true)') },
+    };
 
     const isTrial = type === 'expired_trial';
 
