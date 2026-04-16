@@ -630,6 +630,59 @@ const setupSubscribeHandler = (bot) => {
       }
     }
   });
+
+  // Промо-акция: 2 месяца за 150₽ (истёкший триал)
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'promo_trial_expired') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang || 'en';
+
+      const payment = await Payment.create({
+        user_id: user.id,
+        plan_id: 2, // Monthly
+        amount: 150,
+        currency: 'RUB',
+        method: 'card',
+        status: 'pending',
+      });
+
+      const result = await createOrder({
+        amount: 150,
+        currency: 'RUB',
+        externalId: `pay_${payment.id}`,
+        externalUserId: `user_${user.id}`,
+        purpose: 'Rocky VPN — Промо 2 месяца',
+      });
+
+      await payment.update({ provider_id: `promo_60_2_${payment.id}` });
+
+      await bot.sendMessage(query.message.chat.id,
+        t(lang, 'payment_card_invoice', { plan: '2 месяца (промо)', amount: '150', currency: '₽' }),
+        {
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: t(lang, 'btn_pay_card_link'), url: result.paymentLink }],
+            ],
+          },
+        },
+      );
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка promo_trial_expired:', err);
+      try {
+        await bot.answerCallbackQuery(query.id, {
+          text: 'Ошибка. Попробуйте позже.',
+          show_alert: true,
+        });
+      } catch {}
+    }
+  });
 };
 
 module.exports = setupSubscribeHandler;

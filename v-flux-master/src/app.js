@@ -23,8 +23,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({
   verify: (req, _res, buf) => {
-    // Сохраняем сырое body для верификации подписи RioPay webhook
-    req.rawBody = buf.toString('utf8');
+    req.rawBody = buf.toString('utf8'); // Сохраняем сырое body для верификации подписи RioPay webhook
   },
 }));
 

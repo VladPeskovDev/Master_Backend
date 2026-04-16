@@ -1,7 +1,9 @@
 const express = require('express');
-const { Payment, User } = require('../../db/models');
+const { Payment, User, Subscription, Plan } = require('../../db/models');
 const { verifySignature, isAllowedIp } = require('../services/rioPayService');
 const { activateSubscription } = require('../services/subscriptionService');
+const { syncUserOnAllNodes } = require('../services/nodeService');
+const { processReferralReward } = require('../services/referralService');
 const bot = require('../bot');
 const { t } = require('../locales');
 
@@ -52,13 +54,39 @@ router.post('/webhook', async (req, res) => {
       return res.sendStatus(200);
     }
 
-    // 6. Сохраняем provider_id и статус
-    await payment.update({ status: 'paid', provider_id: data.id });
+    // 6. Активируем подписку
+    let subscription;
 
-    // 7. Активируем подписку
-    const subscription = await activateSubscription(payment.user_id, payment.plan_id);
+    if (payment.provider_id?.startsWith('promo_')) {
+      // Промо-акция — кастомные дни и трафик
+      const parts = payment.provider_id.split('_'); // promo_60_2_42
+      const customDays = parseInt(parts[1], 10);
+      const trafficMultiplier = parseInt(parts[2], 10);
+      const plan = await Plan.findByPk(payment.plan_id);
+      const traffic = plan ? Number(plan.traffic_limit_bytes) * trafficMultiplier : 161061273600 * 2;
 
-    // 8. Уведомляем юзера
+      const oldSub = await Subscription.findOne({ where: { user_id: payment.user_id, active: true } });
+      const now = new Date();
+      const baseDate = oldSub && new Date(oldSub.expires_at) > now ? new Date(oldSub.expires_at).getTime() : now.getTime();
+      if (oldSub) await oldSub.update({ active: false });
+
+      await payment.update({ status: 'paid', provider_id: data.id });
+      subscription = await Subscription.create({
+        user_id: payment.user_id, plan_id: payment.plan_id, started_at: now,
+        expires_at: new Date(baseDate + customDays * 24 * 60 * 60 * 1000),
+        traffic_limit: traffic, traffic_used: 0, throttled: false, active: true,
+      });
+
+      const promoUser = await User.findByPk(payment.user_id);
+      if (promoUser) await syncUserOnAllNodes(promoUser.uuid, traffic);
+      await processReferralReward(payment.user_id);
+    } else {
+      // Стандартная активация
+      await payment.update({ status: 'paid', provider_id: data.id });
+      subscription = await activateSubscription(payment.user_id, payment.plan_id);
+    }
+
+    // 7. Уведомляем юзера
     const user = await User.findByPk(payment.user_id);
     if (user) {
       const lang = user.lang || 'en';
