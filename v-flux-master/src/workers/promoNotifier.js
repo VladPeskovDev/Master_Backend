@@ -63,8 +63,8 @@ const runPromoNotifier = async () => {
 
 // Разовый запуск: 19 апреля 2026, 13:02 UTC (16:02 МСК)
 const startPromoNotifier = () => {
-  cron.schedule('2 13 19 4 *', runPromoNotifier);
-  console.log('🔥 Промо рассылка запланирована: 19.04.2026 16:02 МСК');
+  cron.schedule('2 16 19 4 *', runPromoNotifier);
+  console.log('🔥 Промо рассылка запланирована: 19.04.2026 19:02 МСК');
 };
 
 module.exports = { startPromoNotifier, runPromoNotifier };
