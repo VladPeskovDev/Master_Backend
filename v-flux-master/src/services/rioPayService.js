@@ -15,6 +15,8 @@ const api = axios.create({
 const DOMAIN = process.env.DOMAIN || 'https://chess-online24.art';
 
 const createOrder = async ({ amount, currency, externalId, externalUserId, purpose }) => {
+  console.log(`🔑 RioPay token: ${API_TOKEN ? API_TOKEN.substring(0, 6) + '...' : 'EMPTY'}`);
+
   const res = await api.post('/orders', {
     amount: String(amount),
     currency: currency || 'RUB',

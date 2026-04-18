@@ -118,7 +118,8 @@ const setupSubscribeHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }], // RioPay — временно отключён
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }],
             [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
             [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
@@ -147,7 +148,8 @@ const setupSubscribeHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }], // RioPay — временно отключён
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }],
             [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
             [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
@@ -174,7 +176,8 @@ const setupSubscribeHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }], // RioPay — временно отключён
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }],
             [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
             [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
@@ -189,6 +192,7 @@ const setupSubscribeHandler = (bot) => {
 
   // ===== ШАГ 2: Выбрал метод → список планов =====
 
+  /* RioPay — временно отключён
   // Карта РФ (RioPay) → все планы
   bot.on('callback_query', async (query) => {
     try {
@@ -212,6 +216,33 @@ const setupSubscribeHandler = (bot) => {
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
       console.error('❌ Ошибка method_card:', err);
+    }
+  });
+  */
+
+  // Карта РФ через Робокассу (рубли) — замена RioPay
+  bot.on('callback_query', async (query) => {
+    try {
+      if (query.data !== 'method_card_robo') return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang;
+      const { text, buttons } = await buildPlanButtons(lang, 'ru', 'pay_card_robo');
+
+      buttons.push([{ text: t(lang, 'btn_back'), callback_data: 'subscribe' }]);
+
+      await bot.editMessageText(t(lang, 'subscribe_title') + '\n\n' + text + t(lang, 'subscribe_footer'), {
+        chat_id: query.message.chat.id,
+        message_id: query.message.message_id,
+        parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: buttons },
+      });
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка method_card_robo:', err);
     }
   });
 
@@ -311,6 +342,7 @@ const setupSubscribeHandler = (bot) => {
 
   // ===== ШАГ 3: Оплата =====
 
+  /* RioPay — временно отключён
   // Оплата картой через RioPay (₽)
   bot.on('callback_query', async (query) => {
     try {
@@ -377,6 +409,84 @@ const setupSubscribeHandler = (bot) => {
       await bot.answerCallbackQuery(query.id);
     } catch (err) {
       console.error('❌ Ошибка pay_card:', err);
+      try {
+        await bot.answerCallbackQuery(query.id, {
+          text: 'Error creating payment. Try again.',
+          show_alert: true,
+        });
+      } catch (answerErr) {
+        console.error('❌ Ошибка answerCallbackQuery:', answerErr.message);
+      }
+    }
+  });
+  */
+
+  // Оплата картой РФ через Робокассу (рубли) — замена RioPay
+  bot.on('callback_query', async (query) => {
+    try {
+      if (!query.data.startsWith('pay_card_robo_')) return;
+
+      const user = await User.findOne({ where: { telegram_id: query.from.id } });
+      if (!user) return;
+
+      const lang = user.lang || 'en';
+      const planId = parseInt(query.data.replace('pay_card_robo_', ''), 10);
+
+      const plan = await Plan.findOne({
+        where: { id: planId },
+        include: [{ model: PlanPrice, where: { region: 'ru' } }],
+      });
+
+      if (!plan || !plan.PlanPrices[0]) {
+        await bot.answerCallbackQuery(query.id, {
+          text: t(lang, 'subscribe_payment_stub'),
+          show_alert: true,
+        });
+        return;
+      }
+
+      const price = plan.PlanPrices[0];
+
+      const payment = await Payment.create({
+        user_id: user.id,
+        plan_id: planId,
+        amount: price.price,
+        currency: 'RUB',
+        method: 'robokassa',
+        status: 'pending',
+      });
+
+      const planNameKey = PLAN_NAME_KEYS[plan.name] || 'plan_name_monthly';
+      const planName = t(lang, planNameKey, { days: plan.duration_days });
+
+      const payUrl = generatePaymentUrl({
+        invoiceId: payment.id,
+        amount: price.price,
+        description: `Rocky Network — ${planName}`,
+        userId: user.id,
+        planId,
+      });
+
+      const { formatted, symbol } = formatPrice(price.price, price.currency);
+
+      await bot.editMessageText(
+        t(lang, 'payment_card_invoice', { plan: planName, amount: formatted, currency: symbol }),
+        {
+          chat_id: query.message.chat.id,
+          message_id: query.message.message_id,
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: t(lang, 'btn_pay_card_link'), url: payUrl }],
+              [{ text: t(lang, 'btn_back'), callback_data: 'method_card_robo' }],
+            ],
+          },
+        },
+      );
+
+      await bot.answerCallbackQuery(query.id);
+    } catch (err) {
+      console.error('❌ Ошибка pay_card_robo:', err);
       try {
         await bot.answerCallbackQuery(query.id, {
           text: 'Error creating payment. Try again.',
@@ -646,19 +756,19 @@ const setupSubscribeHandler = (bot) => {
         plan_id: 2, // Monthly
         amount: 150,
         currency: 'RUB',
-        method: 'card',
+        method: 'robokassa',
         status: 'pending',
       });
 
-      const result = await createOrder({
-        amount: 150,
-        currency: 'RUB',
-        externalId: `pay_${payment.id}`,
-        externalUserId: `user_${user.id}`,
-        purpose: 'Rocky VPN — Промо 2 месяца',
-      });
-
       await payment.update({ provider_id: `promo_60_2_${payment.id}` });
+
+      const payUrl = generatePaymentUrl({
+        invoiceId: payment.id,
+        amount: 150,
+        description: 'Rocky Network — Промо 2 месяца',
+        userId: user.id,
+        planId: 2,
+      });
 
       await bot.sendMessage(query.message.chat.id,
         t(lang, 'payment_card_invoice', { plan: '2 месяца (промо)', amount: '150', currency: '₽' }),
@@ -666,7 +776,7 @@ const setupSubscribeHandler = (bot) => {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
-              [{ text: t(lang, 'btn_pay_card_link'), url: result.paymentLink }],
+              [{ text: t(lang, 'btn_pay_card_link'), url: payUrl }],
             ],
           },
         },
