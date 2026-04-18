@@ -41,7 +41,7 @@ router.post('/result', async (req, res) => {
 
     let subscription;
 
-    if (payment.method === 'visa' && payment.provider_id?.startsWith('visa_')) {
+    if (payment.provider_id?.startsWith('promo_') || (payment.method === 'visa' && payment.provider_id?.startsWith('visa_'))) {
       // Спецплан Visa/MC — кастомные дни и трафик
       const parts = payment.provider_id.split('_'); // visa_90_3
       const customDays = parseInt(parts[1], 10);
