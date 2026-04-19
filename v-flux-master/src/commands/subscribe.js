@@ -118,8 +118,8 @@ const setupSubscribeHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }], // RioPay — временно отключён
-            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }],
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }], // Робокасса рубли — резерв
             [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
             [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
@@ -148,8 +148,8 @@ const setupSubscribeHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }], // RioPay — временно отключён
-            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }],
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }], // Робокасса рубли — резерв
             [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
             [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
@@ -176,8 +176,8 @@ const setupSubscribeHandler = (bot) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }], // RioPay — временно отключён
-            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }],
+            [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card' }],
+            // [{ text: t(lang, 'btn_pay_card'), callback_data: 'method_card_robo' }], // Робокасса рубли — резерв
             [{ text: t(lang, 'btn_pay_mir'), callback_data: 'method_mir' }],
             [{ text: t(lang, 'btn_pay_visa'), callback_data: 'method_visa' }],
             [{ text: t(lang, 'btn_pay_crypto'), callback_data: 'method_crypto' }],
@@ -192,7 +192,6 @@ const setupSubscribeHandler = (bot) => {
 
   // ===== ШАГ 2: Выбрал метод → список планов =====
 
-  /* RioPay — временно отключён
   // Карта РФ (RioPay) → все планы
   bot.on('callback_query', async (query) => {
     try {
@@ -218,8 +217,8 @@ const setupSubscribeHandler = (bot) => {
       console.error('❌ Ошибка method_card:', err);
     }
   });
-  */
 
+  /* Робокасса рубли — резерв
   // Карта РФ через Робокассу (рубли) — замена RioPay
   bot.on('callback_query', async (query) => {
     try {
@@ -245,6 +244,7 @@ const setupSubscribeHandler = (bot) => {
       console.error('❌ Ошибка method_card_robo:', err);
     }
   });
+  */
 
   // МИР (Robokassa, USD) → все планы из БД
   bot.on('callback_query', async (query) => {
@@ -342,7 +342,6 @@ const setupSubscribeHandler = (bot) => {
 
   // ===== ШАГ 3: Оплата =====
 
-  /* RioPay — временно отключён
   // Оплата картой через RioPay (₽)
   bot.on('callback_query', async (query) => {
     try {
@@ -419,8 +418,8 @@ const setupSubscribeHandler = (bot) => {
       }
     }
   });
-  */
 
+  /* Робокасса рубли оплата — резерв
   // Оплата картой РФ через Робокассу (рубли) — замена RioPay
   bot.on('callback_query', async (query) => {
     try {
@@ -497,6 +496,7 @@ const setupSubscribeHandler = (bot) => {
       }
     }
   });
+  */
 
   // Оплата МИР через Robokassa (USD из БД)
   bot.on('callback_query', async (query) => {
@@ -741,6 +741,7 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
+  /* Промо-акция — отключена, включить при следующей акции
   // Промо-акция: 2 месяца за 150₽ (истёкший триал)
   bot.on('callback_query', async (query) => {
     try {
@@ -793,6 +794,7 @@ const setupSubscribeHandler = (bot) => {
       } catch {}
     }
   });
+  */
 };
 
 module.exports = setupSubscribeHandler;
