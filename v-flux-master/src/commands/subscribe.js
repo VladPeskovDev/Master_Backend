@@ -741,8 +741,7 @@ const setupSubscribeHandler = (bot) => {
     }
   });
 
-  /* Промо-акция — отключена, включить при следующей акции
-  // Промо-акция: 2 месяца за 150₽ (истёкший триал)
+  // Промо-акция: 2 месяца за 150₽ (истёкший триал) — через RioPay
   bot.on('callback_query', async (query) => {
     try {
       if (query.data !== 'promo_trial_expired') return;
@@ -757,18 +756,18 @@ const setupSubscribeHandler = (bot) => {
         plan_id: 2, // Monthly
         amount: 150,
         currency: 'RUB',
-        method: 'robokassa',
+        method: 'card',
         status: 'pending',
       });
 
       await payment.update({ provider_id: `promo_60_2_${payment.id}` });
 
-      const payUrl = generatePaymentUrl({
-        invoiceId: payment.id,
+      const result = await createOrder({
         amount: 150,
-        description: 'Rocky Network — Промо 2 месяца',
-        userId: user.id,
-        planId: 2,
+        currency: 'RUB',
+        externalId: `pay_${payment.id}`,
+        externalUserId: `user_${user.id}`,
+        purpose: 'Rocky VPN — Промо 2 месяца',
       });
 
       await bot.sendMessage(query.message.chat.id,
@@ -777,7 +776,7 @@ const setupSubscribeHandler = (bot) => {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
-              [{ text: t(lang, 'btn_pay_card_link'), url: payUrl }],
+              [{ text: t(lang, 'btn_pay_card_link'), url: result.paymentLink }],
             ],
           },
         },
@@ -794,7 +793,6 @@ const setupSubscribeHandler = (bot) => {
       } catch {}
     }
   });
-  */
 };
 
 module.exports = setupSubscribeHandler;

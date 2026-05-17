@@ -61,10 +61,10 @@ const runPromoNotifier = async () => {
   }
 };
 
-// Разовый запуск: 18 апреля 2026, 16:02 UTC (19:02 МСК)
+// Разовый запуск: 17 мая 2026, 15:02 UTC (18:02 МСК)
 const startPromoNotifier = () => {
-  cron.schedule('2 16 18 4 *', runPromoNotifier);
-  console.log('🔥 Промо рассылка запланирована: 18.04.2026 19:02 МСК');
+  cron.schedule('2 15 17 5 *', runPromoNotifier);
+  console.log('🔥 Промо рассылка запланирована: 17.05.2026 18:02 МСК');
 };
 
 module.exports = { startPromoNotifier, runPromoNotifier };
