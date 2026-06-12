@@ -60,8 +60,10 @@ export default function PaidUsers() {
           <thead>
             <tr>
               <th>User</th>
+              <th>Lang</th>
               <th>Source</th>
               <th>Plan</th>
+              <th>Method</th>
               <th>Purchased</th>
               <th>Expires</th>
               <th>Traffic</th>
@@ -78,8 +80,10 @@ export default function PaidUsers() {
                     <span className="user-tg">@{u.username || u.telegram_id}</span>
                   </div>
                 </td>
+                <td><span className="lang-tag">{u.lang || '—'}</span></td>
                 <td><span className="source-tag">{u.source || 'organic'}</span></td>
                 <td>{u.plan}</td>
+                <td><span className="method-tag">{u.method || '—'}</span></td>
                 <td>{formatDate(u.started_at)}</td>
                 <td>{formatDate(u.expires_at)}</td>
                 <td>{formatBytes(u.traffic_used)} / {formatBytes(u.traffic_limit)}</td>

@@ -1,11 +1,12 @@
 const cron = require('node-cron');
 const { Node, User, Subscription, Plan } = require('../../db/models');
 const createNodeApi = require('../utils/nodeApi');
-const { throttleOnAllNodes, unthrottleOnAllNodes } = require('../services/nodeService');
+const { throttleOnAllNodes, unthrottleOnAllNodes, removeUserFromAllNodes } = require('../services/nodeService');
 const bot = require('../bot');
 const { t } = require('../locales');
 
 const MAX_CONNECTIONS_PER_USER = 256;
+const TRIAL_DISCONNECT_LIMIT = 6 * 1024 * 1024 * 1024; // 6 GB — после throttle юзеру даём ещё ~1 ГБ на медленной скорости, потом отключаем
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const runTrafficCollection = async () => {
@@ -97,6 +98,7 @@ const runTrafficCollection = async () => {
         }
       }
 
+      let plan = null;
       if (newTrafficUsed >= Number(sub.traffic_limit)) {
         if (!sub.throttled) {
           await throttleOnAllNodes(uuid);
@@ -105,7 +107,7 @@ const runTrafficCollection = async () => {
 
           // Уведомляем триал-юзера о тротле
           try {
-            const plan = await Plan.findByPk(sub.plan_id);
+            plan = await Plan.findByPk(sub.plan_id);
             if (plan?.is_trial && entry.user) {
               const lang = entry.user.lang || 'en';
               await bot.sendMessage(entry.user.telegram_id, t(lang, 'notify_throttled_trial'), {
@@ -120,6 +122,34 @@ const runTrafficCollection = async () => {
           } catch (notifyErr) {
             if (notifyErr?.response?.statusCode !== 403) {
               console.error(`❌ Notify throttle ${uuid}:`, notifyErr.message);
+            }
+          }
+        }
+
+        // Триал-юзер превысил 6 ГБ — отключаем полностью
+        if (newTrafficUsed >= TRIAL_DISCONNECT_LIMIT) {
+          if (!plan) plan = await Plan.findByPk(sub.plan_id);
+          if (plan?.is_trial) {
+            await sub.update({ active: false });
+            await removeUserFromAllNodes(uuid);
+            console.log(`🔌 Trial disconnected (>6GB) ${uuid}: ${formatBytes(newTrafficUsed)}`);
+
+            if (entry.user) {
+              try {
+                const lang = entry.user.lang || 'en';
+                await bot.sendMessage(entry.user.telegram_id, t(lang, 'notify_trial_disconnected_traffic'), {
+                  parse_mode: 'HTML',
+                  reply_markup: {
+                    inline_keyboard: [
+                      [{ text: t(lang, 'btn_get_subscription'), callback_data: 'subscribe' }],
+                    ],
+                  },
+                });
+              } catch (notifyErr) {
+                if (notifyErr?.response?.statusCode !== 403) {
+                  console.error(`❌ Notify disconnect ${uuid}:`, notifyErr.message);
+                }
+              }
             }
           }
         }

@@ -25,13 +25,27 @@ router.get('/paid', async (req, res) => {
       offset,
     });
 
+    // Последний оплаченный платёж для каждого юзера на странице
+    const userIds = rows.map((r) => r.User?.id).filter(Boolean);
+    const payments = await Payment.findAll({
+      where: { user_id: userIds, status: 'paid' },
+      order: [['createdAt', 'DESC']],
+      attributes: ['user_id', 'method'],
+    });
+    const lastMethodByUser = {};
+    for (const p of payments) {
+      if (!lastMethodByUser[p.user_id]) lastMethodByUser[p.user_id] = p.method;
+    }
+
     const result = rows.map((sub) => ({
       id: sub.id,
       user_id: sub.User?.id,
       telegram_id: sub.User?.telegram_id,
       username: sub.User?.username,
       first_name: sub.User?.first_name,
+      lang: sub.User?.lang || null,
       source: sub.User?.source || null,
+      method: lastMethodByUser[sub.User?.id] || null,
       plan: sub.Plan?.name,
       started_at: sub.started_at,
       expires_at: sub.expires_at,

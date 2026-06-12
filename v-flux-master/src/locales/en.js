@@ -94,7 +94,8 @@ module.exports = {
   language_set: '✅ Language set to English',
 
   // Notifications
-  notify_throttled_trial: '⚠️ <b>Free traffic limit reached.</b>\n\nWe keep your VPN active, but speed is reduced for the comfort of paid users.\n\nGet a subscription — unlimited traffic and max speed!',
+  notify_throttled_trial: '⚠️ <b>Trial traffic limit reached (5 GB).</b>\n\nSpeed has been reduced. After another ~1 GB, your VPN will be fully disconnected.\n\nGet a subscription now — unlimited traffic and max speed!',
+  notify_trial_disconnected_traffic: '❌ <b>VPN disconnected — trial limit exceeded.</b>\n\nYou have used more than 6 GB of free traffic. Get a subscription to continue using VPN — unlimited traffic and max speed.',
   notify_expiring: '⏳ Your subscription expires tomorrow!\n\nRenew now to keep your VPN access!',
   notify_expired: '❌ Your subscription has expired.\n\nRenew — VPN will work instantly!',
 
