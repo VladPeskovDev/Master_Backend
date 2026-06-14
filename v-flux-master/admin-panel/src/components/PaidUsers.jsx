@@ -60,6 +60,7 @@ export default function PaidUsers() {
           <thead>
             <tr>
               <th>User</th>
+              <th>Registered</th>
               <th>Lang</th>
               <th>Source</th>
               <th>Plan</th>
@@ -80,6 +81,7 @@ export default function PaidUsers() {
                     <span className="user-tg">@{u.username || u.telegram_id}</span>
                   </div>
                 </td>
+                <td>{formatDate(u.user_created_at)}</td>
                 <td><span className="lang-tag">{u.lang || '—'}</span></td>
                 <td><span className="source-tag">{u.source || 'organic'}</span></td>
                 <td>{u.plan}</td>

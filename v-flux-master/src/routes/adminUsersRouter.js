@@ -46,6 +46,7 @@ router.get('/paid', async (req, res) => {
       lang: sub.User?.lang || null,
       source: sub.User?.source || null,
       method: lastMethodByUser[sub.User?.id] || null,
+      user_created_at: sub.User?.createdAt || null,
       plan: sub.Plan?.name,
       started_at: sub.started_at,
       expires_at: sub.expires_at,

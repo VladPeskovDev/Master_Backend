@@ -59,7 +59,7 @@ router.post('/webhook', async (req, res) => {
 
     if (payment.provider_id?.startsWith('promo_')) {
       // Промо-акция — кастомные дни и трафик
-      const parts = payment.provider_id.split('_'); // promo_60_2_42
+      const parts = payment.provider_id.split('_'); // promo_<days>_<trafficMult>_<paymentId>, напр. promo_180_6_42
       const customDays = parseInt(parts[1], 10);
       const trafficMultiplier = parseInt(parts[2], 10);
       const plan = await Plan.findByPk(payment.plan_id);
