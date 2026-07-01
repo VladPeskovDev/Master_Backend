@@ -47,8 +47,12 @@ router.post('/result', async (req, res) => {
       const customDays = parseInt(parts[1], 10);
       const trafficMultiplier = parseInt(parts[2], 10);
 
-      const plan = await Plan.findOne({ where: { name: 'Monthly', active: true } });
-      const trafficPerMonth = plan ? Number(plan.traffic_limit_bytes) : 161061273600;
+      // Monthly — базовая единица трафика (traffic_limit_bytes × multiplier)
+      const monthlyPlan = await Plan.findOne({ where: { name: 'Monthly', active: true } });
+      const trafficPerMonth = monthlyPlan ? Number(monthlyPlan.traffic_limit_bytes) : 161061273600;
+
+      // Реальный план по длительности — чтобы Subscription.plan_id соответствовал сроку
+      const targetPlan = await Plan.findOne({ where: { duration_days: customDays, active: true } });
 
       const user = await User.findByPk(payment.user_id);
       if (!user) return res.send(`OK${InvId}`);
@@ -64,7 +68,7 @@ router.post('/result', async (req, res) => {
 
       subscription = await Subscription.create({
         user_id: payment.user_id,
-        plan_id: plan?.id || payment.plan_id,
+        plan_id: targetPlan?.id || payment.plan_id,
         started_at: now,
         expires_at: new Date(baseDate + customDays * 24 * 60 * 60 * 1000),
         traffic_limit: trafficPerMonth * trafficMultiplier,

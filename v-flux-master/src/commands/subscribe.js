@@ -609,9 +609,13 @@ const setupSubscribeHandler = (bot) => {
         return;
       }
 
+      // Ищем реальный план по длительности (Semi-Annual / Annual), Monthly — fallback
+      const targetPlan = await Plan.findOne({ where: { duration_days: days, active: true } });
+      const paymentPlanId = targetPlan?.id || monthlyPlan?.id || 2;
+
       const payment = await Payment.create({
         user_id: user.id,
-        plan_id: monthlyPlan?.id || 2,
+        plan_id: paymentPlanId,
         amount,
         currency: 'USD',
         method: 'visa',
@@ -628,7 +632,7 @@ const setupSubscribeHandler = (bot) => {
         currency: 'USD',
         description: `Rocky Network — ${planLabel}`,
         userId: user.id,
-        planId: monthlyPlan?.id || 2,
+        planId: paymentPlanId,
       });
 
       await bot.editMessageText(
