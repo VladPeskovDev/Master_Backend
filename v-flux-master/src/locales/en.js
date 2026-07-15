@@ -72,8 +72,6 @@ module.exports = {
   subscribe_footer: '\nAll plans: unlimited traffic,\nmax speed, no logs.',
   subscribe_choose_payment: '💳 <b>Payment: {plan} — {price} {currency}</b>\n\nChoose payment method:',
   btn_pay_card: '🇷🇺 Pay in ₽',
-  btn_pay_mir: '💳 MIR Card',
-  btn_pay_visa: '💳 Visa/Mastercard',
   btn_pay_crypto: '💰 Cryptocurrency',
   subscribe_payment_stub: '🚧 Payments coming soon!',
   payment_crypto_invoice: '🪙 <b>Payment: {plan} — ${amount}</b>\n\nTap the button below to pay via @CryptoBot.\nYour subscription will activate automatically after payment.',

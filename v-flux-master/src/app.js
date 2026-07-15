@@ -10,7 +10,6 @@ const adminNodesRouter = require('./routes/adminNodesRouter');
 const adminUsersRouter = require('./routes/adminUsersRouter');
 const oxaPayWebhook = require('./routes/oxaPayWebhook');
 const rioPayWebhook = require('./routes/rioPayWebhook');
-const robokassaWebhook = require('./routes/robokassaWebhook');
 const { subLimiter, adminLimiter, botLimiter } = require('./middleware/rateLimiter');
 const { nodeIpWhitelist, adminIpWhitelist } = require('./middleware/ipWhitelist');
 
@@ -30,7 +29,6 @@ app.use(express.json({
 // Routes
 app.use('/api/oxapay', oxaPayWebhook);
 app.use('/api/riopay', rioPayWebhook);
-app.use('/api/robokassa', robokassaWebhook);
 app.use('/api/nodes', nodeIpWhitelist, nodeSyncRouter);
 app.use('/sub', subLimiter, subRouter);
 app.use('/api/admin/nodes', adminIpWhitelist, adminLimiter, adminNodesRouter);

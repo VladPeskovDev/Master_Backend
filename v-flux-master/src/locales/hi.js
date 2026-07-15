@@ -68,8 +68,6 @@ module.exports = {
   subscribe_footer: '\nसभी प्लान: असीमित ट्रैफिक,\nअधिकतम गति, कोई लॉग नहीं।',
   subscribe_choose_payment: '💳 <b>भुगतान: {plan} — {price} {currency}</b>\n\nभुगतान विधि चुनें:',
   btn_pay_card: '🇷🇺 ₽ में भुगतान',
-  btn_pay_mir: '💳 MIR Card',
-  btn_pay_visa: '💳 Visa/Mastercard',
   btn_pay_crypto: '💰 क्रिप्टोकरेंसी',
   subscribe_payment_stub: '🚧 भुगतान जल्द आ रहा है!',
   payment_crypto_invoice: '🪙 <b>भुगतान: {plan} — ${amount}</b>\n\n@CryptoBot के माध्यम से भुगतान करने के लिए नीचे बटन दबाएं।\nभुगतान के बाद आपकी सदस्यता स्वचालित रूप से सक्रिय हो जाएगी।',

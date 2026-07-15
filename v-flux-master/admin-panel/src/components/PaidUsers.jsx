@@ -61,7 +61,6 @@ export default function PaidUsers() {
             <tr>
               <th>User</th>
               <th>Registered</th>
-              <th>Lang</th>
               <th>Source</th>
               <th>Plan</th>
               <th>Method</th>
@@ -82,7 +81,6 @@ export default function PaidUsers() {
                   </div>
                 </td>
                 <td>{formatDate(u.user_created_at)}</td>
-                <td><span className="lang-tag">{u.lang || '—'}</span></td>
                 <td><span className="source-tag">{u.source || 'organic'}</span></td>
                 <td>{u.plan}</td>
                 <td><span className="method-tag">{u.method || '—'}</span></td>

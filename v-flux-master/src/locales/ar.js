@@ -68,8 +68,6 @@ module.exports = {
   subscribe_footer: '\nجميع الخطط: حركة غير محدودة،\nأقصى سرعة، بدون سجلات.',
   subscribe_choose_payment: '💳 <b>الدفع: {plan} — {price} {currency}</b>\n\nاختر طريقة الدفع:',
   btn_pay_card: '🇷🇺 الدفع بالروبل ₽',
-  btn_pay_mir: '💳 MIR Card',
-  btn_pay_visa: '💳 Visa/Mastercard',
   btn_pay_crypto: '💰 عملة مشفرة',
   subscribe_payment_stub: '🚧 الدفع قريباً!',
   payment_crypto_invoice: '🪙 <b>الدفع: {plan} — ${amount}</b>\n\nاضغط الزر أدناه للدفع عبر @CryptoBot.\nسيتم تفعيل اشتراكك تلقائياً بعد الدفع.',
