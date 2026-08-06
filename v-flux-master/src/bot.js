@@ -9,7 +9,7 @@ const setupReferralHandler = require('./commands/referral');
 const setupSubscribeHandler = require('./commands/subscribe');
 const setupHelpHandler = require('./commands/help');
 const setupTermsHandler = require('./commands/terms');
-// const setupPromoHandlers = require('./commands/promoHandlers'); // акция 14.06.2026 завершена — раскомментить при следующей
+const setupPromoHandlers = require('./commands/promoHandlers');
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { webHook: true });
 
@@ -66,6 +66,6 @@ setupReferralHandler(bot);
 setupSubscribeHandler(bot);
 setupHelpHandler(bot);
 setupTermsHandler(bot);
-// setupPromoHandlers(bot); // акция 14.06.2026 завершена — раскомментить при следующей
+setupPromoHandlers(bot);
 
 module.exports = bot;

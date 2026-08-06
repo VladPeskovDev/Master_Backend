@@ -59,11 +59,14 @@ router.post('/webhook', async (req, res) => {
 
     if (payment.provider_id?.startsWith('promo_')) {
       // Промо-акция — кастомные дни и трафик
-      const parts = payment.provider_id.split('_'); // promo_<days>_<trafficMult>_<paymentId>, напр. promo_180_6_42
+      const parts = payment.provider_id.split('_'); // promo_<days>_<trafficMult>_<paymentId>, напр. promo_180_6_42 или promo_180_0_42 (безлимит)
       const customDays = parseInt(parts[1], 10);
       const trafficMultiplier = parseInt(parts[2], 10);
       const plan = await Plan.findByPk(payment.plan_id);
-      const traffic = plan ? Number(plan.traffic_limit_bytes) * trafficMultiplier : 161061273600 * 2;
+      // trafficMultiplier === 0 → безлимит: ставим потолок BIGINT-совместимый (~9 PB), реально никто столько не пролью́т за полгода
+      const traffic = trafficMultiplier === 0
+        ? Number.MAX_SAFE_INTEGER
+        : plan ? Number(plan.traffic_limit_bytes) * trafficMultiplier : 161061273600 * 2;
 
       const oldSub = await Subscription.findOne({ where: { user_id: payment.user_id, active: true } });
       const now = new Date();

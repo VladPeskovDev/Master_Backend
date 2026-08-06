@@ -1,18 +1,17 @@
 const { User, Plan, Payment } = require('../../db/models');
 const { createOrder } = require('../services/rioPayService');
 
-// Конфиг промо-офферов: amount, дни подписки, мультипликатор трафика (от Monthly)
+// Конфиг промо-офферов: amount, дни подписки, mult — множитель трафика от Monthly.
+// mult = 0 → безлимит (webhook подставит Number.MAX_SAFE_INTEGER)
 const PROMO_OFFERS = {
-  promo_c1_semi: { amount: 499, days: 180, mult: 6, label: 'Полгода (промо)' },
-  promo_c2_month: { amount: 149, days: 30, mult: 1, label: 'Месяц (промо)' },
-  promo_c2_semi: { amount: 499, days: 180, mult: 6, label: 'Полгода (промо)' },
+  promo_t1_3m_199: { amount: 199, days: 90, mult: 3, label: '3 месяца по цене месяца (акция)' },
 };
 
 const createPromoPayment = async (bot, query, offer) => {
   const user = await User.findOne({ where: { telegram_id: query.from.id } });
   if (!user) return;
 
-  // Monthly как базовый план (webhook посчитает trafficLimit = Monthly.traffic_limit_bytes * mult)
+  // Monthly как базовый план; webhook посчитает traffic от offer.mult
   const monthlyPlan = await Plan.findOne({ where: { name: 'Monthly', active: true } });
   if (!monthlyPlan) {
     await bot.answerCallbackQuery(query.id, { text: 'Plan not found', show_alert: true });

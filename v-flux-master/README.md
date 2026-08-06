@@ -129,7 +129,7 @@ admin-panel/                # React SPA, билдится в public/admin
 - IP-whitelist для `/api/admin/*` и `/api/nodes/*` (`middleware/ipWhitelist.js`)
 - Rate-limit на `/sub`, `/api/admin`, `/bot{token}` (`express-rate-limit`)
 - Webhook'и платёжек верифицируют подпись на сыром body (`req.rawBody`)
-- Админ-панель по секретному пути `/cpanel-9f2k`
+- Админ-панель по секретному пути `/cpanel-9f2k****`
 - `.env` для всех секретов, `.env.example` в репо
 
 ---
