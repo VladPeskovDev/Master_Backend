@@ -22,8 +22,14 @@ const runHealthCheck = async () => {
     const results = await Promise.allSettled(
       nodes.map(async (node) => {
         const api = createNodeApi(node.host, node.port, node.token);
-        const res = await api.get('/health');
-        return { nodeId: node.id, data: res.data };
+        // /health — общие метрики, /stats — список юзеров для подсчёта реально онлайн
+        const [health, stats] = await Promise.all([
+          api.get('/health'),
+          api.get('/stats').catch(() => ({ data: { users: [] } })),
+        ]);
+        const usersOnline = (stats.data.users || [])
+          .filter((u) => u.active_connections > 0).length;
+        return { nodeId: node.id, data: health.data, usersOnline };
       }),
     );
 
@@ -55,6 +61,7 @@ const runHealthCheck = async () => {
         newCache[node.id] = {
           active_connections: d.current_active_connections || 0,
           user_count: d.user_count || 0,
+          users_online: result.value.usersOnline || 0,
           network_rx_bytes: d.network_rx_bytes || 0,
           network_tx_bytes: d.network_tx_bytes || 0,
           uptime_secs: d.uptime_secs || 0,
@@ -72,7 +79,10 @@ const runHealthCheck = async () => {
           timestamp: now,
         };
 
-        console.log(`✅ Нода ${node.name}: OK, connections: ${newCache[node.id].active_connections}`);
+        const online = newCache[node.id].users_online;
+        const max = node.max_users || 250;
+        const pct = Math.min(100, Math.round((online / max) * 100));
+        console.log(`✅ Нода ${node.name}: OK, load: ${pct}%`);
       } else {
         await node.update({ active: false });
         console.error(`❌ Нода ${node.name}: DOWN — ${result.reason.message}`);

@@ -8,14 +8,10 @@ const router = express.Router();
 /*
  GET /sub/:token
  Зачем: VPN-клиент (V2Box, v2rayNG) дёргает каждый час.
- Отдаём VLESS-конфиг с наименее загруженной нодой.
+ Отдаём VLESS-подписку — СПИСОК всех активных нод, в имени каждой процент загрузки.
+ Загрузка = user_count / max_users * 100 (учитывает, что ноды разной мощности).
+ Сортировка: менее загруженные — сверху.
  Если подписка истекла — пустой ответ, клиент не подключится.
-
- Балансировка (гибрид):
- 1. Фильтр: убираем ноды где user_count >= max_users (нет места)
- 2. Сортировка: из оставшихся — минимум active_connections
- 3. Fallback: все полные — берём с минимум коннектов (лучше чем отказ)
- 4. Fallback: кеш пуст (первый запуск) — случайная нода
 
  для теста curl http://localhost:3000/sub/TOKEN
  */
@@ -45,44 +41,28 @@ router.get('/:token', async (req, res) => {
     }
 
     const cache = getHealthCache();
-    let node;
+    const nodesWithLoad = nodes.map((n) => {
+      // users_online — реально сидящие юзеры (не сокеты, не прописанные)
+      const users = cache[n.id]?.users_online ?? 0;
+      const max = n.max_users || 250;
+      const loadPct = Math.min(100, Math.round((users / max) * 100));
+      return { node: n, loadPct };
+    });
 
-    if (Object.keys(cache).length > 0) {
-      // Фильтр: только ноды где есть место
-      const available = nodes.filter((n) => {
-        const usersOnNode = cache[n.id]?.user_count || 0;
-        return usersOnNode < (n.max_users || 250);
-      });
+    // Менее загруженные — сверху
+    nodesWithLoad.sort((a, b) => a.loadPct - b.loadPct);
 
-      // Сортировка по коннектам
-      const sortByConns = (arr) =>
-        arr.sort((a, b) => {
-          const connA = cache[a.id]?.active_connections || 0;
-          const connB = cache[b.id]?.active_connections || 0;
-          return connA - connB;
-        });
-
-      if (available.length > 0) {
-        node = sortByConns(available)[0];
-      } else {
-        // Все полные — fallback на минимум коннектов
-        node = sortByConns([...nodes])[0];
-      }
-    } else {
-      node = nodes[Math.floor(Math.random() * nodes.length)];
-    }
-
-    const vlessLink = [
+    const links = nodesWithLoad.map(({ node, loadPct }) => [
       `vless://${user.uuid}@${node.domain}:443`,
       '?type=ws',
       '&security=tls',
       '&path=%2Fws',
       '&encryption=none',
       '&mux=off',
-      `#${getFlag(node.location)} RockyVPN-${node.location.replace(/\s/g, '-')}`,
-    ].join('');
+      `#${getFlag(node.location)} ${node.location.replace(/\s/g, '-')} — ${loadPct}%`,
+    ].join(''));
 
-    const base64 = Buffer.from(vlessLink).toString('base64');
+    const base64 = Buffer.from(links.join('\n')).toString('base64');
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 

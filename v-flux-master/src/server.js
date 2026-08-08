@@ -5,7 +5,7 @@ const { startHealthChecker } = require('./workers/healthChecker');
 const { startTrafficCollector } = require('./workers/trafficCollector');
 const { startSubscriptionChecker } = require('./workers/subscriptionChecker');
 const { startSubscriptionNotifier } = require('./workers/subscriptionNotifier');
-const { startPromoNotifier } = require('./workers/promoNotifier');
+// const { startPromoNotifier } = require('./workers/promoNotifier'); // отключено — актуальных акций нет
 
 const PORT = process.env.PORT || 3000;
 
@@ -17,5 +17,5 @@ app.listen(PORT, () => {
   startTrafficCollector();
   startSubscriptionChecker();
   startSubscriptionNotifier();
-  startPromoNotifier();
+  // startPromoNotifier(); // отключено — актуальных акций нет
 });
