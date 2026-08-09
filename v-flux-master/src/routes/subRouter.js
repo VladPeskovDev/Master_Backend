@@ -52,15 +52,20 @@ router.get('/:token', async (req, res) => {
     // Менее загруженные — сверху
     nodesWithLoad.sort((a, b) => a.loadPct - b.loadPct);
 
-    const links = nodesWithLoad.map(({ node, loadPct }) => [
-      `vless://${user.uuid}@${node.domain}:443`,
-      '?type=ws',
-      '&security=tls',
-      '&path=%2Fws',
-      '&encryption=none',
-      '&mux=off',
-      `#${getFlag(node.location)} ${node.location.replace(/\s/g, '-')} — ${loadPct}%`,
-    ].join(''));
+    // Имя ноды в # обязательно кодируем: v2rayTUN/V2Box строго парсят фрагмент,
+    // голый % и em-dash ломают подписку на этих клиентах.
+    const links = nodesWithLoad.map(({ node, loadPct }) => {
+      const label = `${getFlag(node.location)} ${node.location.replace(/\s/g, '-')} - ${loadPct}%`;
+      return [
+        `vless://${user.uuid}@${node.domain}:443`,
+        '?type=ws',
+        '&security=tls',
+        '&path=%2Fws',
+        '&encryption=none',
+        '&mux=off',
+        `#${encodeURIComponent(label)}`,
+      ].join('');
+    });
 
     const base64 = Buffer.from(links.join('\n')).toString('base64');
 

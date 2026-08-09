@@ -107,4 +107,4 @@ const startPromoNotifier = () => {
   console.log(`🔥 Промо T1 запланирована: cron='${cronExpr}' (Europe/Moscow). Сейчас на сервере: ${new Date().toISOString()} (UTC)`);
 };
 
-module.exports = { startPromoNotifier, runPromoNotifier };
+module.exports = { startPromoNotifier, runPromoNotifier, PROMO_T1 };

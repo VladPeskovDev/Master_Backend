@@ -1,10 +1,18 @@
 const cron = require('node-cron');
 const { Op } = require('sequelize');
-const { Subscription, User } = require('../../db/models');
+const { Subscription, User, Plan, Payment } = require('../../db/models');
 const bot = require('../bot');
 const { t } = require('../locales');
+const { PROMO_T1 } = require('./promoNotifier');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Триальщик подходит под промо T1: ru + ни одной оплаты в истории
+const isPromoEligible = async (user) => {
+  if (user.lang !== 'ru') return false;
+  const paid = await Payment.count({ where: { user_id: user.id, status: 'paid' } });
+  return paid === 0;
+};
 
 const runSubscriptionNotifier = async () => {
   try {
@@ -32,7 +40,7 @@ const runSubscriptionNotifier = async () => {
         active: true,
         expires_at: { [Op.between]: [tomorrowStart, tomorrowEnd] },
       },
-      include: [{ model: User }],
+      include: [{ model: User }, { model: Plan }],
     });
 
     // 2. Подписки, истёкшие вчера (уже неактивные)
@@ -41,7 +49,7 @@ const runSubscriptionNotifier = async () => {
         active: false,
         expires_at: { [Op.between]: [yesterdayStart, yesterdayEnd] },
       },
-      include: [{ model: User }],
+      include: [{ model: User }, { model: Plan }],
     });
 
     // Фильтр: не слать если юзер уже купил новую подписку
@@ -62,35 +70,60 @@ const runSubscriptionNotifier = async () => {
       ],
     });
 
-    // Отправляем "истекает завтра"
-    for (const sub of expiring) {
+    // Отправляет либо промо T1, либо стандартный текст.
+    // Триалу, попавшему под промо → PROMO_T1.
+    // Триалу без промо (не-ru или уже платил) → пропускаем.
+    // Не-триалу → стандартное уведомление.
+    const sendNotify = async (sub, standardKey, tag) => {
+      const isTrial = sub.Plan?.is_trial === true;
+      const lang = sub.User.lang || 'en';
+
       try {
-        const lang = sub.User.lang || 'en';
-        await bot.sendMessage(sub.User.telegram_id, t(lang, 'notify_expiring'), {
+        if (isTrial) {
+          const eligible = await isPromoEligible(sub.User);
+          if (!eligible) return { skipped: true };
+          await bot.sendMessage(sub.User.telegram_id, PROMO_T1.text, {
+            parse_mode: 'HTML',
+            reply_markup: { inline_keyboard: PROMO_T1.keyboard },
+          });
+          return { promo: true };
+        }
+
+        await bot.sendMessage(sub.User.telegram_id, t(lang, standardKey), {
           parse_mode: 'HTML',
           reply_markup: makeKeyboard(lang),
         });
+        return { standard: true };
       } catch (err) {
-        if (err?.response?.statusCode === 403) continue; // бот заблокирован
-        console.error(`❌ Notify expiring error (${sub.User.telegram_id}):`, err.message);
+        if (err?.response?.statusCode === 403) return { blocked: true };
+        console.error(`❌ Notify ${tag} error (${sub.User.telegram_id}):`, err.message);
+        return { error: true };
       }
+    };
+
+    let promoSent = 0;
+    let standardSent = 0;
+    let skipped = 0;
+
+    // "Истекает завтра"
+    for (const sub of expiring) {
+      const r = await sendNotify(sub, 'notify_expiring', 'expiring');
+      if (r.promo) promoSent++;
+      else if (r.standard) standardSent++;
+      else if (r.skipped) skipped++;
       await sleep(50);
     }
 
-    // Отправляем "подписка истекла"
+    // "Истёк вчера"
     for (const sub of expired) {
-      try {
-        const lang = sub.User.lang || 'en';
-        await bot.sendMessage(sub.User.telegram_id, t(lang, 'notify_expired'), {
-          parse_mode: 'HTML',
-          reply_markup: makeKeyboard(lang),
-        });
-      } catch (err) {
-        if (err?.response?.statusCode === 403) continue;
-        console.error(`❌ Notify expired error (${sub.User.telegram_id}):`, err.message);
-      }
+      const r = await sendNotify(sub, 'notify_expired', 'expired');
+      if (r.promo) promoSent++;
+      else if (r.standard) standardSent++;
+      else if (r.skipped) skipped++;
       await sleep(50);
     }
+
+    console.log(`📬 Итог: промо ${promoSent}, стандарт ${standardSent}, пропущено ${skipped}`);
   } catch (err) {
     console.error('❌ Subscription notifier error:', err);
   }
