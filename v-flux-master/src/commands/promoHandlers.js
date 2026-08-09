@@ -5,6 +5,7 @@ const { createOrder } = require('../services/rioPayService');
 // mult = 0 → безлимит (webhook подставит Number.MAX_SAFE_INTEGER)
 const PROMO_OFFERS = {
   promo_t1_3m_199: { amount: 199, days: 90, mult: 3, label: '3 месяца по цене месяца (акция)' },
+  promo_c2_6m_399: { amount: 399, days: 180, mult: 6, label: '6 месяцев Rocky VPN (акция)' },
 };
 
 const createPromoPayment = async (bot, query, offer) => {

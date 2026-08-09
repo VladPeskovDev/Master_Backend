@@ -24,6 +24,25 @@ const PROMO_T1 = {
   ],
 };
 
+// === Текст акции: C2 — платники (истёкшие + активные месячные) ===
+const PROMO_C2 = {
+  text:
+    '🔥🔥🔥 <b>СПЕЦПРЕДЛОЖЕНИЕ ТОЛЬКО ДЛЯ СВОИХ</b> 🔥🔥🔥\n\n'
+    + '💎 <b>Полгода Rocky VPN — 399 ₽</b>\n'
+    + '<i>(66 ₽ в месяц — экономия 67%)</i>\n\n'
+    + '⚡️ <b>Что внутри:</b>\n'
+    + '📱 Безлимит устройств — телефон, ноут, планшет\n'
+    + '🚀 Новые быстрые сервера\n'
+    + '🛡 Минимальный шанс блокировки — свежие IP\n'
+    + '🔐 Без логов, без рекламы\n'
+    + '🌍 YouTube, Instagram, ChatGPT — всё летает\n\n'
+    + '🎯 Оплата картой РФ, подписка активируется автоматически.\n\n'
+    + '⏰ <b>Только для наших юзеров — акция ограничена!</b>',
+  keyboard: [
+    [{ text: '🔥 Забрать 6 месяцев за 399 ₽', callback_data: 'promo_c2_6m_399' }],
+  ],
+};
+
 // T1 — брали триал (была Subscription с trial-планом), никогда не платили,
 // сейчас без активной подписки, lang='ru'
 const fetchSegmentT1 = async () => User.findAll({
@@ -33,6 +52,22 @@ const fetchSegmentT1 = async () => User.findAll({
       { id: { [Op.in]: literal('(SELECT DISTINCT s.user_id FROM "Subscriptions" s JOIN "Plans" p ON p.id = s.plan_id WHERE p.is_trial = true)') } },
       { id: { [Op.notIn]: literal('(SELECT DISTINCT user_id FROM "Payments" WHERE status = \'paid\')') } },
       { id: { [Op.notIn]: literal('(SELECT DISTINCT user_id FROM "Subscriptions" WHERE active = true)') } },
+    ],
+  },
+});
+
+// C2 — платили хотя бы раз + либо без активной подписки, либо активный Monthly (не триал), lang='ru'
+const fetchSegmentC2 = async () => User.findAll({
+  where: {
+    lang: 'ru',
+    [Op.and]: [
+      { id: { [Op.in]: literal('(SELECT DISTINCT user_id FROM "Payments" WHERE status = \'paid\')') } },
+      {
+        [Op.or]: [
+          { id: { [Op.notIn]: literal('(SELECT DISTINCT user_id FROM "Subscriptions" WHERE active = true)') } },
+          { id: { [Op.in]: literal('(SELECT DISTINCT s.user_id FROM "Subscriptions" s JOIN "Plans" p ON p.id = s.plan_id WHERE s.active = true AND p.is_trial = false AND p.name = \'Monthly\')') } },
+        ],
+      },
     ],
   },
 });
@@ -86,14 +121,14 @@ const sendBroadcast = async (users, content, segmentName) => {
 
 const runPromoNotifier = async () => {
   try {
-    console.log(`🔥 [${new Date().toISOString()}] Промо-рассылка T1 (3 месяца 199₽, трафик x3) стартовала`);
-    const users = await fetchSegmentT1();
-    console.log(`🔥 Промо T1: найдено ${users.length} юзеров в сегменте (lang=ru, брали триал, не платили, нет активной подписки)`);
+    console.log(`🔥 [${new Date().toISOString()}] Промо-рассылка C2 (полгода 399₽, трафик x6) стартовала`);
+    const users = await fetchSegmentC2();
+    console.log(`🔥 Промо C2: найдено ${users.length} юзеров (lang=ru, платили ранее, либо без активной подписки, либо активный Monthly)`);
     if (users.length === 0) {
-      console.log('🔥 Промо T1: сегмент пуст — рассылка не запускается');
+      console.log('🔥 Промо C2: сегмент пуст — рассылка не запускается');
       return;
     }
-    const r = await sendBroadcast(users, PROMO_T1, 'T1');
+    const r = await sendBroadcast(users, PROMO_C2, 'C2');
     console.log(`🔥 ИТОГО: отправлено ${r.sent}, заблокировали ${r.blocked}, ошибки ${r.errors}`);
   } catch (err) {
     console.error('❌ Promo notifier error:', err);
@@ -102,9 +137,9 @@ const runPromoNotifier = async () => {
 
 // Cron с явной таймзоной MSK
 const startPromoNotifier = () => {
-  const cronExpr = '00 11 21 7 *'; // 19.07.2026 21:30 МСК — ОБНОВИ ДАТУ, эта уже прошла
+  const cronExpr = '0 18 9 8 *'; // 09.08 18:00 МСК
   cron.schedule(cronExpr, runPromoNotifier, { timezone: 'Europe/Moscow' });
-  console.log(`🔥 Промо T1 запланирована: cron='${cronExpr}' (Europe/Moscow). Сейчас на сервере: ${new Date().toISOString()} (UTC)`);
+  console.log(`🔥 Промо C2 запланирована: cron='${cronExpr}' (Europe/Moscow). Сейчас на сервере: ${new Date().toISOString()} (UTC)`);
 };
 
-module.exports = { startPromoNotifier, runPromoNotifier, PROMO_T1 };
+module.exports = { startPromoNotifier, runPromoNotifier, PROMO_T1, PROMO_C2 };
