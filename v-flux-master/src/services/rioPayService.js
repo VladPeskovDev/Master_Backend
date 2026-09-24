@@ -38,11 +38,12 @@ const verifySignature = (rawBody, signature) => {
   return hmac.digest('hex') === signature;
 };
 
-const ALLOWED_IP = '82.146.51.110';
+// RioPay может слать вебхуки с разных IP — держим оба (при смене добавлять сюда).
+const ALLOWED_IPS = ['82.146.51.110', '31.57.13.247'];
 
 const isAllowedIp = (ip) => {
   const clean = ip.replace('::ffff:', '');
-  return clean === ALLOWED_IP;
+  return ALLOWED_IPS.includes(clean);
 };
 
 module.exports = { createOrder, verifySignature, isAllowedIp };

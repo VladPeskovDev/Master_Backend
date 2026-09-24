@@ -55,6 +55,7 @@ router.get('/:token', async (req, res) => {
     // Имя ноды в # обязательно кодируем: v2rayTUN/V2Box строго парсят фрагмент,
     // голый % и em-dash ломают подписку на этих клиентах.
     // sni+host обязательны — обновлённый XrayCore в Happ+ иначе падает с "json corrupted".
+    // fp=chrome + alpn=http/1.1 — свежий XrayCore в Happ+ требует оба, иначе "json corrupted".
     // mux=off из URL убран — не входит в VLESS URL-спеку, строгие парсеры ругаются.
     const links = nodesWithLoad.map(({ node, loadPct }) => {
       const label = `${getFlag(node.location)} ${node.location.replace(/\s/g, '-')} - ${loadPct}%`;
@@ -64,6 +65,8 @@ router.get('/:token', async (req, res) => {
         '&security=tls',
         `&sni=${node.domain}`,
         `&host=${node.domain}`,
+        '&fp=chrome',
+        '&alpn=http%2F1.1',
         '&path=%2Fws',
         '&encryption=none',
         `#${encodeURIComponent(label)}`,
